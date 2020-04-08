@@ -1,5 +1,6 @@
 # -----------------------------------------------------------------------------
-# calc.py
+# proyecto patito++
+# AUTHORS: Mildred Gil Melchor, RAUL FLORES
 # -----------------------------------------------------------------------------
 
 import sys
@@ -10,7 +11,7 @@ from sly import Lexer, Parser
 class CalcLexer(Lexer):
         # Set of token names.   This is always required
     tokens = { STRING, INTNUMBER, FLOATNUMBER, ID, 
-               VAR, IF, ELSE, PRINT, INT, FLOAT, PROGRAM,
+               VAR, IF, ELSE, PRINT, WRITE, DO, FROM, TO, FUNCTION, RETURN, INT, FLOAT, PROGRAM,
                PLUS, MINUS, TIMES, DIVIDE, ASSIGN,
                EQ, LT, GT, NE }
 
@@ -44,12 +45,20 @@ class CalcLexer(Lexer):
     # Identifiers and keywords
     ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
     ID['var'] = VAR
-    ID['if'] = IF
-    ID['else'] = ELSE
-    ID['print'] = PRINT
+    ID['si'] = IF
+    ID['sino'] = ELSE
+    ID['lee'] = PRINT
+    ID['escribe'] = WRITE
+    ID['mientras'] = WHILE
+    ID['haz'] = DO
+    ID['desde'] = FROM
+    ID['hasta'] = TO
+    ID['funcion'] = FUNCTION
+    ID['regresa'] = RETURN
+    ID['programa'] = PROGRAM
     ID['int'] = INT
     ID['float'] = FLOAT
-    ID['program'] = PROGRAM
+    ID['char'] = CHAR
 
     @_(r'\"(.*?)\"')
     def STRING(self, t):
