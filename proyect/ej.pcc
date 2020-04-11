@@ -1,0 +1,20 @@
+programa x ;
+var
+  ent i;
+  # ent j [10];
+  funcion ent lol (ent x)
+  var ent z;
+  {
+    # regresa (x + z);
+    lee (p);
+  }
+
+  principal ()
+  {
+    lee (p);
+    p = 4;
+    desde i=0 hasta 9 hacer 
+    {
+      lee p
+    }
+  }

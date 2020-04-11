@@ -9,28 +9,39 @@ sys.path.append('../..')
 from sly import Lexer, Parser
 
 class CalcLexer(Lexer):
-        # Set of token names.   This is always required
-    tokens = { STRING, INTNUMBER, FLOATNUMBER, ID, 
-               VAR, IF, ELSE, PRINT, WRITE, DO, FROM, TO, FUNCTION, RETURN, INT, FLOAT, PROGRAM,
-               PLUS, MINUS, TIMES, DIVIDE, ASSIGN,
-               EQ, LT, GT, NE }
+    # Set of token names.   This is always required
+    tokens = { 
+        STRING, INTNUMBER, FLOATNUMBER, 
+        ID, VAR, PROGRAM, PRINCIPAL,
+        IF, ELSE, WHILE,
+        PRINT, WRITE,
+        DO, FROM, TO, 
+        FUNCTION, RETURN, INT, FLOAT, CHAR, VOID,
+        PLUS, MINUS, TIMES, DIVIDE, ASSIGN,
+        EQ, LT, GT, NE, ELT, EGT, AND, OR, TRANSPOSE, INVERSE, DETERMINANT }
 
-    literals = { '(', ')', '{', '}', ';', ':', ',' }
+    literals = { '(', ')', '{', '}', ';', ':', ',', '.', '$', '?', '¡', '&' }
 
     # String containing ignored characters
     ignore = ' \t'
 
     # Regular expression rules for tokens
-    PLUS    = r'\+'
-    MINUS   = r'-'
-    TIMES   = r'\*'
-    DIVIDE  = r'/'
-    EQ      = r'=='
-    ASSIGN  = r'='
-    NE      = r'<>'
-    LT      = r'<'
-    GT      = r'>'
-
+    PLUS        = r'\+'
+    MINUS       = r'-'
+    TIMES       = r'\*'
+    DIVIDE      = r'/'
+    EQ          = r'=='
+    ASSIGN      = r'='
+    ELT         = r'<='
+    EGT         = r'>='
+    NE          = r'!='
+    LT          = r'<'
+    GT          = r'>'
+    AND         = r'&'
+    OR          = r'\|'
+    TRANSPOSE   = r'¡'
+    INVERSE     = r'\$'
+    DETERMINANT = r'\?'
     
     @_(r'[0-9]+\.[0-9]+')
     def FLOATNUMBER(self, t):
@@ -56,9 +67,11 @@ class CalcLexer(Lexer):
     ID['funcion'] = FUNCTION
     ID['regresa'] = RETURN
     ID['programa'] = PROGRAM
-    ID['int'] = INT
-    ID['float'] = FLOAT
-    ID['char'] = CHAR
+    ID['ent'] = INT
+    ID['deci'] = FLOAT
+    ID['letra'] = CHAR
+    ID['nada'] = VOID
+    ID['principal'] = PRINCIPAL
 
     @_(r'\"(.*?)\"')
     def STRING(self, t):
@@ -78,197 +91,414 @@ class CalcLexer(Lexer):
 
 class CalcParser(Parser):
     # Get the token list from the lexer (required)
+    debugfile = 'parser.out'
     tokens = CalcLexer.tokens
     
+    precedence = (
+        ('left', PLUS, MINUS),
+    )
+
     def __init__(self):
         self.ids = { }
         self.programs = { }
     
-    @_('PROGRAM ID ":" program2')
-    def programa(self, p):
-        self.programs[p.ID] = ""
-        return p.program2
-    
-    @_('vars bloque')
-    def program2(self, p):
-        return p.bloque
-    
-    @_('bloque')
-    def program2(self, p):
-        return p.bloque
+    # PROGRAMA
 
+    @_('PROGRAM ID ";" programa2 programa3 PRINCIPAL "(" ")" bloque')
+    def programa(self, p):
+        pass
+    
+    @_('vars')
+    def programa2(self, p):
+        pass
+
+    @_('empty')
+    def programa2(self, p):
+        pass
+
+    @_('funcion programa2')
+    def programa3(self, p):
+        pass
+
+    @_('empty')
+    def programa3(self, p):
+        pass
+
+    # VARS
+    
     @_('VAR var1')
     def vars(self, p):
         pass
 
-    @_('ID var2 ":" tipo ";" var1')
+    @_('tipo var2 ";" var1')
     def var1(self, p):
-        self.ids[p.ID] = 0
+        # self.ids[p.ID] = 0
+        pass
 
     @_('empty')
     def var1(self, p):
         pass
 
-    @_('"," ID var2')
+    @_('ID var3')
     def var2(self, p):
-        self.ids[p.ID] = 0
+        # self.ids[p.ID] = 0
+        pass
 
     @_('empty')
     def var2(self, p):
         pass
 
-    @_('"{" estatuto bloque1')
+    @_('"," var2')
+    def var3(self, p):
+        pass
+        # self.ids[p.ID] = 0
+
+    @_('empty')
+    def var3(self, p):
+        pass
+
+    # FUNCION
+    
+    @_('FUNCTION funcion2 ID parametros vars bloque')
+    def funcion(self, p):
+        pass
+
+    @_('tipo')
+    def funcion2(self, p):
+        pass
+
+    @_('VOID')
+    def funcion2(self, p):
+        pass
+
+    # PARAMETROS
+    
+    @_('"(" parametros2 ")"')
+    def parametros(self, p):
+        pass
+
+    @_('tipo ID parametros3')
+    def parametros2(self, p):
+        pass
+
+    @_('"," parametros2')
+    def parametros3(self, p):
+        pass
+
+    @_('empty')
+    def parametros3(self, p):
+        pass
+
+    #BLOQUE
+
+    @_('"{" bloque2 "}"')
     def bloque(self, p):
-        return p.bloque1
-
-    @_('estatuto bloque1')
-    def bloque1(self, p):
-        return p.bloque1
-
-    @_('"}"')
-    def bloque1(self, p):
         pass
 
-    @_('asig')
-    def estatuto(self, p):
-        return p.asig
-
-    @_('condition')
-    def estatuto(self, p):
-        return p.condition
-
-    @_('escritura')
-    def estatuto(self, p):
-        return p.escritura
-
-    @_('IF "(" expres ")" bloque condition2 ";"')
-    def condition(self, p):
-        if p.expres:
-            return p.bloque
-        else:
-            return p.condition2
-
-    @_('ELSE bloque')
-    def condition2(self, p):
-        return p.bloque
+    @_('estatuto bloque2')
+    def bloque2(self, p):
+        pass
 
     @_('empty')
-    def condition2(self, p):
+    def bloque2(self, p):
         pass
 
-    @_('ID ASSIGN expres ";"')
-    def asig(self, p):
-        self.ids[p.ID] = p.expres
+    #estatuto
+
+    @_('asignacion',
+        'escritura',
+        'lee',
+        'estDesicion',
+        'estRepNoCond',
+        'estRepCond',
+        'regresa')
+    def estatuto(self, p):
+        pass
+
+    #assignacion
+
+    @_('identificadores ASSIGN expmat ";"')
+    def asignacion(self, p):
+        return p[0] != p[2]
+
+    #lee
+
+    @_('PRINT "(" lee2 ")" ";"')
+    def lee(self, p):
+        pass
+
+    @_('identificadores  lee3')
+    def lee2(self, p):
+        pass
+
+    @_('"," lee2')
+    def lee3(self, p):
+        pass
+
+    @_('empty')
+    def lee3(self, p):
+        pass
+
+    #escritura
+    
+    @_('WRITE "(" escritura2 ")" ":"')
+    def escritura(self, p):
+        pass
+
+    @_('exp escritura3')
+    def escritura2(self, p):
+        pass
+
+    @_('STRING escritura3')
+    def escritura2(self, p):
+        pass
+
+    @_('"," escritura2')
+    def escritura3(self, p):
+        pass
+
+    @_('empty')
+    def escritura3(self, p):
+        pass
+
+    #regresa
+
+    @_('RETURN "(" exp ")" ";"')
+    def regresa(self, p):
+        pass
+
+
+    #estatuto de decision
+
+    @_('IF "(" expLog ")" bloque ELSE bloque ')
+    def estDesicion(self, p):
+        pass
+
+    # estatuto de repeticion condicional
+
+    @_('WHILE "(" expLog ")" DO bloque')
+    def estRepCond(self, p):
+        pass
+
+    # estatuto de repeticion no condicional
+
+    @_('FROM identificadores EQ exp TO exp DO bloque')
+    def estRepNoCond(self, p):
+        pass
+    
+    # identificadores
+
+    @_('ID identificadores2')
+    def identificadores(self, p):
+        pass
+
+    @_('"[" exp "]" identificadores3')
+    def identificadores2(self, p):
+        pass
+
+    @_('empty')
+    def identificadores2(self, p):
+        pass
+
+    @_('"[" exp "]" ')
+    def identificadores3(self, p):
+        pass
+
+    @_('empty')
+    def identificadores3(self, p):
+        pass
+
+    # TIPO
     
     @_('INT')
     def tipo(self, p):
-        return 'int'
+        pass
+
+    @_('CHAR')
+    def tipo(self, p):
+        pass
 
     @_('FLOAT')
     def tipo(self, p):
-        return 'float'
-        
-    @_('PRINT "(" escr1')
-    def escritura(self, p):
-        for elem in p.escr1:
-            elem
-            #print(elem)
-            
-    @_('escr2 ")" ";"')
-    def escr1(self, p):
-        return [p.escr2]
+        pass
 
-    @_('escr2 "," escr1')
-    def escr1(self, p):
-        return [p.escr2] + p.escr1
+    # EXPLOG expLog
     
-    @_('expres')
-    def escr2(self, p):
-        return p.expres
+    @_('expresion expLog2')
+    def expLog(self, p):
+        pass
 
-    @_('STRING')
-    def escr2(self, p):
-        return p.STRING
-    
-    @_('exp NE exp')
-    def expres(self, p):
-        return p[0] != p[2]
+    @_('AND expLog')
+    def expLog2(self, p):
+        pass
 
-    @_('exp GT exp')
-    def expres(self, p):
-        return p[0] > p[2]
+    @_('OR expLog')
+    def expLog2(self, p):
+        pass
 
-    @_('exp LT exp')
-    def expres(self, p):
-        return p[0] < p[2]
+    @_('empty')
+    def expLog2(self, p):
+        pass
 
-    @_('exp EQ exp')
-    def expres(self, p):
-        return p[0] == p[2]
+    @_('exp expresion2')
+    def expresion(self, p):
+        pass
 
     @_('exp')
-    def expres(self, p):
-        return p.exp
+    def expresion2(self, p):
+        pass
 
-    @_('term MINUS exp')
+    @_('LT exp')
+    def expresion2(self, p):
+        pass
+
+    @_('GT exp')
+    def expresion2(self, p):
+        pass
+
+    @_('EQ exp')
+    def expresion2(self, p):
+        pass
+
+    @_('ELT exp')
+    def expresion2(self, p):
+        pass
+
+    @_('EGT exp')
+    def expresion2(self, p):
+        pass
+
+    @_('NE exp')
+    def expresion2(self, p):
+        pass
+
+    @_('empty')
+    def expresion2(self, p):
+        pass
+
+    #expMat
+
+    @_('exp expmat2')
+    def expmat(self, p):
+        pass
+
+    @_('INVERSE')
+    def expmat2(self, p):
+        pass
+
+    @_('TRANSPOSE')
+    def expmat2(self, p):
+        pass
+
+    @_('DETERMINANT')
+    def expmat2(self, p):
+        pass
+
+    @_('empty')
+    def expmat2(self, p):
+        pass
+
+    #exp
+
+    @_('termino exp2')
     def exp(self, p):
-        return p.term - p.exp
+        pass
 
-    @_('term PLUS exp')
-    def exp(self, p):
-        return p.term + p.exp
+    @_('PLUS exp')
+    def exp2(self, p):
+        pass
 
-    @_('term')
-    def exp(self, p):
-        return p.term
-    
-    @_('"(" expres ")"')
+    @_('MINUS exp2')
+    def exp2(self, p):
+        pass
+
+    @_('empty')
+    def exp2(self, p):
+        pass
+
+    # factor
+
+    @_('"(" exp ")"')
     def factor(self, p):
-        return p.expres
-    
-    @_('factor DIVIDE term')
-    def term(self, p):
-        return p.factor / p.term
+        pass
 
-    @_('factor TIMES term')
-    def term(self, p):
-        return p.factor * p.term
-
-    @_('factor')
-    def term(self, p):
-        return p.factor
-
-    @_('PLUS var')
+    @_('PLUS varcte')
     def factor(self, p):
-        return p.var
+        pass
 
-    @_('MINUS var')
+    @_('MINUS varcte')
     def factor(self, p):
-        return - p.var
+        pass
 
-    @_('var')
-    def factor(self, p):
-        return p.var
+    # TERMINO
 
-    @_('FLOATNUMBER')
-    def var(self, p):
-        return float(p.FLOATNUMBER)
+    @_('factor termino2')
+    def termino(self, p):
+        pass
+
+    @_('TIMES termino')
+    def termino2(self, p):
+        pass
+
+    @_('DIVIDE termino')
+    def termino2(self, p):
+        pass
+
+    @_('empty')
+    def termino2(self, p):
+        pass
+
+    # LLAMADA
+
+    @_('ID "(" llamada2 ")"')
+    def llamada(self, p):
+        pass
+
+    @_('exp llamada3')
+    def llamada2(self, p):
+        pass
+
+    @_('"," llamada2')
+    def llamada3(self, p):
+        pass
+
+    @_('empty')
+    def llamada3(self, p):
+        pass
+
+    # VARCTE
+
+    @_('identificadores')
+    def varcte(self, p):
+        pass
 
     @_('INTNUMBER')
-    def var(self, p):
-        return int(p.INTNUMBER)
+    def varcte(self, p):
+        pass
+
+    @_('CHAR')
+    def varcte(self, p):
+        pass
+
+    @_('FLOATNUMBER')
+    def varcte(self, p):
+        pass
+
+    @_('llamada')
+    def varcte(self, p):
+        pass
 
     @_('')
     def empty(self, p):
         pass
 
-    @_('ID')
-    def var(self, p):
-        try:
-            return self.ids[p.ID]
-        except LookupError:
-            print(f'Undefined ID {p.ID!r}')
-            return 0
+    # @_('ID')
+    # def var(self, p):
+    #     try:
+    #         return self.ids[p.ID]
+    #     except LookupError:
+    #         print(f'Undefined ID {p.ID!r}')
+    #         return 0
 
 if __name__ == '__main__':
     lexer = CalcLexer()
