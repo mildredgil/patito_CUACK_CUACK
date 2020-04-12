@@ -20,7 +20,7 @@ class CalcLexer(Lexer):
         PLUS, MINUS, TIMES, DIVIDE, ASSIGN,
         EQ, LT, GT, NE, ELT, EGT, AND, OR, TRANSPOSE, INVERSE, DETERMINANT }
 
-    literals = { '[', ']','(', ')', '{', '}', ';', ':', ',', '.', '$', '?', '¡', '&' }
+    literals = { '[', ']','(', ')', '{', '}', ';', ':', ',', '.'}
 
     # String containing ignored characters
     ignore = ' \t'
@@ -39,7 +39,7 @@ class CalcLexer(Lexer):
     GT          = r'>'
     AND         = r'&'
     OR          = r'\|'
-    TRANSPOSE   = r'¡'
+    TRANSPOSE   = r'\¡'
     INVERSE     = r'\$'
     DETERMINANT = r'\?'
     

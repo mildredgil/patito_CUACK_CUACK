@@ -1,6 +1,22 @@
 programa x ;
 
+  funcion nada h(ent i) 
+  var ent j;
+  {
+     i = j;
+     regresa(i);
+  }
+
   principal ()
   {
-    p = a[1 * 2 - id] + a[2]$;
+    m = a$;
+     p = a[1 * 2 - id] + h(i);
+     escribe("hola");
+    mientras(10 > i) haz {
+      p = a + a * 12 - 1;
+
+      desde i = 0 hasta 10 hacer {
+        lee(a);
+      }
+    }
   }
