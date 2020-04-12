@@ -11,16 +11,16 @@ from sly import Lexer, Parser
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
     tokens = { 
-        STRING, INTNUMBER, FLOATNUMBER, 
+        STRING, INTNUMBER, FLOATNUMBER, CHARACTER, 
         ID, VAR, PROGRAM, PRINCIPAL,
         IF, ELSE, WHILE,
         PRINT, WRITE,
-        DO, FROM, TO, 
+        DO, FROM, TO, DO2,
         FUNCTION, RETURN, INT, FLOAT, CHAR, VOID,
         PLUS, MINUS, TIMES, DIVIDE, ASSIGN,
         EQ, LT, GT, NE, ELT, EGT, AND, OR, TRANSPOSE, INVERSE, DETERMINANT }
 
-    literals = { '(', ')', '{', '}', ';', ':', ',', '.', '$', '?', '¡', '&' }
+    literals = { '[', ']','(', ')', '{', '}', ';', ':', ',', '.', '$', '?', '¡', '&' }
 
     # String containing ignored characters
     ignore = ' \t'
@@ -62,6 +62,7 @@ class CalcLexer(Lexer):
     ID['escribe'] = WRITE
     ID['mientras'] = WHILE
     ID['haz'] = DO
+    ID['hacer'] = DO2
     ID['desde'] = FROM
     ID['hasta'] = TO
     ID['funcion'] = FUNCTION
@@ -73,12 +74,17 @@ class CalcLexer(Lexer):
     ID['nada'] = VOID
     ID['principal'] = PRINCIPAL
 
+    ignore_comment = r'\#.*'
+
     @_(r'\"(.*?)\"')
     def STRING(self, t):
         t.value = str(t.value[1: len(t.value) - 1])
         return t
 
-    ignore_comment = r'\#.*'
+    @_(r'\'(.?)\'')
+    def CHARACTER(self, t):
+        t.value = str(t.value[1: len(t.value) - 1])
+        return t
 
     # Line number tracking
     @_(r'\n+')
@@ -130,31 +136,31 @@ class CalcParser(Parser):
     def vars(self, p):
         pass
 
-    @_('tipo var2 ";" var1')
+    @_('tipo ids ";" var2')
     def var1(self, p):
         # self.ids[p.ID] = 0
         pass
 
-    @_('empty')
-    def var1(self, p):
-        pass
-
-    @_('ID var3')
+    @_('var1')
     def var2(self, p):
         # self.ids[p.ID] = 0
         pass
-
+        
     @_('empty')
     def var2(self, p):
         pass
 
-    @_('"," var2')
-    def var3(self, p):
+    @_('identificadores ids2')
+    def ids(self, p):
         pass
         # self.ids[p.ID] = 0
 
+    @_('ids')
+    def ids2(self, p):
+        pass
+
     @_('empty')
-    def var3(self, p):
+    def ids2(self, p):
         pass
 
     # FUNCION
@@ -241,7 +247,7 @@ class CalcParser(Parser):
 
     #escritura
     
-    @_('WRITE "(" escritura2 ")" ":"')
+    @_('WRITE "(" escritura2 ")" ";"')
     def escritura(self, p):
         pass
 
@@ -267,7 +273,6 @@ class CalcParser(Parser):
     def regresa(self, p):
         pass
 
-
     #estatuto de decision
 
     @_('IF "(" expLog ")" bloque ELSE bloque ')
@@ -282,7 +287,7 @@ class CalcParser(Parser):
 
     # estatuto de repeticion no condicional
 
-    @_('FROM identificadores EQ exp TO exp DO bloque')
+    @_('FROM identificadores ASSIGN expmat TO exp DO2 bloque')
     def estRepNoCond(self, p):
         pass
     
@@ -300,7 +305,7 @@ class CalcParser(Parser):
     def identificadores2(self, p):
         pass
 
-    @_('"[" exp "]" ')
+    @_('"[" exp "]"')
     def identificadores3(self, p):
         pass
 
@@ -340,12 +345,10 @@ class CalcParser(Parser):
     def expLog2(self, p):
         pass
 
+    #EXPRESION
+
     @_('exp expresion2')
     def expresion(self, p):
-        pass
-
-    @_('exp')
-    def expresion2(self, p):
         pass
 
     @_('LT exp')
@@ -408,7 +411,7 @@ class CalcParser(Parser):
     def exp2(self, p):
         pass
 
-    @_('MINUS exp2')
+    @_('MINUS exp')
     def exp2(self, p):
         pass
 
@@ -430,6 +433,10 @@ class CalcParser(Parser):
     def factor(self, p):
         pass
 
+    @_('varcte')
+    def factor(self, p):
+        pass
+
     # TERMINO
 
     @_('factor termino2')
@@ -448,8 +455,7 @@ class CalcParser(Parser):
     def termino2(self, p):
         pass
 
-    # LLAMADA
-
+    # LLAMADA    
     @_('ID "(" llamada2 ")"')
     def llamada(self, p):
         pass
@@ -476,7 +482,7 @@ class CalcParser(Parser):
     def varcte(self, p):
         pass
 
-    @_('CHAR')
+    @_('CHARACTER')
     def varcte(self, p):
         pass
 
@@ -491,14 +497,6 @@ class CalcParser(Parser):
     @_('')
     def empty(self, p):
         pass
-
-    # @_('ID')
-    # def var(self, p):
-    #     try:
-    #         return self.ids[p.ID]
-    #     except LookupError:
-    #         print(f'Undefined ID {p.ID!r}')
-    #         return 0
 
 if __name__ == '__main__':
     lexer = CalcLexer()
