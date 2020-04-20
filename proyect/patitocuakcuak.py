@@ -223,7 +223,7 @@ class CalcParser(Parser):
 
     #assignacion
 
-    @_('identificadores ASSIGN expmat ";"')
+    @_('identificadores ASSIGN exp ";"')
     def asignacion(self, p):
         return p[0] != p[2]
 
@@ -275,19 +275,27 @@ class CalcParser(Parser):
 
     #estatuto de decision
 
-    @_('IF "(" expLog ")" bloque ELSE bloque ')
+    @_('IF "(" expOR ")" bloque estDesicion2')
     def estDesicion(self, p):
         pass
 
+    @_('ELSE bloque')
+    def estDesicion2(self, p):
+        pass
+
+    @_('empty')
+    def estDesicion2(self, p):
+        pass
+    
     # estatuto de repeticion condicional
 
-    @_('WHILE "(" expLog ")" DO bloque')
+    @_('WHILE "(" expOR ")" DO bloque')
     def estRepCond(self, p):
         pass
 
     # estatuto de repeticion no condicional
 
-    @_('FROM identificadores ASSIGN expmat TO exp DO2 bloque')
+    @_('FROM identificadores ASSIGN exp TO exp DO2 bloque')
     def estRepNoCond(self, p):
         pass
     
@@ -327,22 +335,30 @@ class CalcParser(Parser):
     def tipo(self, p):
         pass
 
-    # EXPLOG expLog
-    
-    @_('expresion expLog2')
-    def expLog(self, p):
+    # OR
+    @_('expAND expOR2')
+    def expOR(self, p):
         pass
 
-    @_('AND expLog')
-    def expLog2(self, p):
-        pass
-
-    @_('OR expLog')
-    def expLog2(self, p):
+    @_('OR expOR')
+    def expOR2(self, p):
         pass
 
     @_('empty')
-    def expLog2(self, p):
+    def expOR2(self, p):
+        pass
+
+    # AND
+    @_('expresion expAND2')
+    def expAND(self, p):
+        pass
+
+    @_('AND expAND')
+    def expAND2(self, p):
+        pass
+
+    @_('empty')
+    def expAND2(self, p):
         pass
 
     #EXPRESION
@@ -377,28 +393,6 @@ class CalcParser(Parser):
 
     @_('empty')
     def expresion2(self, p):
-        pass
-
-    #expMat
-
-    @_('exp expmat2')
-    def expmat(self, p):
-        pass
-
-    @_('INVERSE')
-    def expmat2(self, p):
-        pass
-
-    @_('TRANSPOSE')
-    def expmat2(self, p):
-        pass
-
-    @_('DETERMINANT')
-    def expmat2(self, p):
-        pass
-
-    @_('empty')
-    def expmat2(self, p):
         pass
 
     #exp
@@ -437,9 +431,24 @@ class CalcParser(Parser):
     def factor(self, p):
         pass
 
+    #OPMAT
+    @_('factor opmat2')
+    def opmat(self, p):
+        pass
+
+    @_('TRANSPOSE', 
+    'INVERSE', 
+    'DETERMINANT')
+    def opmat2(self, p):
+        pass
+
+    @_('empty')
+    def opmat2(self, p):
+        pass
+
     # TERMINO
 
-    @_('factor termino2')
+    @_('opmat termino2')
     def termino(self, p):
         pass
 

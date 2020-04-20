@@ -3,6 +3,8 @@ programa x ;
   funcion nada h(ent i) 
   var ent j;
   {
+     A = B * C + D $;
+     A = D$ + B! * C;
      i = j;
      regresa(i);
   }
