@@ -39,7 +39,7 @@ class CalcLexer(Lexer):
     GT          = r'>'
     AND         = r'&'
     OR          = r'\|'
-    TRANSPOSE   = r'\¡'
+    TRANSPOSE   = r'\!'
     INVERSE     = r'\$'
     DETERMINANT = r'\?'
     
