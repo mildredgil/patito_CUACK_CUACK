@@ -1,0 +1,10 @@
+programa x2 ;
+
+  principal ()
+  {
+    si (a>e) {
+        a = 1 +2;
+
+        a = b[1][b+c/2];
+    }
+  }
