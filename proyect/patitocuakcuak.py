@@ -7,6 +7,7 @@ import sys
 sys.path.append('../..')
 
 from sly import Lexer, Parser
+from structures import VarTable
 
 class CalcLexer(Lexer):
     # Set of token names.   This is always required

@@ -50,19 +50,21 @@ def look(varName, varScope="global"):
       return
 
 # Testing
+insert("a", "int",  7)
+print("inserting a")
+print(dic)
 
-# insert("a", "int",  7)
-# # print("inserting a")
-# # print(dic)
+insert("a", "int",  8)
+print("inserting a again")
+print(dic)
+print("look",look("a"))
 
-# insert("a", "int",  8)
-# # print("inserting a again")
-# # print(dic)
+insert("f", "function",  0)
+print("making function f again")
+print(dic)
 
-# insert("f", "function",  0)
-# # print("making function f again")
-# # print(dic)
+insert("a", "int",  8, "f")
+print("inserting a intro f")
+print(dic)
 
-# insert("a", "int",  8, "f")
-# print("inserting a intro f")
-# print(dic)
+print("look",look("a"))
