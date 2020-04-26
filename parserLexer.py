@@ -3,11 +3,8 @@
 # AUTHORS: Mildred Gil Melchor, RAUL FLORES
 # -----------------------------------------------------------------------------
 
-import sys
-sys.path.append('../..')
-
 from sly import Lexer, Parser
-from structures import VarTable
+from dataTable import DirFunc, VarTable
 
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
@@ -106,15 +103,19 @@ class CalcParser(Parser):
     )
 
     def __init__(self):
-        self.ids = { }
-        self.programs = { }
+        self.dataTable = None
+        self.currentFunc = None
+        self.globalFunc = None
     
     # PROGRAMA
-
     @_('PROGRAM ID ";" programa2 programa3 PRINCIPAL "(" ")" bloque')
     def programa(self, p):
-        pass
-    
+        self.dataTable = DirFunc()
+        self.dataTable.insert(p.ID, "void")
+        self.globalFunc = self.dataTable.look(p.ID)
+        self.currentFunc = self.globalFunc
+        print(self.dataTable)
+        
     @_('vars')
     def programa2(self, p):
         pass
@@ -135,16 +136,14 @@ class CalcParser(Parser):
     
     @_('VAR var1')
     def vars(self, p):
-        pass
+        print(self.dataTable)
 
     @_('tipo ids ";" var2')
     def var1(self, p):
-        # self.ids[p.ID] = 0
         pass
 
     @_('var1')
     def var2(self, p):
-        # self.ids[p.ID] = 0
         pass
         
     @_('empty')
@@ -154,7 +153,6 @@ class CalcParser(Parser):
     @_('identificadores ids2')
     def ids(self, p):
         pass
-        # self.ids[p.ID] = 0
 
     @_('ids')
     def ids2(self, p):
@@ -507,15 +505,3 @@ class CalcParser(Parser):
     @_('')
     def empty(self, p):
         pass
-
-if __name__ == '__main__':
-    lexer = CalcLexer()
-    parser = CalcParser()
-    filename = input("write the file name:")
-    f=open(filename, "r")
-    data = f.read()
-
-    for tok in lexer.tokenize(data):
-        print(tok)
-    
-    parser.parse(lexer.tokenize(data))

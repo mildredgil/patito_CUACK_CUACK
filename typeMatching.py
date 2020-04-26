@@ -1,6 +1,5 @@
-
 class TypeMatching():
-    # op left right
+    # left op right
     typeMatchingTable = {
         'int': {
             '+': {
@@ -112,7 +111,8 @@ class TypeMatching():
             except:
                 self.error(self, line, right, op, left)
 
-    
+'''    
 print(TypeMatching.sem(1,'int', '*', 'int'))
 print(TypeMatching.sem(1,'int', '*', 'char'))
 print(TypeMatching.sem(1,'int', '!', 'int'))
+'''
