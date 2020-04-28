@@ -1,7 +1,7 @@
 programa x ;
 
   funcion nada h(ent i) 
-  var ent j;
+  var ent j, z;
   {
      A = B * C + D $;
      A = D$ + B! * C;

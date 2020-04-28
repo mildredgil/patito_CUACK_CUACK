@@ -13,7 +13,7 @@ class DirFunc():
         if(self.exist(self.table, funcName)):
             multipleDeclaration(funcName)
         else:
-            self.table[funcName] = {'type': funcType, 'table': VarTable()}
+            self.table[funcName] = {'type': funcType, 'table': VarTable(), 'name': funcName}
 
     def getTable(self, funcName):
         if(self.exist(self.table, funcName)):
@@ -21,20 +21,15 @@ class DirFunc():
         else:
             notExist(funcName)
 
-    def insertVarTable(self, funcName, varTable):
-        if(self.exist(self.table, funcName)):
-            multipleDeclaration(funcName)
-        else:
-            self.table[funcName]['table'] = varTable
-
-    def getTypeFunc(self, funcName='global'):
+    def getType(self, funcName='global'):
         if self.exist(self.table, funcName):
             return self.table[funcName]["type"]
         else:
             notExist(funcName)
 
-    # def print(self):
-    #     print(json.dumps(self.table, indent=2))
+    def print(self):
+        for a in self.table:
+            print(a)
 
 
 # #1- Create DirFunc

@@ -1,4 +1,6 @@
 from parserLexer import CalcLexer, CalcParser
+from dataTable import *
+from dicFunc import *
 
 if __name__ == '__main__':
     lexer = CalcLexer()
@@ -7,7 +9,10 @@ if __name__ == '__main__':
     f=open(filename, "r")
     data = f.read()
 
-    for tok in lexer.tokenize(data):
-        print(tok)
+    # for tok in lexer.tokenize(data):
+    #     print(tok)
     
     parser.parse(lexer.tokenize(data))
+    parser.dataTable.print()
+    parser.printTokens()
+    

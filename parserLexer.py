@@ -4,9 +4,9 @@
 # -----------------------------------------------------------------------------
 
 from sly import Lexer, Parser
-from dataTable import VarTable
-from dicFunc import DirFunc
-
+from dataTable import *
+from dicFunc import *
+import copy
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
     tokens = { 
@@ -98,24 +98,28 @@ class CalcParser(Parser):
     # Get the token list from the lexer (required)
     debugfile = 'parser.out'
     tokens = CalcLexer.tokens
-    
+
+    def printTokens(self):
+        for x in self.dataTable.table:
+            self.dataTable.getTable(x).print()
+
     precedence = (
         ('left', PLUS, MINUS),
     )
 
     def __init__(self):
-        self.dataTable = None
+        self.dataTable = DirFunc()
         self.currentFunc = None
         self.globalFunc = None
     
     # PROGRAMA
     @_('PROGRAM ID ";" programa2 programa3 PRINCIPAL "(" ")" bloque')
     def programa(self, p):
-        self.dataTable = DirFunc()
+        # self.dataTable = DirFunc()
         self.dataTable.insert(p.ID, "void")
-        self.globalFunc = self.dataTable.getTable(p.ID)
-        self.currentFunc = self.globalFunc
-        self.currentFunc.print()
+        self.globalFunc = p.ID
+        self.currentFunc = p.ID
+        # self.currentFunc.print()
         
     @_('vars')
     def programa2(self, p):
@@ -141,6 +145,8 @@ class CalcParser(Parser):
 
     @_('tipo ids ";" var2')
     def var1(self, p):
+        for x in p.ids:
+            self.dataTable.getTable(self.currentFunc).insert(x, p.tipo)
         pass
 
     @_('var1')
@@ -153,10 +159,17 @@ class CalcParser(Parser):
 
     @_('identificadores ids2')
     def ids(self, p):
+        # print('identificadores')
+        # print(p.identificadores
+        if (p.ids2 != None):
+            return [p.identificadores, p.ids2]
+        else:
+            return p.identificadores
         pass
 
-    @_('ids')
+    @_('"," ids')
     def ids2(self, p):
+        return p.ids
         pass
 
     @_('empty')
@@ -167,10 +180,11 @@ class CalcParser(Parser):
     
     @_('FUNCTION funcion2 ID parametros vars bloque')
     def funcion(self, p):
-        print("diferentes variables")
-        print(p[1])
-        print(p[2])
-        print(p[3])
+        print("creating " + p.ID)
+        self.dataTable.insert(p.ID,p[1])
+        self.currentFunc = p.ID
+        # self.dataTable.getTable(p.ID).insert('a','b')
+        # self.currentFunc.insert('a','b')
         pass
 
     @_('tipo')
@@ -185,11 +199,11 @@ class CalcParser(Parser):
     
     @_('"(" parametros2 ")"')
     def parametros(self, p):
-        return p[1]
         pass
 
     @_('tipo ID parametros3')
     def parametros2(self, p):
+        self.dataTable.getTable(self.currentFunc).insert(p.ID, p.tipo)
         pass
 
     @_('"," parametros2')
@@ -308,6 +322,7 @@ class CalcParser(Parser):
 
     @_('ID identificadores2')
     def identificadores(self, p):
+        return p.ID
         pass
 
     @_('"[" exp "]" identificadores3')
@@ -434,6 +449,7 @@ class CalcParser(Parser):
 
     @_('varcte')
     def factor(self, p):
+        return p[0]
         pass
 
     #OPMAT
@@ -490,22 +506,27 @@ class CalcParser(Parser):
 
     @_('identificadores')
     def varcte(self, p):
+        return p[0]
         pass
 
     @_('INTNUMBER')
     def varcte(self, p):
+        return p[0]
         pass
 
     @_('CHARACTER')
     def varcte(self, p):
+        return p[0]
         pass
 
     @_('FLOATNUMBER')
     def varcte(self, p):
+        return p[0]
         pass
 
     @_('llamada')
     def varcte(self, p):
+        return p[0]
         pass
 
     @_('')
