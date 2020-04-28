@@ -4,7 +4,8 @@
 # -----------------------------------------------------------------------------
 
 from sly import Lexer, Parser
-from dataTable import DirFunc, VarTable
+from dataTable import VarTable
+from dicFunc import DirFunc
 
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
@@ -112,9 +113,9 @@ class CalcParser(Parser):
     def programa(self, p):
         self.dataTable = DirFunc()
         self.dataTable.insert(p.ID, "void")
-        self.globalFunc = self.dataTable.look(p.ID)
+        self.globalFunc = self.dataTable.getTable(p.ID)
         self.currentFunc = self.globalFunc
-        print(self.dataTable)
+        self.currentFunc.print()
         
     @_('vars')
     def programa2(self, p):
@@ -136,7 +137,7 @@ class CalcParser(Parser):
     
     @_('VAR var1')
     def vars(self, p):
-        print(self.dataTable)
+        pass
 
     @_('tipo ids ";" var2')
     def var1(self, p):
@@ -166,20 +167,25 @@ class CalcParser(Parser):
     
     @_('FUNCTION funcion2 ID parametros vars bloque')
     def funcion(self, p):
+        print("diferentes variables")
+        print(p[1])
+        print(p[2])
+        print(p[3])
         pass
 
     @_('tipo')
     def funcion2(self, p):
-        pass
+        return p.tipo
 
     @_('VOID')
     def funcion2(self, p):
-        pass
+        return 'void'
 
     # PARAMETROS
     
     @_('"(" parametros2 ")"')
     def parametros(self, p):
+        return p[1]
         pass
 
     @_('tipo ID parametros3')
@@ -224,7 +230,7 @@ class CalcParser(Parser):
 
     @_('identificadores ASSIGN exp ";"')
     def asignacion(self, p):
-        return p[0] != p[2]
+        pass
 
     #lee
 
@@ -324,15 +330,15 @@ class CalcParser(Parser):
     
     @_('INT')
     def tipo(self, p):
-        pass
+        return 'int'
 
     @_('CHAR')
     def tipo(self, p):
-        pass
+        return 'char'
 
     @_('FLOAT')
     def tipo(self, p):
-        pass
+        return 'float'
 
     # OR
     @_('expAND expOR2')

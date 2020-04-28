@@ -50,6 +50,7 @@ class VarTable():
             notExist(varName)
             
     def print(self):
+        print("printing data from VatTable:")
         print(json.dumps(self.table, indent=2))
 
 class DirFunc():
@@ -88,4 +89,6 @@ class DirFunc():
             notExist(funcName)
 
     def print(self):
+        print("printing data from DirFunc:")
         print(json.dumps(self.table, indent=2))
+        

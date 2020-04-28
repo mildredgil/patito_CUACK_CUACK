@@ -1,5 +1,5 @@
 from err import notExist, multipleDeclaration, missMatchType
-from varTable import VarTable
+from dataTable import VarTable
 import json
 
 class DirFunc():
@@ -13,23 +13,19 @@ class DirFunc():
         if(self.exist(self.table, funcName)):
             multipleDeclaration(funcName)
         else:
-            self.table[funcName] = {'type': funcType, 'variables': {}}
-    
-    def funcHasVars(self, funcName):
-        if (self.exist(self.table, funcName)):
-            return not self.table[funcName]
+            self.table[funcName] = {'type': funcType, 'table': VarTable()}
 
-    def look(self, funcName):
+    def getTable(self, funcName):
         if(self.exist(self.table, funcName)):
-            return self.table[funcName]
+            return self.table[funcName]['table']
         else:
             notExist(funcName)
 
     def insertVarTable(self, funcName, varTable):
-        self.table[funcName]['variables'] = varTable.table
-
-    def getVariables(self, funcName):
-        return self.table[funcName]['variables']
+        if(self.exist(self.table, funcName)):
+            multipleDeclaration(funcName)
+        else:
+            self.table[funcName]['table'] = varTable
 
     def getTypeFunc(self, funcName='global'):
         if self.exist(self.table, funcName):
@@ -37,23 +33,25 @@ class DirFunc():
         else:
             notExist(funcName)
 
-    def print(self):
-        print(json.dumps(self.table, indent=2))
+    # def print(self):
+    #     print(json.dumps(self.table, indent=2))
+
+
+# #1- Create DirFunc
+# funcs = DirFunc()
+
+# #2- Create global 
+# funcs.insert('global', 'void')
+
+# #3- create VarTable and add it to current Func
+# funcs.getTable('global').insert('a','int')
+# funcs.getTable('global').insert('a','int')
+# funcs.getTable('global').print()
+# # funcs.print()
+# #4, 5- search for c, if exist in current VarTable, error if not insert var
+# # gDic.insert('c', 'int')
 
 '''
-#1- Create DirFunc
-funcs = DirFunc()
-
-#2- Create global 
-funcs.insert('global', 'void')
-
-#3- create VarTable and add it to current Func
-gDic = VarTable()
-funcs.insertVarTable('global', gDic)
-
-#4, 5- search for c, if exist in current VarTable, error if not insert var
-gDic.insert('c', 'int')
-
 #7,8,9- Insert function to dirFunc
 funcs.insert('fun1', 'void')
 
