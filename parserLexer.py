@@ -113,6 +113,7 @@ class CalcParser(Parser):
         self.dataTable = DirFunc()
         self.pilaOp = stack.Stack()
         self.pilaOper = stack.Stack()
+        self.pilaType = stack.Stack()
         self.quad = Quad()
         self.tempVar = 0
         self.tempVarTable = VarTable()
@@ -259,45 +260,34 @@ class CalcParser(Parser):
     #embedded action
     @_('')
     def asignacion_insert_var(self, p):    
-        try:
-            print("type", self.dataTable.getTypeVar(p[-1], self.currentFunc))
-        except:
-            raise Exception("ERROR")
-        
         self.pilaOper.push(p[-1])
+        self.pilaType.push(self.currentType)
         self.pilaOp.push("=")
         
     #embedded action
     @_('')
     def asignacion_pop_all(self, p):    
-        while not self.pilaOp.empty():
-            op = self.pilaOp.top()
-            operL = self.pilaOper.pop()
-            operR = self.pilaOper.pop()
+        op = self.pilaOp.top()
+        operL = self.pilaOper.pop()
+        operR = self.pilaOper.pop()
 
-            if operR and operL:
-                if op == "=":
-                    typeR = self.dataTable.getTypeVar(operR, self.currentFunc)
-                    typeL = self.dataTable.getTypeVar(operL, self.currentFunc)
-                    
-                    #check type is valid 
-                    type_ = TypeMatching.sem(0, typeR, op, typeL)
-                    
-                    self.quad.add(op, operL, None, operR)
-                else:
-                    typeR = self.dataTable.getTypeVar(operR, self.currentFunc)
-                    typeL = self.dataTable.getTypeVar(operL, self.currentFunc)
-                    newType = TypeMatching.sem(0, typeR, op, typeL)
-                    temp = "t" + str(self.tempVar)
-                    self.dataTable.getTable(self.currentFunc).insert(temp, newType)
-
-                    self.quad.add(op, operR, operL, temp)
-                    self.pilaOper.push(temp)
-                    self.tempVar = self.tempVar + 1
+        print("operadores", op, operL, operR)
+        '''
+        if operR and operL:
+            if op == "=":
+                typeL = self.pilaType.pop()
+                typeR = self.pilaType.pop()
+                print("types", typeR, typeL)
+                #check type is valid 
+                type_ = TypeMatching.sem(0, typeR, op, typeL)
+                
+                self.quad.add(op, operL, None, operR)
             else:
-                raise Exception("error value expected")
-            
-            self.pilaOp.pop()
+                raise Exception("error = expected")
+        else:
+            raise Exception("error value expected")
+        '''    
+        self.pilaOp.pop()
 
         
     #lee
@@ -481,7 +471,34 @@ class CalcParser(Parser):
 
     @_('')
     def exp_op_insert(self, p):
+        op = self.pilaOp.top()
+        print("top op", op)
+        print("current op", p[-1])
+        if op == "+" or op == "-":
+            operL = self.pilaOper.pop()
+            operR = self.pilaOper.pop()
+
+            if operR and operL:
+                typeL = self.pilaType.pop()
+                typeR = self.pilaType.pop()
+                newType = TypeMatching.sem(0, typeR, op, typeL)
+                temp = "t" + str(self.tempVar)
+
+                self.quad.add(op, operR, operL, temp)
+                self.pilaOper.push(temp)
+                self.pilaType.push(newType)
+                self.tempVar = self.tempVar + 1
+            else:
+                raise Exception("error value expected")
+            
+            self.pilaOp.pop()
+
         self.pilaOp.push(p[-1])
+        print("termino op insert PILAS")
+        self.pilaOper.print()
+        self.pilaOp.print()
+        print("-------")
+        
 
     @_('empty')
     def exp2(self, p):
@@ -503,6 +520,7 @@ class CalcParser(Parser):
     @_('varcte')
     def factor(self, p):
         self.pilaOper.push(p[0])
+        self.pilaType.push(self.currentType)
         return p[0]
 
     #OPMAT
@@ -537,30 +555,32 @@ class CalcParser(Parser):
     @_('')
     def term_op_insert(self, p):
         op = self.pilaOp.top()
+        print("top op", op)
+        print("current op", p[-1])
         if op == "*" or op == "/":
             operL = self.pilaOper.pop()
             operR = self.pilaOper.pop()
 
             if operR and operL:
-                typeR = self.dataTable.getTypeVar(operR, self.currentFunc)
-                typeL = self.dataTable.getTypeVar(operL, self.currentFunc)
+                typeL = self.pilaType.pop()
+                typeR = self.pilaType.pop()
                 newType = TypeMatching.sem(0, typeR, op, typeL)
                 temp = "t" + str(self.tempVar)
 
-                self.dataTable.getTable(self.currentFunc).insert(temp, newType)
                 self.quad.add(op, operR, operL, temp)
                 self.pilaOper.push(temp)
+                self.pilaType.push(newType)
                 self.tempVar = self.tempVar + 1
             else:
                 raise Exception("error value expected")
             
             self.pilaOp.pop()
 
+        self.pilaOp.push(p[-1])
         print("termino op insert PILAS")
         self.pilaOper.print()
         self.pilaOp.print()
         print("-------")
-        self.pilaOp.push(p[-1])
         
     @_('empty')
     def termino2(self, p):

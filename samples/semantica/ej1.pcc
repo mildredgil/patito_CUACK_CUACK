@@ -1,0 +1,8 @@
+programa patito;
+var ent b;
+    ent j, l, m, i, k;
+
+principal () {
+    j = i + k / i * l * m - m;
+    b = b + b;
+}

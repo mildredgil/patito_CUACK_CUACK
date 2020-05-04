@@ -5,7 +5,7 @@ var ent b;
   var ent j, l, m;
       letra a;
   {
-     j = i + k / i * l * m;
+     j = i + k / i * l * m - m;
      
   }
 
