@@ -7,9 +7,13 @@ class Quad():
         return self.count
 
     def add(self, op, operRight=None, operLeft=None, result=None):
-        self.list.extend([op, operRight, operLeft, result])
+        self.list.append([op, operRight, operLeft, result])
         self.count = self.count + 1
 
     def update(self, index, result):
         self.list[index][3] = result
+
+    def print(self):
+        for el in self.list:
+            print(el)
 

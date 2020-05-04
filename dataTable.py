@@ -28,7 +28,7 @@ class VarTable():
         else:
             self.table[varName] = {'type': varType, 'value': None}
 
-    def getTypeVar(self, varName):
+    def getType(self, varName):
         if(self.exist(self.table, varName)):
             return self.table[varName]['type']
         else:
@@ -56,7 +56,7 @@ class VarTable():
 class DirFunc():
     def __init__(self):
         self.table = {}
-
+        
     def exist(self, a, b):
         return b in a
 
@@ -80,6 +80,24 @@ class DirFunc():
             return self.table[funcName]["type"]
         else:
             notExist(funcName)
+    
+    def getValueVar(self, varName, funcName):
+        try:
+            return self.table.getTable(funcName).look(varName)
+        except:
+            try: 
+                return self.table.getTable("global").look(varName)
+            except:
+                notExist(funcName)
+
+    def getTypeVar(self, varName, funcName):
+        try:
+            return self.getTable(funcName).getType(varName)
+        except:
+            try: 
+                return self.getTable("global").getType(varName)
+            except:
+                notExist(varName)
 
     def print(self):
         for a in self.table:

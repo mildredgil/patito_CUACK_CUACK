@@ -100,7 +100,7 @@ class CalcParser(Parser):
     # Get the token list from the lexer (required)
     debugfile = 'parser.out'
     tokens = CalcLexer.tokens
-
+    
     def printTokens(self):
         for x in self.dataTable.table:
             self.dataTable.getTable(x).print()
@@ -114,6 +114,8 @@ class CalcParser(Parser):
         self.pilaOp = stack.Stack()
         self.pilaOper = stack.Stack()
         self.quad = Quad()
+        self.tempVar = 0
+        self.tempVarTable = VarTable()
 
         self.currentId = None
         self.currentType = None
@@ -129,9 +131,9 @@ class CalcParser(Parser):
     #embedded action
     @_('')
     def set_global(self, p):
-        self.dataTable.insert(p[-1], "void")
+        self.dataTable.insert("global", "void")
         self.globalFunc = p[-1]
-        self.currentFunc = p[-1]
+        self.currentFunc = "global"
 
     @_('vars')
     def programa2(self, p):
@@ -250,24 +252,53 @@ class CalcParser(Parser):
         pass
 
     #assignacion
-    @_('identificadores asignacion_insert_var ASSIGN exp ";"')
+    @_('identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ";"')
     def asignacion(self, p):
-        self.pilaOper.print()
-        self.pilaOp.print()
+        pass
 
     #embedded action
     @_('')
     def asignacion_insert_var(self, p):    
         try:
-            print("type", self.dataTable.getTable(self.currentFunc).getTypeVar(p[-1]))
+            print("type", self.dataTable.getTypeVar(p[-1], self.currentFunc))
         except:
-            try:
-                print("type", self.dataTable.getTable(self.globalFunc).getTypeVar(p[-1]))
-            except:
-                raise Exception("ERROR")
+            raise Exception("ERROR")
         
         self.pilaOper.push(p[-1])
         self.pilaOp.push("=")
+        
+    #embedded action
+    @_('')
+    def asignacion_pop_all(self, p):    
+        while not self.pilaOp.empty():
+            op = self.pilaOp.top()
+            operL = self.pilaOper.pop()
+            operR = self.pilaOper.pop()
+
+            if operR and operL:
+                if op == "=":
+                    typeR = self.dataTable.getTypeVar(operR, self.currentFunc)
+                    typeL = self.dataTable.getTypeVar(operL, self.currentFunc)
+                    
+                    #check type is valid 
+                    type_ = TypeMatching.sem(0, typeR, op, typeL)
+                    
+                    self.quad.add(op, operL, None, operR)
+                else:
+                    typeR = self.dataTable.getTypeVar(operR, self.currentFunc)
+                    typeL = self.dataTable.getTypeVar(operL, self.currentFunc)
+                    newType = TypeMatching.sem(0, typeR, op, typeL)
+                    temp = "t" + str(self.tempVar)
+                    self.dataTable.getTable(self.currentFunc).insert(temp, newType)
+
+                    self.quad.add(op, operR, operL, temp)
+                    self.pilaOper.push(temp)
+                    self.tempVar = self.tempVar + 1
+            else:
+                raise Exception("error value expected")
+            
+            self.pilaOp.pop()
+
         
     #lee
     @_('PRINT "(" lee2 ")" ";"')
@@ -443,21 +474,14 @@ class CalcParser(Parser):
     def exp(self, p):    
         return p.termino
 
-    @_('PLUS plus_insert exp')
+    @_('PLUS exp_op_insert exp',
+        'MINUS exp_op_insert exp')
     def exp2(self, p):
         pass
 
     @_('')
-    def plus_insert(self, p):
-        self.pilaOp.push("+")
-
-    @_('MINUS minus_insert exp')
-    def exp2(self, p):
-        pass
-
-    @_('')
-    def minus_insert(self, p):
-        self.pilaOp.push("-")
+    def exp_op_insert(self, p):
+        self.pilaOp.push(p[-1])
 
     @_('empty')
     def exp2(self, p):
@@ -512,6 +536,26 @@ class CalcParser(Parser):
     
     @_('')
     def term_op_insert(self, p):
+        op = self.pilaOp.top()
+        if op == "*" or op == "/":
+            operL = self.pilaOper.pop()
+            operR = self.pilaOper.pop()
+
+            if operR and operL:
+                typeR = self.dataTable.getTypeVar(operR, self.currentFunc)
+                typeL = self.dataTable.getTypeVar(operL, self.currentFunc)
+                newType = TypeMatching.sem(0, typeR, op, typeL)
+                temp = "t" + str(self.tempVar)
+
+                self.dataTable.getTable(self.currentFunc).insert(temp, newType)
+                self.quad.add(op, operR, operL, temp)
+                self.pilaOper.push(temp)
+                self.tempVar = self.tempVar + 1
+            else:
+                raise Exception("error value expected")
+            
+            self.pilaOp.pop()
+
         print("termino op insert PILAS")
         self.pilaOper.print()
         self.pilaOp.print()

@@ -10,9 +10,13 @@ class Stack:
 
     def pop(self):
         if(len(self.data) > 0):
+            op = self.top()
             self.data.pop()
+            
         else:
+            op = None
             print("Stack is empty")
+        return op
 
     def top(self):
         if(len(self.data) > 0):

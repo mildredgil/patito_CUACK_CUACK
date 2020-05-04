@@ -95,7 +95,7 @@ class TypeMatching():
     }
 
     def error(self, line, right, op, left=''):
-        print('Line %d: Cant assign %s %s %s' % (line, right, op, left))
+        raise Exception('Line {}: Cant assign {} {} {}'.format(line, right, op, left))
 
         
     @classmethod

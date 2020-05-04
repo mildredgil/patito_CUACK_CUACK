@@ -2,13 +2,13 @@ programa patito;
 var ent b;
 
   funcion ent suma(ent i, ent k)
-  var ent j;
+  var ent j, l, m;
       letra a;
   {
-     j = i + k / w * 9;
+     j = i + k / i * l * m;
      
   }
 
   principal () {
-    b = suma(1,2);
+    b = b + b;
   }
