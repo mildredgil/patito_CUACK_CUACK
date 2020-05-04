@@ -1,0 +1,14 @@
+programa patito;
+var ent b;
+
+  funcion ent suma(ent i, ent k)
+  var ent j;
+      letra a;
+  {
+     j = i + k / w * 9;
+     
+  }
+
+  principal () {
+    b = suma(1,2);
+  }

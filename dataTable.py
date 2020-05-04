@@ -1,13 +1,13 @@
 import json
 
 def notExist(a):
-    print("%s does not exist. Declare it before use it." % a)
+    raise Exception("{} does not exist. Declare it before use it.".format(a))
 
 def multipleDeclaration(a):
-    print("Multiple Declaration. %s already exist." % a)
+    raise Exception("Multiple Declaration. {} already exist.".format(a))
 
 def missMatchType(a, b):
-    print("Excepted a %s type for %s variable" % (a, b))
+    raise Exception("Excepted a {} type for {} variable".format(a,b))
 
 class VarTable():
     def __init__(self, table=None):
@@ -49,8 +49,8 @@ class VarTable():
         else:
             notExist(varName)
             
-    def print(self):
-        print("printing data from VatTable:")
+    def print(self, name):
+        print("printing data from %s:" % name)
         print(json.dumps(self.table, indent=2))
 
 class DirFunc():
@@ -64,8 +64,29 @@ class DirFunc():
         if(self.exist(self.table, funcName)):
             multipleDeclaration(funcName)
         else:
-            self.table[funcName] = {'type': funcType, 'variables': {}}
+            self.table[funcName] = {'type': funcType, 'table': VarTable()}
+    
+    def insertVarTable(self, funcName, varTable):
+        self.table[funcName]['variables'] = varTable.table
 
+    def getTable(self, funcName):
+        if(self.exist(self.table, funcName)):
+            return self.table[funcName]['table']
+        else:
+            notExist(funcName)
+
+    def getType(self, funcName='global'):
+        if self.exist(self.table, funcName):
+            return self.table[funcName]["type"]
+        else:
+            notExist(funcName)
+
+    def print(self):
+        for a in self.table:
+            print(a)
+            self.getTable(a).print(a)
+
+'''
     def look(self, funcName):
         if(self.exist(self.table, funcName)):
             return self.table[funcName]
@@ -92,3 +113,4 @@ class DirFunc():
         print("printing data from DirFunc:")
         print(json.dumps(self.table, indent=2))
         
+'''

@@ -5,7 +5,9 @@
 
 from sly import Lexer, Parser
 from dataTable import *
-from dicFunc import *
+from dataStructure import stack
+from typeMatching import *
+from quad import *
 import copy
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
@@ -109,18 +111,28 @@ class CalcParser(Parser):
 
     def __init__(self):
         self.dataTable = DirFunc()
+        self.pilaOp = stack.Stack()
+        self.pilaOper = stack.Stack()
+        self.quad = Quad()
+
+        self.currentId = None
+        self.currentType = None
+
         self.currentFunc = None
         self.globalFunc = None
     
     # PROGRAMA
-    @_('PROGRAM ID ";" programa2 programa3 PRINCIPAL "(" ")" bloque')
+    @_('PROGRAM ID set_global ";" programa2 programa3 PRINCIPAL "(" ")" bloque')
     def programa(self, p):
-        # self.dataTable = DirFunc()
-        self.dataTable.insert(p.ID, "void")
-        self.globalFunc = p.ID
-        self.currentFunc = p.ID
-        # self.currentFunc.print()
-        
+        pass
+    
+    #embedded action
+    @_('')
+    def set_global(self, p):
+        self.dataTable.insert(p[-1], "void")
+        self.globalFunc = p[-1]
+        self.currentFunc = p[-1]
+
     @_('vars')
     def programa2(self, p):
         pass
@@ -129,7 +141,7 @@ class CalcParser(Parser):
     def programa2(self, p):
         pass
 
-    @_('funcion programa2')
+    @_('funcion programa3')
     def programa3(self, p):
         pass
 
@@ -138,17 +150,19 @@ class CalcParser(Parser):
         pass
 
     # VARS
-    
     @_('VAR var1')
     def vars(self, p):
-        pass
+        return p.var1
 
-    @_('tipo ids ";" var2')
+    @_('tipo set_type ids ";" var2')
     def var1(self, p):
-        for x in p.ids:
-            self.dataTable.getTable(self.currentFunc).insert(x, p.tipo)
         pass
 
+    #embedded action
+    @_('')
+    def set_type(self, p):
+        self.currentType = p[-1]
+        
     @_('var1')
     def var2(self, p):
         pass
@@ -159,17 +173,10 @@ class CalcParser(Parser):
 
     @_('identificadores ids2')
     def ids(self, p):
-        # print('identificadores')
-        # print(p.identificadores
-        if (p.ids2 != None):
-            return [p.identificadores, p.ids2]
-        else:
-            return p.identificadores
-        pass
-
+        self.dataTable.getTable(self.currentFunc).insert(p.identificadores,self.currentType)
+        
     @_('"," ids')
     def ids2(self, p):
-        return p.ids
         pass
 
     @_('empty')
@@ -178,17 +185,20 @@ class CalcParser(Parser):
 
     # FUNCION
     
-    @_('FUNCTION funcion2 ID parametros vars bloque')
+    @_('FUNCTION funcion2 ID save_id parametros vars bloque')
     def funcion(self, p):
-        print("creating " + p.ID)
-        self.dataTable.insert(p.ID,p[1])
-        self.currentFunc = p.ID
-        # self.dataTable.getTable(p.ID).insert('a','b')
-        # self.currentFunc.insert('a','b')
         pass
+
+    #embedded action
+    @_('')
+    def save_id(self, p):
+        print("save_id", p[-1], p[-2])
+        self.dataTable.insert(p[-1], p[-2])
+        self.currentFunc = p[-1]
 
     @_('tipo')
     def funcion2(self, p):
+        self.currentType = p.tipo
         return p.tipo
 
     @_('VOID')
@@ -200,12 +210,11 @@ class CalcParser(Parser):
     @_('"(" parametros2 ")"')
     def parametros(self, p):
         pass
-
+        
     @_('tipo ID parametros3')
     def parametros2(self, p):
-        self.dataTable.getTable(self.currentFunc).insert(p.ID, p.tipo)
-        pass
-
+        self.dataTable.getTable(self.currentFunc).insert(p.ID,p.tipo)
+        
     @_('"," parametros2')
     def parametros3(self, p):
         pass
@@ -241,13 +250,26 @@ class CalcParser(Parser):
         pass
 
     #assignacion
-
-    @_('identificadores ASSIGN exp ";"')
+    @_('identificadores asignacion_insert_var ASSIGN exp ";"')
     def asignacion(self, p):
-        pass
+        self.pilaOper.print()
+        self.pilaOp.print()
 
+    #embedded action
+    @_('')
+    def asignacion_insert_var(self, p):    
+        try:
+            print("type", self.dataTable.getTable(self.currentFunc).getTypeVar(p[-1]))
+        except:
+            try:
+                print("type", self.dataTable.getTable(self.globalFunc).getTypeVar(p[-1]))
+            except:
+                raise Exception("ERROR")
+        
+        self.pilaOper.push(p[-1])
+        self.pilaOp.push("=")
+        
     #lee
-
     @_('PRINT "(" lee2 ")" ";"')
     def lee(self, p):
         pass
@@ -319,9 +341,9 @@ class CalcParser(Parser):
         pass
     
     # identificadores
-
     @_('ID identificadores2')
     def identificadores(self, p):
+        self.currentId = p.ID
         return p.ID
         pass
 
@@ -418,45 +440,55 @@ class CalcParser(Parser):
     #exp
 
     @_('termino exp2')
-    def exp(self, p):
-        pass
+    def exp(self, p):    
+        return p.termino
 
-    @_('PLUS exp')
+    @_('PLUS plus_insert exp')
     def exp2(self, p):
         pass
 
-    @_('MINUS exp')
+    @_('')
+    def plus_insert(self, p):
+        self.pilaOp.push("+")
+
+    @_('MINUS minus_insert exp')
     def exp2(self, p):
         pass
+
+    @_('')
+    def minus_insert(self, p):
+        self.pilaOp.push("-")
 
     @_('empty')
     def exp2(self, p):
         pass
 
     # factor
-
     @_('"(" exp ")"')
     def factor(self, p):
-        pass
+        return p.exp
 
     @_('PLUS varcte')
     def factor(self, p):
-        pass
+        return p.varcte
 
     @_('MINUS varcte')
     def factor(self, p):
-        pass
+        return (- p.varcte)
 
     @_('varcte')
     def factor(self, p):
+        self.pilaOper.push(p[0])
         return p[0]
-        pass
 
     #OPMAT
     @_('factor opmat2')
     def opmat(self, p):
-        pass
-
+        if p.opmat2:
+            print("opmat")
+        else:
+            return p.factor
+        
     @_('TRANSPOSE', 
     'INVERSE', 
     'DETERMINANT')
@@ -472,15 +504,20 @@ class CalcParser(Parser):
     @_('opmat termino2')
     def termino(self, p):
         pass
-
-    @_('TIMES termino')
+        
+    @_('TIMES term_op_insert termino',
+       'DIVIDE term_op_insert termino')
     def termino2(self, p):
         pass
-
-    @_('DIVIDE termino')
-    def termino2(self, p):
-        pass
-
+    
+    @_('')
+    def term_op_insert(self, p):
+        print("termino op insert PILAS")
+        self.pilaOper.print()
+        self.pilaOp.print()
+        print("-------")
+        self.pilaOp.push(p[-1])
+        
     @_('empty')
     def termino2(self, p):
         pass
@@ -503,31 +540,25 @@ class CalcParser(Parser):
         pass
 
     # VARCTE
-
     @_('identificadores')
     def varcte(self, p):
         return p[0]
-        pass
 
     @_('INTNUMBER')
     def varcte(self, p):
         return p[0]
-        pass
 
     @_('CHARACTER')
     def varcte(self, p):
         return p[0]
-        pass
 
     @_('FLOATNUMBER')
     def varcte(self, p):
         return p[0]
-        pass
 
     @_('llamada')
     def varcte(self, p):
         return p[0]
-        pass
 
     @_('')
     def empty(self, p):

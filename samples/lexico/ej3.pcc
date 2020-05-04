@@ -1,7 +1,18 @@
-programa x ;
+programa x;
+var ent o;
+    letra j;
+    
+  funcion nada h(ent i, ent k)
+  var ent j, m;
+      letra a;
+  {
+     j = i + k;
+     regresa(j);
+  }
 
-  funcion nada h(ent i) 
-  var ent j;
+  funcion ent h2(ent i, ent k)
+  var ent j, m;
+      letra a;
   {
      A = B * C + D $;
      A = D$ + B! * C;

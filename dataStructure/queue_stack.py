@@ -20,6 +20,25 @@ class stack:
     def print(self):
         print(self.data)
 
+class queue:
+    def __init__(self):
+        self.data = []
+
+    def empty(self):
+        return self.data == []
+
+    def enqueue(self, newData):
+        self.data.insert(0, newData)
+
+    def dequeue(self):
+        if(len(self.data) > 0):
+            self.data.pop()
+        else:
+            print("Queue is empty")
+
+    def print(self):
+        print(self.data)
+
 def main():
     print("---- stack ----")
     print("push 1")
