@@ -115,6 +115,7 @@ class CalcParser(Parser):
         self.pilaOp = stack.Stack()
         self.pilaOper = stack.Stack()
         self.pilaType = stack.Stack()
+        self.pilaJump = stack.Stack()
         self.quad = Quad()
         self.tempVar = 0
         self.tempVarTable = VarTable()
@@ -377,15 +378,25 @@ class CalcParser(Parser):
 
     #estatuto de decision
 
-    @_('IF "(" expOR ")" if_gotF bloque estDesicion2')
+    @_('IF "(" expOR ")" if_gotF bloque estDesicion2 if_fill_gotF')
     def estDesicion(self, p):
         pass
-
+    
+    #embeded action
     @_('')
     def if_gotF(self, p):
-        print("IF")
-        self.pilaOper.print()
+        gotoFQuad(
+            self.pilaOper,
+            self.pilaType,
+            self.pilaJump,
+            self.quad
+        )
 
+    #embeded action     
+    @_('')
+    def if_fill_gotF(self, p):
+        fillGotoFQuad(self.quad, self.pilaJump)
+        
     @_('ELSE bloque')
     def estDesicion2(self, p):
         pass
@@ -471,33 +482,33 @@ class CalcParser(Parser):
 
     #EXPRESION
 
-    @_('exp expresion2')
+    @_('exp expresion2 quad_expresion')
     def expresion(self, p):
         pass
 
-    @_('LT exp')
+    @_('')
+    def quad_expresion(self, p):
+        normalQuad(
+            self.pilaOp,
+            self.pilaOper, 
+            self.pilaType,
+            self.quad, 
+            self.tempVar)
+
+        self.tempVar = self.tempVar + 1
+
+    @_( 'LT push_bool_op exp',
+        'GT push_bool_op exp',
+        'EQ push_bool_op exp',
+        'ELT push_bool_op exp',
+        'EGT push_bool_op exp',
+        'NE exp')
     def expresion2(self, p):
         pass
 
-    @_('GT exp')
-    def expresion2(self, p):
-        pass
-
-    @_('EQ exp')
-    def expresion2(self, p):
-        pass
-
-    @_('ELT exp')
-    def expresion2(self, p):
-        pass
-
-    @_('EGT exp')
-    def expresion2(self, p):
-        pass
-
-    @_('NE exp')
-    def expresion2(self, p):
-        pass
+    @_('')
+    def push_bool_op(self, p):
+        self.pilaOp.push(p[-1])
 
     @_('empty')
     def expresion2(self, p):

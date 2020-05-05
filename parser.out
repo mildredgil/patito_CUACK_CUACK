@@ -46,113 +46,116 @@ Rule 42    escritura2 -> exp escritura3
 Rule 43    escritura3 -> empty
 Rule 44    escritura3 -> , escritura2
 Rule 45    regresa -> RETURN ( exp ) ;
-Rule 46    estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2
+Rule 46    estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF
 Rule 47    if_gotF -> <empty>
-Rule 48    estDesicion2 -> empty
-Rule 49    estDesicion2 -> ELSE bloque
-Rule 50    estRepCond -> WHILE ( expOR ) DO bloque
-Rule 51    estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque
-Rule 52    identificadores -> ID identificadores2
-Rule 53    identificadores2 -> empty
-Rule 54    identificadores2 -> [ exp ] identificadores3
-Rule 55    identificadores3 -> empty
-Rule 56    identificadores3 -> [ exp ]
-Rule 57    tipo -> FLOAT
-Rule 58    tipo -> CHAR
-Rule 59    tipo -> INT
-Rule 60    expOR -> expAND expOR2
-Rule 61    expOR2 -> empty
-Rule 62    expOR2 -> OR expOR
-Rule 63    expAND -> expresion expAND2
-Rule 64    expAND2 -> empty
-Rule 65    expAND2 -> AND expAND
-Rule 66    expresion -> exp expresion2
-Rule 67    expresion2 -> empty
-Rule 68    expresion2 -> NE exp
-Rule 69    expresion2 -> EGT exp
-Rule 70    expresion2 -> ELT exp
-Rule 71    expresion2 -> EQ exp
-Rule 72    expresion2 -> GT exp
-Rule 73    expresion2 -> LT exp
-Rule 74    exp -> termino exp2
-Rule 75    exp2 -> empty
-Rule 76    exp2 -> MINUS exp_op_insert exp  [precedence=left, level=1]
-Rule 77    exp2 -> PLUS exp_op_insert exp  [precedence=left, level=1]
-Rule 78    exp_op_insert -> <empty>
-Rule 79    factor -> varcte
-Rule 80    factor -> MINUS varcte  [precedence=left, level=1]
-Rule 81    factor -> PLUS varcte  [precedence=left, level=1]
-Rule 82    factor -> ( exp_par_start exp ) exp_par_end
-Rule 83    exp_par_start -> <empty>
-Rule 84    exp_par_end -> <empty>
-Rule 85    opmat -> factor opmat2
-Rule 86    opmat2 -> empty
-Rule 87    opmat2 -> DETERMINANT
-Rule 88    opmat2 -> INVERSE
-Rule 89    opmat2 -> TRANSPOSE
-Rule 90    termino -> opmat termino2
-Rule 91    termino2 -> empty
-Rule 92    termino2 -> DIVIDE term_op_insert termino
-Rule 93    termino2 -> TIMES term_op_insert termino
-Rule 94    term_op_insert -> <empty>
-Rule 95    llamada -> ID ( llamada2 )
-Rule 96    llamada2 -> exp llamada3
-Rule 97    llamada3 -> empty
-Rule 98    llamada3 -> , llamada2
-Rule 99    varcte -> llamada
-Rule 100   varcte -> FLOATNUMBER
-Rule 101   varcte -> CHARACTER
-Rule 102   varcte -> INTNUMBER
-Rule 103   varcte -> identificadores
-Rule 104   empty -> <empty>
+Rule 48    if_fill_gotF -> <empty>
+Rule 49    estDesicion2 -> empty
+Rule 50    estDesicion2 -> ELSE bloque
+Rule 51    estRepCond -> WHILE ( expOR ) DO bloque
+Rule 52    estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque
+Rule 53    identificadores -> ID identificadores2
+Rule 54    identificadores2 -> empty
+Rule 55    identificadores2 -> [ exp ] identificadores3
+Rule 56    identificadores3 -> empty
+Rule 57    identificadores3 -> [ exp ]
+Rule 58    tipo -> FLOAT
+Rule 59    tipo -> CHAR
+Rule 60    tipo -> INT
+Rule 61    expOR -> expAND expOR2
+Rule 62    expOR2 -> empty
+Rule 63    expOR2 -> OR expOR
+Rule 64    expAND -> expresion expAND2
+Rule 65    expAND2 -> empty
+Rule 66    expAND2 -> AND expAND
+Rule 67    expresion -> exp expresion2 quad_expresion
+Rule 68    quad_expresion -> <empty>
+Rule 69    expresion2 -> empty
+Rule 70    expresion2 -> NE exp
+Rule 71    expresion2 -> EGT push_bool_op exp
+Rule 72    expresion2 -> ELT push_bool_op exp
+Rule 73    expresion2 -> EQ push_bool_op exp
+Rule 74    expresion2 -> GT push_bool_op exp
+Rule 75    expresion2 -> LT push_bool_op exp
+Rule 76    push_bool_op -> <empty>
+Rule 77    exp -> termino exp2
+Rule 78    exp2 -> empty
+Rule 79    exp2 -> MINUS exp_op_insert exp  [precedence=left, level=1]
+Rule 80    exp2 -> PLUS exp_op_insert exp  [precedence=left, level=1]
+Rule 81    exp_op_insert -> <empty>
+Rule 82    factor -> varcte
+Rule 83    factor -> MINUS varcte  [precedence=left, level=1]
+Rule 84    factor -> PLUS varcte  [precedence=left, level=1]
+Rule 85    factor -> ( exp_par_start exp ) exp_par_end
+Rule 86    exp_par_start -> <empty>
+Rule 87    exp_par_end -> <empty>
+Rule 88    opmat -> factor opmat2
+Rule 89    opmat2 -> empty
+Rule 90    opmat2 -> DETERMINANT
+Rule 91    opmat2 -> INVERSE
+Rule 92    opmat2 -> TRANSPOSE
+Rule 93    termino -> opmat termino2
+Rule 94    termino2 -> empty
+Rule 95    termino2 -> DIVIDE term_op_insert termino
+Rule 96    termino2 -> TIMES term_op_insert termino
+Rule 97    term_op_insert -> <empty>
+Rule 98    llamada -> ID ( llamada2 )
+Rule 99    llamada2 -> exp llamada3
+Rule 100   llamada3 -> empty
+Rule 101   llamada3 -> , llamada2
+Rule 102   varcte -> llamada
+Rule 103   varcte -> FLOATNUMBER
+Rule 104   varcte -> CHARACTER
+Rule 105   varcte -> INTNUMBER
+Rule 106   varcte -> identificadores
+Rule 107   empty -> <empty>
 
 Terminals, with rules where they appear:
 
-(                    : 1 19 36 40 45 46 50 82 95
-)                    : 1 19 36 40 45 46 50 82 95
-,                    : 14 22 39 44 98
+(                    : 1 19 36 40 45 46 51 85 98
+)                    : 1 19 36 40 45 46 51 85 98
+,                    : 14 22 39 44 101
 ;                    : 1 8 33 36 40 45
-AND                  : 65
-ASSIGN               : 33 51
-CHAR                 : 58
-CHARACTER            : 101
-DETERMINANT          : 87
-DIVIDE               : 92
-DO                   : 50
-DO2                  : 51
-EGT                  : 69
-ELSE                 : 49
-ELT                  : 70
-EQ                   : 71
-FLOAT                : 57
-FLOATNUMBER          : 100
-FROM                 : 51
+AND                  : 66
+ASSIGN               : 33 52
+CHAR                 : 59
+CHARACTER            : 104
+DETERMINANT          : 90
+DIVIDE               : 95
+DO                   : 51
+DO2                  : 52
+EGT                  : 71
+ELSE                 : 50
+ELT                  : 72
+EQ                   : 73
+FLOAT                : 58
+FLOATNUMBER          : 103
+FROM                 : 52
 FUNCTION             : 15
-GT                   : 72
-ID                   : 1 15 20 52 95
+GT                   : 74
+ID                   : 1 15 20 53 98
 IF                   : 46
-INT                  : 59
-INTNUMBER            : 102
-INVERSE              : 88
-LT                   : 73
-MINUS                : 76 80
-NE                   : 68
-OR                   : 62
-PLUS                 : 77 81
+INT                  : 60
+INTNUMBER            : 105
+INVERSE              : 91
+LT                   : 75
+MINUS                : 79 83
+NE                   : 70
+OR                   : 63
+PLUS                 : 80 84
 PRINCIPAL            : 1
 PRINT                : 36
 PROGRAM              : 1
 RETURN               : 45
 STRING               : 41
-TIMES                : 93
-TO                   : 51
-TRANSPOSE            : 89
+TIMES                : 96
+TO                   : 52
+TRANSPOSE            : 92
 VAR                  : 7
 VOID                 : 17
-WHILE                : 50
+WHILE                : 51
 WRITE                : 40
-[                    : 54 56
-]                    : 54 56
+[                    : 55 57
+]                    : 55 57
 error                : 
 {                    : 23
 }                    : 23
@@ -162,9 +165,9 @@ Nonterminals, with rules where they appear:
 asignacion           : 32
 asignacion_insert_var : 33
 asignacion_pop_all   : 33
-bloque               : 1 15 46 49 50 51
+bloque               : 1 15 46 50 51 52
 bloque2              : 23 25
-empty                : 3 5 10 13 21 24 38 43 48 53 55 61 64 67 75 86 91 97
+empty                : 3 5 10 13 21 24 38 43 49 54 56 62 65 69 78 89 94 100
 escritura            : 31
 escritura2           : 40 44
 escritura3           : 41 42
@@ -173,51 +176,54 @@ estDesicion2         : 46
 estRepCond           : 27
 estRepNoCond         : 28
 estatuto             : 25
-exp                  : 33 42 45 51 51 54 56 66 68 69 70 71 72 73 76 77 82 96
-exp2                 : 74
-expAND               : 60 65
-expAND2              : 63
-expOR                : 46 50 62
-expOR2               : 60
-exp_op_insert        : 76 77
-exp_par_end          : 82
-exp_par_start        : 82
-expresion            : 63
-expresion2           : 66
-factor               : 85
+exp                  : 33 42 45 52 52 55 57 67 70 71 72 73 74 75 79 80 85 99
+exp2                 : 77
+expAND               : 61 66
+expAND2              : 64
+expOR                : 46 51 63
+expOR2               : 61
+exp_op_insert        : 79 80
+exp_par_end          : 85
+exp_par_start        : 85
+expresion            : 64
+expresion2           : 67
+factor               : 88
 funcion              : 6
 funcion2             : 15
-identificadores      : 12 33 37 51 103
-identificadores2     : 52
-identificadores3     : 54
+identificadores      : 12 33 37 52 106
+identificadores2     : 53
+identificadores3     : 55
 ids                  : 8 14
 ids2                 : 12
+if_fill_gotF         : 46
 if_gotF              : 46
 lee                  : 30
 lee2                 : 36 39
 lee3                 : 37
-llamada              : 99
-llamada2             : 95 98
-llamada3             : 96
-opmat                : 90
-opmat2               : 85
+llamada              : 102
+llamada2             : 98 101
+llamada3             : 99
+opmat                : 93
+opmat2               : 88
 parametros           : 15
 parametros2          : 19 22
 parametros3          : 20
 programa             : 0
 programa2            : 1
 programa3            : 1 6
+push_bool_op         : 71 72 73 74 75
+quad_expresion       : 67
 regresa              : 26
 save_id              : 15
 set_global           : 1
 set_type             : 8
-term_op_insert       : 92 93
-termino              : 74 92 93
-termino2             : 90
+term_op_insert       : 95 96
+termino              : 77 95 96
+termino2             : 93
 tipo                 : 8 18 20
 var1                 : 7 11
 var2                 : 8
-varcte               : 79 80 81
+varcte               : 82 83 84
 vars                 : 4 15
 
 
@@ -259,10 +265,10 @@ state 5
     (1) programa -> PROGRAM ID set_global ; . programa2 programa3 PRINCIPAL ( ) bloque
     (3) programa2 -> . empty
     (4) programa2 -> . vars
-    (104) empty -> .
+    (107) empty -> .
     (7) vars -> . VAR var1
-    FUNCTION        reduce using rule 104 (empty -> .)
-    PRINCIPAL       reduce using rule 104 (empty -> .)
+    FUNCTION        reduce using rule 107 (empty -> .)
+    PRINCIPAL       reduce using rule 107 (empty -> .)
     VAR             shift and go to state 9
 
     programa2                      shift and go to state 6
@@ -274,9 +280,9 @@ state 6
     (1) programa -> PROGRAM ID set_global ; programa2 . programa3 PRINCIPAL ( ) bloque
     (5) programa3 -> . empty
     (6) programa3 -> . funcion programa3
-    (104) empty -> .
+    (107) empty -> .
     (15) funcion -> . FUNCTION funcion2 ID save_id parametros vars bloque
-    PRINCIPAL       reduce using rule 104 (empty -> .)
+    PRINCIPAL       reduce using rule 107 (empty -> .)
     FUNCTION        shift and go to state 13
 
     programa3                      shift and go to state 10
@@ -301,9 +307,9 @@ state 9
 
     (7) vars -> VAR . var1
     (8) var1 -> . tipo set_type ids ; var2
-    (57) tipo -> . FLOAT
-    (58) tipo -> . CHAR
-    (59) tipo -> . INT
+    (58) tipo -> . FLOAT
+    (59) tipo -> . CHAR
+    (60) tipo -> . INT
     FLOAT           shift and go to state 16
     CHAR            shift and go to state 17
     INT             shift and go to state 18
@@ -328,9 +334,9 @@ state 12
     (6) programa3 -> funcion . programa3
     (5) programa3 -> . empty
     (6) programa3 -> . funcion programa3
-    (104) empty -> .
+    (107) empty -> .
     (15) funcion -> . FUNCTION funcion2 ID save_id parametros vars bloque
-    PRINCIPAL       reduce using rule 104 (empty -> .)
+    PRINCIPAL       reduce using rule 107 (empty -> .)
     FUNCTION        shift and go to state 13
 
     funcion                        shift and go to state 12
@@ -342,9 +348,9 @@ state 13
     (15) funcion -> FUNCTION . funcion2 ID save_id parametros vars bloque
     (17) funcion2 -> . VOID
     (18) funcion2 -> . tipo
-    (57) tipo -> . FLOAT
-    (58) tipo -> . CHAR
-    (59) tipo -> . INT
+    (58) tipo -> . FLOAT
+    (59) tipo -> . CHAR
+    (60) tipo -> . INT
     VOID            shift and go to state 22
     FLOAT           shift and go to state 16
     CHAR            shift and go to state 17
@@ -371,20 +377,20 @@ state 15
 
 state 16
 
-    (57) tipo -> FLOAT .
-    ID              reduce using rule 57 (tipo -> FLOAT .)
+    (58) tipo -> FLOAT .
+    ID              reduce using rule 58 (tipo -> FLOAT .)
 
 
 state 17
 
-    (58) tipo -> CHAR .
-    ID              reduce using rule 58 (tipo -> CHAR .)
+    (59) tipo -> CHAR .
+    ID              reduce using rule 59 (tipo -> CHAR .)
 
 
 state 18
 
-    (59) tipo -> INT .
-    ID              reduce using rule 59 (tipo -> INT .)
+    (60) tipo -> INT .
+    ID              reduce using rule 60 (tipo -> INT .)
 
 
 state 19
@@ -421,7 +427,7 @@ state 24
 
     (8) var1 -> tipo set_type . ids ; var2
     (12) ids -> . identificadores ids2
-    (52) identificadores -> . ID identificadores2
+    (53) identificadores -> . ID identificadores2
     ID              shift and go to state 29
 
     ids                            shift and go to state 27
@@ -452,24 +458,24 @@ state 28
     (12) ids -> identificadores . ids2
     (13) ids2 -> . empty
     (14) ids2 -> . , ids
-    (104) empty -> .
+    (107) empty -> .
     ,               shift and go to state 35
-    ;               reduce using rule 104 (empty -> .)
+    ;               reduce using rule 107 (empty -> .)
 
     ids2                           shift and go to state 33
     empty                          shift and go to state 34
 
 state 29
 
-    (52) identificadores -> ID . identificadores2
-    (53) identificadores2 -> . empty
-    (54) identificadores2 -> . [ exp ] identificadores3
-    (104) empty -> .
+    (53) identificadores -> ID . identificadores2
+    (54) identificadores2 -> . empty
+    (55) identificadores2 -> . [ exp ] identificadores3
+    (107) empty -> .
     [               shift and go to state 38
-    ,               reduce using rule 104 (empty -> .)
-    ;               reduce using rule 104 (empty -> .)
-    ASSIGN          reduce using rule 104 (empty -> .)
-    )               reduce using rule 104 (empty -> .)
+    ,               reduce using rule 107 (empty -> .)
+    ;               reduce using rule 107 (empty -> .)
+    ASSIGN          reduce using rule 107 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
 
     identificadores2               shift and go to state 36
     empty                          shift and go to state 37
@@ -495,14 +501,14 @@ state 32
     (8) var1 -> tipo set_type ids ; . var2
     (10) var2 -> . empty
     (11) var2 -> . var1
-    (104) empty -> .
+    (107) empty -> .
     (8) var1 -> . tipo set_type ids ; var2
-    (57) tipo -> . FLOAT
-    (58) tipo -> . CHAR
-    (59) tipo -> . INT
-    FUNCTION        reduce using rule 104 (empty -> .)
-    PRINCIPAL       reduce using rule 104 (empty -> .)
-    {               reduce using rule 104 (empty -> .)
+    (58) tipo -> . FLOAT
+    (59) tipo -> . CHAR
+    (60) tipo -> . INT
+    FUNCTION        reduce using rule 107 (empty -> .)
+    PRINCIPAL       reduce using rule 107 (empty -> .)
+    {               reduce using rule 107 (empty -> .)
     FLOAT           shift and go to state 16
     CHAR            shift and go to state 17
     INT             shift and go to state 18
@@ -528,7 +534,7 @@ state 35
 
     (14) ids2 -> , . ids
     (12) ids -> . identificadores ids2
-    (52) identificadores -> . ID identificadores2
+    (53) identificadores -> . ID identificadores2
     ID              shift and go to state 29
 
     ids                            shift and go to state 46
@@ -536,75 +542,75 @@ state 35
 
 state 36
 
-    (52) identificadores -> ID identificadores2 .
-    ,               reduce using rule 52 (identificadores -> ID identificadores2 .)
-    ;               reduce using rule 52 (identificadores -> ID identificadores2 .)
-    DETERMINANT     reduce using rule 52 (identificadores -> ID identificadores2 .)
-    INVERSE         reduce using rule 52 (identificadores -> ID identificadores2 .)
-    TRANSPOSE       reduce using rule 52 (identificadores -> ID identificadores2 .)
-    DIVIDE          reduce using rule 52 (identificadores -> ID identificadores2 .)
-    TIMES           reduce using rule 52 (identificadores -> ID identificadores2 .)
-    MINUS           reduce using rule 52 (identificadores -> ID identificadores2 .)
-    PLUS            reduce using rule 52 (identificadores -> ID identificadores2 .)
-    ]               reduce using rule 52 (identificadores -> ID identificadores2 .)
-    ASSIGN          reduce using rule 52 (identificadores -> ID identificadores2 .)
-    )               reduce using rule 52 (identificadores -> ID identificadores2 .)
-    NE              reduce using rule 52 (identificadores -> ID identificadores2 .)
-    EGT             reduce using rule 52 (identificadores -> ID identificadores2 .)
-    ELT             reduce using rule 52 (identificadores -> ID identificadores2 .)
-    EQ              reduce using rule 52 (identificadores -> ID identificadores2 .)
-    GT              reduce using rule 52 (identificadores -> ID identificadores2 .)
-    LT              reduce using rule 52 (identificadores -> ID identificadores2 .)
-    AND             reduce using rule 52 (identificadores -> ID identificadores2 .)
-    OR              reduce using rule 52 (identificadores -> ID identificadores2 .)
-    TO              reduce using rule 52 (identificadores -> ID identificadores2 .)
-    DO2             reduce using rule 52 (identificadores -> ID identificadores2 .)
+    (53) identificadores -> ID identificadores2 .
+    ,               reduce using rule 53 (identificadores -> ID identificadores2 .)
+    ;               reduce using rule 53 (identificadores -> ID identificadores2 .)
+    DETERMINANT     reduce using rule 53 (identificadores -> ID identificadores2 .)
+    INVERSE         reduce using rule 53 (identificadores -> ID identificadores2 .)
+    TRANSPOSE       reduce using rule 53 (identificadores -> ID identificadores2 .)
+    DIVIDE          reduce using rule 53 (identificadores -> ID identificadores2 .)
+    TIMES           reduce using rule 53 (identificadores -> ID identificadores2 .)
+    MINUS           reduce using rule 53 (identificadores -> ID identificadores2 .)
+    PLUS            reduce using rule 53 (identificadores -> ID identificadores2 .)
+    ]               reduce using rule 53 (identificadores -> ID identificadores2 .)
+    ASSIGN          reduce using rule 53 (identificadores -> ID identificadores2 .)
+    )               reduce using rule 53 (identificadores -> ID identificadores2 .)
+    NE              reduce using rule 53 (identificadores -> ID identificadores2 .)
+    EGT             reduce using rule 53 (identificadores -> ID identificadores2 .)
+    ELT             reduce using rule 53 (identificadores -> ID identificadores2 .)
+    EQ              reduce using rule 53 (identificadores -> ID identificadores2 .)
+    GT              reduce using rule 53 (identificadores -> ID identificadores2 .)
+    LT              reduce using rule 53 (identificadores -> ID identificadores2 .)
+    AND             reduce using rule 53 (identificadores -> ID identificadores2 .)
+    OR              reduce using rule 53 (identificadores -> ID identificadores2 .)
+    TO              reduce using rule 53 (identificadores -> ID identificadores2 .)
+    DO2             reduce using rule 53 (identificadores -> ID identificadores2 .)
 
 
 state 37
 
-    (53) identificadores2 -> empty .
-    ,               reduce using rule 53 (identificadores2 -> empty .)
-    ;               reduce using rule 53 (identificadores2 -> empty .)
-    ASSIGN          reduce using rule 53 (identificadores2 -> empty .)
-    )               reduce using rule 53 (identificadores2 -> empty .)
-    DETERMINANT     reduce using rule 53 (identificadores2 -> empty .)
-    INVERSE         reduce using rule 53 (identificadores2 -> empty .)
-    TRANSPOSE       reduce using rule 53 (identificadores2 -> empty .)
-    DIVIDE          reduce using rule 53 (identificadores2 -> empty .)
-    TIMES           reduce using rule 53 (identificadores2 -> empty .)
-    MINUS           reduce using rule 53 (identificadores2 -> empty .)
-    PLUS            reduce using rule 53 (identificadores2 -> empty .)
-    ]               reduce using rule 53 (identificadores2 -> empty .)
-    NE              reduce using rule 53 (identificadores2 -> empty .)
-    EGT             reduce using rule 53 (identificadores2 -> empty .)
-    ELT             reduce using rule 53 (identificadores2 -> empty .)
-    EQ              reduce using rule 53 (identificadores2 -> empty .)
-    GT              reduce using rule 53 (identificadores2 -> empty .)
-    LT              reduce using rule 53 (identificadores2 -> empty .)
-    AND             reduce using rule 53 (identificadores2 -> empty .)
-    OR              reduce using rule 53 (identificadores2 -> empty .)
-    TO              reduce using rule 53 (identificadores2 -> empty .)
-    DO2             reduce using rule 53 (identificadores2 -> empty .)
+    (54) identificadores2 -> empty .
+    ,               reduce using rule 54 (identificadores2 -> empty .)
+    ;               reduce using rule 54 (identificadores2 -> empty .)
+    ASSIGN          reduce using rule 54 (identificadores2 -> empty .)
+    )               reduce using rule 54 (identificadores2 -> empty .)
+    DETERMINANT     reduce using rule 54 (identificadores2 -> empty .)
+    INVERSE         reduce using rule 54 (identificadores2 -> empty .)
+    TRANSPOSE       reduce using rule 54 (identificadores2 -> empty .)
+    DIVIDE          reduce using rule 54 (identificadores2 -> empty .)
+    TIMES           reduce using rule 54 (identificadores2 -> empty .)
+    MINUS           reduce using rule 54 (identificadores2 -> empty .)
+    PLUS            reduce using rule 54 (identificadores2 -> empty .)
+    ]               reduce using rule 54 (identificadores2 -> empty .)
+    NE              reduce using rule 54 (identificadores2 -> empty .)
+    EGT             reduce using rule 54 (identificadores2 -> empty .)
+    ELT             reduce using rule 54 (identificadores2 -> empty .)
+    EQ              reduce using rule 54 (identificadores2 -> empty .)
+    GT              reduce using rule 54 (identificadores2 -> empty .)
+    LT              reduce using rule 54 (identificadores2 -> empty .)
+    AND             reduce using rule 54 (identificadores2 -> empty .)
+    OR              reduce using rule 54 (identificadores2 -> empty .)
+    TO              reduce using rule 54 (identificadores2 -> empty .)
+    DO2             reduce using rule 54 (identificadores2 -> empty .)
 
 
 state 38
 
-    (54) identificadores2 -> [ . exp ] identificadores3
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (55) identificadores2 -> [ . exp ] identificadores3
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -632,7 +638,7 @@ state 40
     (23) bloque -> { . bloque2 }
     (24) bloque2 -> . empty
     (25) bloque2 -> . estatuto bloque2
-    (104) empty -> .
+    (107) empty -> .
     (26) estatuto -> . regresa
     (27) estatuto -> . estRepCond
     (28) estatuto -> . estRepNoCond
@@ -641,14 +647,14 @@ state 40
     (31) estatuto -> . escritura
     (32) estatuto -> . asignacion
     (45) regresa -> . RETURN ( exp ) ;
-    (50) estRepCond -> . WHILE ( expOR ) DO bloque
-    (51) estRepNoCond -> . FROM identificadores ASSIGN exp TO exp DO2 bloque
-    (46) estDesicion -> . IF ( expOR ) if_gotF bloque estDesicion2
+    (51) estRepCond -> . WHILE ( expOR ) DO bloque
+    (52) estRepNoCond -> . FROM identificadores ASSIGN exp TO exp DO2 bloque
+    (46) estDesicion -> . IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF
     (36) lee -> . PRINT ( lee2 ) ;
     (40) escritura -> . WRITE ( escritura2 ) ;
     (33) asignacion -> . identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ;
-    (52) identificadores -> . ID identificadores2
-    }               reduce using rule 104 (empty -> .)
+    (53) identificadores -> . ID identificadores2
+    }               reduce using rule 107 (empty -> .)
     RETURN          shift and go to state 71
     WHILE           shift and go to state 72
     FROM            shift and go to state 73
@@ -681,9 +687,9 @@ state 42
 
     (19) parametros -> ( . parametros2 )
     (20) parametros2 -> . tipo ID parametros3
-    (57) tipo -> . FLOAT
-    (58) tipo -> . CHAR
-    (59) tipo -> . INT
+    (58) tipo -> . FLOAT
+    (59) tipo -> . CHAR
+    (60) tipo -> . INT
     FLOAT           shift and go to state 16
     CHAR            shift and go to state 17
     INT             shift and go to state 18
@@ -723,135 +729,135 @@ state 46
 
 state 47
 
-    (54) identificadores2 -> [ exp . ] identificadores3
+    (55) identificadores2 -> [ exp . ] identificadores3
     ]               shift and go to state 81
 
 
 state 48
 
-    (74) exp -> termino . exp2
-    (75) exp2 -> . empty
-    (76) exp2 -> . MINUS exp_op_insert exp
-    (77) exp2 -> . PLUS exp_op_insert exp
-    (104) empty -> .
+    (77) exp -> termino . exp2
+    (78) exp2 -> . empty
+    (79) exp2 -> . MINUS exp_op_insert exp
+    (80) exp2 -> . PLUS exp_op_insert exp
+    (107) empty -> .
     MINUS           shift and go to state 84
     PLUS            shift and go to state 85
-    ]               reduce using rule 104 (empty -> .)
-    )               reduce using rule 104 (empty -> .)
-    ,               reduce using rule 104 (empty -> .)
-    NE              reduce using rule 104 (empty -> .)
-    EGT             reduce using rule 104 (empty -> .)
-    ELT             reduce using rule 104 (empty -> .)
-    EQ              reduce using rule 104 (empty -> .)
-    GT              reduce using rule 104 (empty -> .)
-    LT              reduce using rule 104 (empty -> .)
-    AND             reduce using rule 104 (empty -> .)
-    OR              reduce using rule 104 (empty -> .)
-    TO              reduce using rule 104 (empty -> .)
-    ;               reduce using rule 104 (empty -> .)
-    DO2             reduce using rule 104 (empty -> .)
+    ]               reduce using rule 107 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
+    ,               reduce using rule 107 (empty -> .)
+    NE              reduce using rule 107 (empty -> .)
+    EGT             reduce using rule 107 (empty -> .)
+    ELT             reduce using rule 107 (empty -> .)
+    EQ              reduce using rule 107 (empty -> .)
+    GT              reduce using rule 107 (empty -> .)
+    LT              reduce using rule 107 (empty -> .)
+    AND             reduce using rule 107 (empty -> .)
+    OR              reduce using rule 107 (empty -> .)
+    TO              reduce using rule 107 (empty -> .)
+    ;               reduce using rule 107 (empty -> .)
+    DO2             reduce using rule 107 (empty -> .)
 
     exp2                           shift and go to state 82
     empty                          shift and go to state 83
 
 state 49
 
-    (90) termino -> opmat . termino2
-    (91) termino2 -> . empty
-    (92) termino2 -> . DIVIDE term_op_insert termino
-    (93) termino2 -> . TIMES term_op_insert termino
-    (104) empty -> .
+    (93) termino -> opmat . termino2
+    (94) termino2 -> . empty
+    (95) termino2 -> . DIVIDE term_op_insert termino
+    (96) termino2 -> . TIMES term_op_insert termino
+    (107) empty -> .
     DIVIDE          shift and go to state 88
     TIMES           shift and go to state 89
-    MINUS           reduce using rule 104 (empty -> .)
-    PLUS            reduce using rule 104 (empty -> .)
-    ]               reduce using rule 104 (empty -> .)
-    )               reduce using rule 104 (empty -> .)
-    ,               reduce using rule 104 (empty -> .)
-    NE              reduce using rule 104 (empty -> .)
-    EGT             reduce using rule 104 (empty -> .)
-    ELT             reduce using rule 104 (empty -> .)
-    EQ              reduce using rule 104 (empty -> .)
-    GT              reduce using rule 104 (empty -> .)
-    LT              reduce using rule 104 (empty -> .)
-    AND             reduce using rule 104 (empty -> .)
-    OR              reduce using rule 104 (empty -> .)
-    TO              reduce using rule 104 (empty -> .)
-    ;               reduce using rule 104 (empty -> .)
-    DO2             reduce using rule 104 (empty -> .)
+    MINUS           reduce using rule 107 (empty -> .)
+    PLUS            reduce using rule 107 (empty -> .)
+    ]               reduce using rule 107 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
+    ,               reduce using rule 107 (empty -> .)
+    NE              reduce using rule 107 (empty -> .)
+    EGT             reduce using rule 107 (empty -> .)
+    ELT             reduce using rule 107 (empty -> .)
+    EQ              reduce using rule 107 (empty -> .)
+    GT              reduce using rule 107 (empty -> .)
+    LT              reduce using rule 107 (empty -> .)
+    AND             reduce using rule 107 (empty -> .)
+    OR              reduce using rule 107 (empty -> .)
+    TO              reduce using rule 107 (empty -> .)
+    ;               reduce using rule 107 (empty -> .)
+    DO2             reduce using rule 107 (empty -> .)
 
     termino2                       shift and go to state 86
     empty                          shift and go to state 87
 
 state 50
 
-    (85) opmat -> factor . opmat2
-    (86) opmat2 -> . empty
-    (87) opmat2 -> . DETERMINANT
-    (88) opmat2 -> . INVERSE
-    (89) opmat2 -> . TRANSPOSE
-    (104) empty -> .
+    (88) opmat -> factor . opmat2
+    (89) opmat2 -> . empty
+    (90) opmat2 -> . DETERMINANT
+    (91) opmat2 -> . INVERSE
+    (92) opmat2 -> . TRANSPOSE
+    (107) empty -> .
     DETERMINANT     shift and go to state 92
     INVERSE         shift and go to state 93
     TRANSPOSE       shift and go to state 94
-    DIVIDE          reduce using rule 104 (empty -> .)
-    TIMES           reduce using rule 104 (empty -> .)
-    MINUS           reduce using rule 104 (empty -> .)
-    PLUS            reduce using rule 104 (empty -> .)
-    ]               reduce using rule 104 (empty -> .)
-    )               reduce using rule 104 (empty -> .)
-    ,               reduce using rule 104 (empty -> .)
-    NE              reduce using rule 104 (empty -> .)
-    EGT             reduce using rule 104 (empty -> .)
-    ELT             reduce using rule 104 (empty -> .)
-    EQ              reduce using rule 104 (empty -> .)
-    GT              reduce using rule 104 (empty -> .)
-    LT              reduce using rule 104 (empty -> .)
-    AND             reduce using rule 104 (empty -> .)
-    OR              reduce using rule 104 (empty -> .)
-    TO              reduce using rule 104 (empty -> .)
-    ;               reduce using rule 104 (empty -> .)
-    DO2             reduce using rule 104 (empty -> .)
+    DIVIDE          reduce using rule 107 (empty -> .)
+    TIMES           reduce using rule 107 (empty -> .)
+    MINUS           reduce using rule 107 (empty -> .)
+    PLUS            reduce using rule 107 (empty -> .)
+    ]               reduce using rule 107 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
+    ,               reduce using rule 107 (empty -> .)
+    NE              reduce using rule 107 (empty -> .)
+    EGT             reduce using rule 107 (empty -> .)
+    ELT             reduce using rule 107 (empty -> .)
+    EQ              reduce using rule 107 (empty -> .)
+    GT              reduce using rule 107 (empty -> .)
+    LT              reduce using rule 107 (empty -> .)
+    AND             reduce using rule 107 (empty -> .)
+    OR              reduce using rule 107 (empty -> .)
+    TO              reduce using rule 107 (empty -> .)
+    ;               reduce using rule 107 (empty -> .)
+    DO2             reduce using rule 107 (empty -> .)
 
     opmat2                         shift and go to state 90
     empty                          shift and go to state 91
 
 state 51
 
-    (79) factor -> varcte .
-    DETERMINANT     reduce using rule 79 (factor -> varcte .)
-    INVERSE         reduce using rule 79 (factor -> varcte .)
-    TRANSPOSE       reduce using rule 79 (factor -> varcte .)
-    DIVIDE          reduce using rule 79 (factor -> varcte .)
-    TIMES           reduce using rule 79 (factor -> varcte .)
-    MINUS           reduce using rule 79 (factor -> varcte .)
-    PLUS            reduce using rule 79 (factor -> varcte .)
-    ]               reduce using rule 79 (factor -> varcte .)
-    )               reduce using rule 79 (factor -> varcte .)
-    ,               reduce using rule 79 (factor -> varcte .)
-    NE              reduce using rule 79 (factor -> varcte .)
-    EGT             reduce using rule 79 (factor -> varcte .)
-    ELT             reduce using rule 79 (factor -> varcte .)
-    EQ              reduce using rule 79 (factor -> varcte .)
-    GT              reduce using rule 79 (factor -> varcte .)
-    LT              reduce using rule 79 (factor -> varcte .)
-    AND             reduce using rule 79 (factor -> varcte .)
-    OR              reduce using rule 79 (factor -> varcte .)
-    TO              reduce using rule 79 (factor -> varcte .)
-    ;               reduce using rule 79 (factor -> varcte .)
-    DO2             reduce using rule 79 (factor -> varcte .)
+    (82) factor -> varcte .
+    DETERMINANT     reduce using rule 82 (factor -> varcte .)
+    INVERSE         reduce using rule 82 (factor -> varcte .)
+    TRANSPOSE       reduce using rule 82 (factor -> varcte .)
+    DIVIDE          reduce using rule 82 (factor -> varcte .)
+    TIMES           reduce using rule 82 (factor -> varcte .)
+    MINUS           reduce using rule 82 (factor -> varcte .)
+    PLUS            reduce using rule 82 (factor -> varcte .)
+    ]               reduce using rule 82 (factor -> varcte .)
+    )               reduce using rule 82 (factor -> varcte .)
+    ,               reduce using rule 82 (factor -> varcte .)
+    NE              reduce using rule 82 (factor -> varcte .)
+    EGT             reduce using rule 82 (factor -> varcte .)
+    ELT             reduce using rule 82 (factor -> varcte .)
+    EQ              reduce using rule 82 (factor -> varcte .)
+    GT              reduce using rule 82 (factor -> varcte .)
+    LT              reduce using rule 82 (factor -> varcte .)
+    AND             reduce using rule 82 (factor -> varcte .)
+    OR              reduce using rule 82 (factor -> varcte .)
+    TO              reduce using rule 82 (factor -> varcte .)
+    ;               reduce using rule 82 (factor -> varcte .)
+    DO2             reduce using rule 82 (factor -> varcte .)
 
 
 state 52
 
-    (80) factor -> MINUS . varcte
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (83) factor -> MINUS . varcte
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     FLOATNUMBER     shift and go to state 56
     CHARACTER       shift and go to state 57
     INTNUMBER       shift and go to state 58
@@ -863,14 +869,14 @@ state 52
 
 state 53
 
-    (81) factor -> PLUS . varcte
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (84) factor -> PLUS . varcte
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     FLOATNUMBER     shift and go to state 56
     CHARACTER       shift and go to state 57
     INTNUMBER       shift and go to state 58
@@ -882,178 +888,178 @@ state 53
 
 state 54
 
-    (82) factor -> ( . exp_par_start exp ) exp_par_end
-    (83) exp_par_start -> .
-    MINUS           reduce using rule 83 (exp_par_start -> .)
-    PLUS            reduce using rule 83 (exp_par_start -> .)
-    (               reduce using rule 83 (exp_par_start -> .)
-    FLOATNUMBER     reduce using rule 83 (exp_par_start -> .)
-    CHARACTER       reduce using rule 83 (exp_par_start -> .)
-    INTNUMBER       reduce using rule 83 (exp_par_start -> .)
-    ID              reduce using rule 83 (exp_par_start -> .)
+    (85) factor -> ( . exp_par_start exp ) exp_par_end
+    (86) exp_par_start -> .
+    MINUS           reduce using rule 86 (exp_par_start -> .)
+    PLUS            reduce using rule 86 (exp_par_start -> .)
+    (               reduce using rule 86 (exp_par_start -> .)
+    FLOATNUMBER     reduce using rule 86 (exp_par_start -> .)
+    CHARACTER       reduce using rule 86 (exp_par_start -> .)
+    INTNUMBER       reduce using rule 86 (exp_par_start -> .)
+    ID              reduce using rule 86 (exp_par_start -> .)
 
     exp_par_start                  shift and go to state 97
 
 state 55
 
-    (99) varcte -> llamada .
-    DETERMINANT     reduce using rule 99 (varcte -> llamada .)
-    INVERSE         reduce using rule 99 (varcte -> llamada .)
-    TRANSPOSE       reduce using rule 99 (varcte -> llamada .)
-    DIVIDE          reduce using rule 99 (varcte -> llamada .)
-    TIMES           reduce using rule 99 (varcte -> llamada .)
-    MINUS           reduce using rule 99 (varcte -> llamada .)
-    PLUS            reduce using rule 99 (varcte -> llamada .)
-    ]               reduce using rule 99 (varcte -> llamada .)
-    )               reduce using rule 99 (varcte -> llamada .)
-    ,               reduce using rule 99 (varcte -> llamada .)
-    NE              reduce using rule 99 (varcte -> llamada .)
-    EGT             reduce using rule 99 (varcte -> llamada .)
-    ELT             reduce using rule 99 (varcte -> llamada .)
-    EQ              reduce using rule 99 (varcte -> llamada .)
-    GT              reduce using rule 99 (varcte -> llamada .)
-    LT              reduce using rule 99 (varcte -> llamada .)
-    AND             reduce using rule 99 (varcte -> llamada .)
-    OR              reduce using rule 99 (varcte -> llamada .)
-    TO              reduce using rule 99 (varcte -> llamada .)
-    ;               reduce using rule 99 (varcte -> llamada .)
-    DO2             reduce using rule 99 (varcte -> llamada .)
+    (102) varcte -> llamada .
+    DETERMINANT     reduce using rule 102 (varcte -> llamada .)
+    INVERSE         reduce using rule 102 (varcte -> llamada .)
+    TRANSPOSE       reduce using rule 102 (varcte -> llamada .)
+    DIVIDE          reduce using rule 102 (varcte -> llamada .)
+    TIMES           reduce using rule 102 (varcte -> llamada .)
+    MINUS           reduce using rule 102 (varcte -> llamada .)
+    PLUS            reduce using rule 102 (varcte -> llamada .)
+    ]               reduce using rule 102 (varcte -> llamada .)
+    )               reduce using rule 102 (varcte -> llamada .)
+    ,               reduce using rule 102 (varcte -> llamada .)
+    NE              reduce using rule 102 (varcte -> llamada .)
+    EGT             reduce using rule 102 (varcte -> llamada .)
+    ELT             reduce using rule 102 (varcte -> llamada .)
+    EQ              reduce using rule 102 (varcte -> llamada .)
+    GT              reduce using rule 102 (varcte -> llamada .)
+    LT              reduce using rule 102 (varcte -> llamada .)
+    AND             reduce using rule 102 (varcte -> llamada .)
+    OR              reduce using rule 102 (varcte -> llamada .)
+    TO              reduce using rule 102 (varcte -> llamada .)
+    ;               reduce using rule 102 (varcte -> llamada .)
+    DO2             reduce using rule 102 (varcte -> llamada .)
 
 
 state 56
 
-    (100) varcte -> FLOATNUMBER .
-    DETERMINANT     reduce using rule 100 (varcte -> FLOATNUMBER .)
-    INVERSE         reduce using rule 100 (varcte -> FLOATNUMBER .)
-    TRANSPOSE       reduce using rule 100 (varcte -> FLOATNUMBER .)
-    DIVIDE          reduce using rule 100 (varcte -> FLOATNUMBER .)
-    TIMES           reduce using rule 100 (varcte -> FLOATNUMBER .)
-    MINUS           reduce using rule 100 (varcte -> FLOATNUMBER .)
-    PLUS            reduce using rule 100 (varcte -> FLOATNUMBER .)
-    ]               reduce using rule 100 (varcte -> FLOATNUMBER .)
-    )               reduce using rule 100 (varcte -> FLOATNUMBER .)
-    ,               reduce using rule 100 (varcte -> FLOATNUMBER .)
-    NE              reduce using rule 100 (varcte -> FLOATNUMBER .)
-    EGT             reduce using rule 100 (varcte -> FLOATNUMBER .)
-    ELT             reduce using rule 100 (varcte -> FLOATNUMBER .)
-    EQ              reduce using rule 100 (varcte -> FLOATNUMBER .)
-    GT              reduce using rule 100 (varcte -> FLOATNUMBER .)
-    LT              reduce using rule 100 (varcte -> FLOATNUMBER .)
-    AND             reduce using rule 100 (varcte -> FLOATNUMBER .)
-    OR              reduce using rule 100 (varcte -> FLOATNUMBER .)
-    TO              reduce using rule 100 (varcte -> FLOATNUMBER .)
-    ;               reduce using rule 100 (varcte -> FLOATNUMBER .)
-    DO2             reduce using rule 100 (varcte -> FLOATNUMBER .)
+    (103) varcte -> FLOATNUMBER .
+    DETERMINANT     reduce using rule 103 (varcte -> FLOATNUMBER .)
+    INVERSE         reduce using rule 103 (varcte -> FLOATNUMBER .)
+    TRANSPOSE       reduce using rule 103 (varcte -> FLOATNUMBER .)
+    DIVIDE          reduce using rule 103 (varcte -> FLOATNUMBER .)
+    TIMES           reduce using rule 103 (varcte -> FLOATNUMBER .)
+    MINUS           reduce using rule 103 (varcte -> FLOATNUMBER .)
+    PLUS            reduce using rule 103 (varcte -> FLOATNUMBER .)
+    ]               reduce using rule 103 (varcte -> FLOATNUMBER .)
+    )               reduce using rule 103 (varcte -> FLOATNUMBER .)
+    ,               reduce using rule 103 (varcte -> FLOATNUMBER .)
+    NE              reduce using rule 103 (varcte -> FLOATNUMBER .)
+    EGT             reduce using rule 103 (varcte -> FLOATNUMBER .)
+    ELT             reduce using rule 103 (varcte -> FLOATNUMBER .)
+    EQ              reduce using rule 103 (varcte -> FLOATNUMBER .)
+    GT              reduce using rule 103 (varcte -> FLOATNUMBER .)
+    LT              reduce using rule 103 (varcte -> FLOATNUMBER .)
+    AND             reduce using rule 103 (varcte -> FLOATNUMBER .)
+    OR              reduce using rule 103 (varcte -> FLOATNUMBER .)
+    TO              reduce using rule 103 (varcte -> FLOATNUMBER .)
+    ;               reduce using rule 103 (varcte -> FLOATNUMBER .)
+    DO2             reduce using rule 103 (varcte -> FLOATNUMBER .)
 
 
 state 57
 
-    (101) varcte -> CHARACTER .
-    DETERMINANT     reduce using rule 101 (varcte -> CHARACTER .)
-    INVERSE         reduce using rule 101 (varcte -> CHARACTER .)
-    TRANSPOSE       reduce using rule 101 (varcte -> CHARACTER .)
-    DIVIDE          reduce using rule 101 (varcte -> CHARACTER .)
-    TIMES           reduce using rule 101 (varcte -> CHARACTER .)
-    MINUS           reduce using rule 101 (varcte -> CHARACTER .)
-    PLUS            reduce using rule 101 (varcte -> CHARACTER .)
-    ]               reduce using rule 101 (varcte -> CHARACTER .)
-    )               reduce using rule 101 (varcte -> CHARACTER .)
-    ,               reduce using rule 101 (varcte -> CHARACTER .)
-    NE              reduce using rule 101 (varcte -> CHARACTER .)
-    EGT             reduce using rule 101 (varcte -> CHARACTER .)
-    ELT             reduce using rule 101 (varcte -> CHARACTER .)
-    EQ              reduce using rule 101 (varcte -> CHARACTER .)
-    GT              reduce using rule 101 (varcte -> CHARACTER .)
-    LT              reduce using rule 101 (varcte -> CHARACTER .)
-    AND             reduce using rule 101 (varcte -> CHARACTER .)
-    OR              reduce using rule 101 (varcte -> CHARACTER .)
-    TO              reduce using rule 101 (varcte -> CHARACTER .)
-    ;               reduce using rule 101 (varcte -> CHARACTER .)
-    DO2             reduce using rule 101 (varcte -> CHARACTER .)
+    (104) varcte -> CHARACTER .
+    DETERMINANT     reduce using rule 104 (varcte -> CHARACTER .)
+    INVERSE         reduce using rule 104 (varcte -> CHARACTER .)
+    TRANSPOSE       reduce using rule 104 (varcte -> CHARACTER .)
+    DIVIDE          reduce using rule 104 (varcte -> CHARACTER .)
+    TIMES           reduce using rule 104 (varcte -> CHARACTER .)
+    MINUS           reduce using rule 104 (varcte -> CHARACTER .)
+    PLUS            reduce using rule 104 (varcte -> CHARACTER .)
+    ]               reduce using rule 104 (varcte -> CHARACTER .)
+    )               reduce using rule 104 (varcte -> CHARACTER .)
+    ,               reduce using rule 104 (varcte -> CHARACTER .)
+    NE              reduce using rule 104 (varcte -> CHARACTER .)
+    EGT             reduce using rule 104 (varcte -> CHARACTER .)
+    ELT             reduce using rule 104 (varcte -> CHARACTER .)
+    EQ              reduce using rule 104 (varcte -> CHARACTER .)
+    GT              reduce using rule 104 (varcte -> CHARACTER .)
+    LT              reduce using rule 104 (varcte -> CHARACTER .)
+    AND             reduce using rule 104 (varcte -> CHARACTER .)
+    OR              reduce using rule 104 (varcte -> CHARACTER .)
+    TO              reduce using rule 104 (varcte -> CHARACTER .)
+    ;               reduce using rule 104 (varcte -> CHARACTER .)
+    DO2             reduce using rule 104 (varcte -> CHARACTER .)
 
 
 state 58
 
-    (102) varcte -> INTNUMBER .
-    DETERMINANT     reduce using rule 102 (varcte -> INTNUMBER .)
-    INVERSE         reduce using rule 102 (varcte -> INTNUMBER .)
-    TRANSPOSE       reduce using rule 102 (varcte -> INTNUMBER .)
-    DIVIDE          reduce using rule 102 (varcte -> INTNUMBER .)
-    TIMES           reduce using rule 102 (varcte -> INTNUMBER .)
-    MINUS           reduce using rule 102 (varcte -> INTNUMBER .)
-    PLUS            reduce using rule 102 (varcte -> INTNUMBER .)
-    ]               reduce using rule 102 (varcte -> INTNUMBER .)
-    )               reduce using rule 102 (varcte -> INTNUMBER .)
-    ,               reduce using rule 102 (varcte -> INTNUMBER .)
-    NE              reduce using rule 102 (varcte -> INTNUMBER .)
-    EGT             reduce using rule 102 (varcte -> INTNUMBER .)
-    ELT             reduce using rule 102 (varcte -> INTNUMBER .)
-    EQ              reduce using rule 102 (varcte -> INTNUMBER .)
-    GT              reduce using rule 102 (varcte -> INTNUMBER .)
-    LT              reduce using rule 102 (varcte -> INTNUMBER .)
-    AND             reduce using rule 102 (varcte -> INTNUMBER .)
-    OR              reduce using rule 102 (varcte -> INTNUMBER .)
-    TO              reduce using rule 102 (varcte -> INTNUMBER .)
-    ;               reduce using rule 102 (varcte -> INTNUMBER .)
-    DO2             reduce using rule 102 (varcte -> INTNUMBER .)
+    (105) varcte -> INTNUMBER .
+    DETERMINANT     reduce using rule 105 (varcte -> INTNUMBER .)
+    INVERSE         reduce using rule 105 (varcte -> INTNUMBER .)
+    TRANSPOSE       reduce using rule 105 (varcte -> INTNUMBER .)
+    DIVIDE          reduce using rule 105 (varcte -> INTNUMBER .)
+    TIMES           reduce using rule 105 (varcte -> INTNUMBER .)
+    MINUS           reduce using rule 105 (varcte -> INTNUMBER .)
+    PLUS            reduce using rule 105 (varcte -> INTNUMBER .)
+    ]               reduce using rule 105 (varcte -> INTNUMBER .)
+    )               reduce using rule 105 (varcte -> INTNUMBER .)
+    ,               reduce using rule 105 (varcte -> INTNUMBER .)
+    NE              reduce using rule 105 (varcte -> INTNUMBER .)
+    EGT             reduce using rule 105 (varcte -> INTNUMBER .)
+    ELT             reduce using rule 105 (varcte -> INTNUMBER .)
+    EQ              reduce using rule 105 (varcte -> INTNUMBER .)
+    GT              reduce using rule 105 (varcte -> INTNUMBER .)
+    LT              reduce using rule 105 (varcte -> INTNUMBER .)
+    AND             reduce using rule 105 (varcte -> INTNUMBER .)
+    OR              reduce using rule 105 (varcte -> INTNUMBER .)
+    TO              reduce using rule 105 (varcte -> INTNUMBER .)
+    ;               reduce using rule 105 (varcte -> INTNUMBER .)
+    DO2             reduce using rule 105 (varcte -> INTNUMBER .)
 
 
 state 59
 
-    (103) varcte -> identificadores .
-    DETERMINANT     reduce using rule 103 (varcte -> identificadores .)
-    INVERSE         reduce using rule 103 (varcte -> identificadores .)
-    TRANSPOSE       reduce using rule 103 (varcte -> identificadores .)
-    DIVIDE          reduce using rule 103 (varcte -> identificadores .)
-    TIMES           reduce using rule 103 (varcte -> identificadores .)
-    MINUS           reduce using rule 103 (varcte -> identificadores .)
-    PLUS            reduce using rule 103 (varcte -> identificadores .)
-    ]               reduce using rule 103 (varcte -> identificadores .)
-    )               reduce using rule 103 (varcte -> identificadores .)
-    ,               reduce using rule 103 (varcte -> identificadores .)
-    NE              reduce using rule 103 (varcte -> identificadores .)
-    EGT             reduce using rule 103 (varcte -> identificadores .)
-    ELT             reduce using rule 103 (varcte -> identificadores .)
-    EQ              reduce using rule 103 (varcte -> identificadores .)
-    GT              reduce using rule 103 (varcte -> identificadores .)
-    LT              reduce using rule 103 (varcte -> identificadores .)
-    AND             reduce using rule 103 (varcte -> identificadores .)
-    OR              reduce using rule 103 (varcte -> identificadores .)
-    TO              reduce using rule 103 (varcte -> identificadores .)
-    ;               reduce using rule 103 (varcte -> identificadores .)
-    DO2             reduce using rule 103 (varcte -> identificadores .)
+    (106) varcte -> identificadores .
+    DETERMINANT     reduce using rule 106 (varcte -> identificadores .)
+    INVERSE         reduce using rule 106 (varcte -> identificadores .)
+    TRANSPOSE       reduce using rule 106 (varcte -> identificadores .)
+    DIVIDE          reduce using rule 106 (varcte -> identificadores .)
+    TIMES           reduce using rule 106 (varcte -> identificadores .)
+    MINUS           reduce using rule 106 (varcte -> identificadores .)
+    PLUS            reduce using rule 106 (varcte -> identificadores .)
+    ]               reduce using rule 106 (varcte -> identificadores .)
+    )               reduce using rule 106 (varcte -> identificadores .)
+    ,               reduce using rule 106 (varcte -> identificadores .)
+    NE              reduce using rule 106 (varcte -> identificadores .)
+    EGT             reduce using rule 106 (varcte -> identificadores .)
+    ELT             reduce using rule 106 (varcte -> identificadores .)
+    EQ              reduce using rule 106 (varcte -> identificadores .)
+    GT              reduce using rule 106 (varcte -> identificadores .)
+    LT              reduce using rule 106 (varcte -> identificadores .)
+    AND             reduce using rule 106 (varcte -> identificadores .)
+    OR              reduce using rule 106 (varcte -> identificadores .)
+    TO              reduce using rule 106 (varcte -> identificadores .)
+    ;               reduce using rule 106 (varcte -> identificadores .)
+    DO2             reduce using rule 106 (varcte -> identificadores .)
 
 
 state 60
 
-    (95) llamada -> ID . ( llamada2 )
-    (52) identificadores -> ID . identificadores2
-    (53) identificadores2 -> . empty
-    (54) identificadores2 -> . [ exp ] identificadores3
-    (104) empty -> .
+    (98) llamada -> ID . ( llamada2 )
+    (53) identificadores -> ID . identificadores2
+    (54) identificadores2 -> . empty
+    (55) identificadores2 -> . [ exp ] identificadores3
+    (107) empty -> .
     (               shift and go to state 98
     [               shift and go to state 38
-    DETERMINANT     reduce using rule 104 (empty -> .)
-    INVERSE         reduce using rule 104 (empty -> .)
-    TRANSPOSE       reduce using rule 104 (empty -> .)
-    DIVIDE          reduce using rule 104 (empty -> .)
-    TIMES           reduce using rule 104 (empty -> .)
-    MINUS           reduce using rule 104 (empty -> .)
-    PLUS            reduce using rule 104 (empty -> .)
-    ]               reduce using rule 104 (empty -> .)
-    )               reduce using rule 104 (empty -> .)
-    ,               reduce using rule 104 (empty -> .)
-    NE              reduce using rule 104 (empty -> .)
-    EGT             reduce using rule 104 (empty -> .)
-    ELT             reduce using rule 104 (empty -> .)
-    EQ              reduce using rule 104 (empty -> .)
-    GT              reduce using rule 104 (empty -> .)
-    LT              reduce using rule 104 (empty -> .)
-    AND             reduce using rule 104 (empty -> .)
-    OR              reduce using rule 104 (empty -> .)
-    TO              reduce using rule 104 (empty -> .)
-    ;               reduce using rule 104 (empty -> .)
-    DO2             reduce using rule 104 (empty -> .)
+    DETERMINANT     reduce using rule 107 (empty -> .)
+    INVERSE         reduce using rule 107 (empty -> .)
+    TRANSPOSE       reduce using rule 107 (empty -> .)
+    DIVIDE          reduce using rule 107 (empty -> .)
+    TIMES           reduce using rule 107 (empty -> .)
+    MINUS           reduce using rule 107 (empty -> .)
+    PLUS            reduce using rule 107 (empty -> .)
+    ]               reduce using rule 107 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
+    ,               reduce using rule 107 (empty -> .)
+    NE              reduce using rule 107 (empty -> .)
+    EGT             reduce using rule 107 (empty -> .)
+    ELT             reduce using rule 107 (empty -> .)
+    EQ              reduce using rule 107 (empty -> .)
+    GT              reduce using rule 107 (empty -> .)
+    LT              reduce using rule 107 (empty -> .)
+    AND             reduce using rule 107 (empty -> .)
+    OR              reduce using rule 107 (empty -> .)
+    TO              reduce using rule 107 (empty -> .)
+    ;               reduce using rule 107 (empty -> .)
+    DO2             reduce using rule 107 (empty -> .)
 
     identificadores2               shift and go to state 36
     empty                          shift and go to state 37
@@ -1075,7 +1081,7 @@ state 63
     (25) bloque2 -> estatuto . bloque2
     (24) bloque2 -> . empty
     (25) bloque2 -> . estatuto bloque2
-    (104) empty -> .
+    (107) empty -> .
     (26) estatuto -> . regresa
     (27) estatuto -> . estRepCond
     (28) estatuto -> . estRepNoCond
@@ -1084,14 +1090,14 @@ state 63
     (31) estatuto -> . escritura
     (32) estatuto -> . asignacion
     (45) regresa -> . RETURN ( exp ) ;
-    (50) estRepCond -> . WHILE ( expOR ) DO bloque
-    (51) estRepNoCond -> . FROM identificadores ASSIGN exp TO exp DO2 bloque
-    (46) estDesicion -> . IF ( expOR ) if_gotF bloque estDesicion2
+    (51) estRepCond -> . WHILE ( expOR ) DO bloque
+    (52) estRepNoCond -> . FROM identificadores ASSIGN exp TO exp DO2 bloque
+    (46) estDesicion -> . IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF
     (36) lee -> . PRINT ( lee2 ) ;
     (40) escritura -> . WRITE ( escritura2 ) ;
     (33) asignacion -> . identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ;
-    (52) identificadores -> . ID identificadores2
-    }               reduce using rule 104 (empty -> .)
+    (53) identificadores -> . ID identificadores2
+    }               reduce using rule 107 (empty -> .)
     RETURN          shift and go to state 71
     WHILE           shift and go to state 72
     FROM            shift and go to state 73
@@ -1211,14 +1217,14 @@ state 71
 
 state 72
 
-    (50) estRepCond -> WHILE . ( expOR ) DO bloque
+    (51) estRepCond -> WHILE . ( expOR ) DO bloque
     (               shift and go to state 102
 
 
 state 73
 
-    (51) estRepNoCond -> FROM . identificadores ASSIGN exp TO exp DO2 bloque
-    (52) identificadores -> . ID identificadores2
+    (52) estRepNoCond -> FROM . identificadores ASSIGN exp TO exp DO2 bloque
+    (53) identificadores -> . ID identificadores2
     ID              shift and go to state 29
 
     identificadores                shift and go to state 103
@@ -1233,7 +1239,7 @@ state 74
 
 state 75
 
-    (46) estDesicion -> IF . ( expOR ) if_gotF bloque estDesicion2
+    (46) estDesicion -> IF . ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF
     (               shift and go to state 105
 
 
@@ -1271,357 +1277,357 @@ state 80
 
 state 81
 
-    (54) identificadores2 -> [ exp ] . identificadores3
-    (55) identificadores3 -> . empty
-    (56) identificadores3 -> . [ exp ]
-    (104) empty -> .
+    (55) identificadores2 -> [ exp ] . identificadores3
+    (56) identificadores3 -> . empty
+    (57) identificadores3 -> . [ exp ]
+    (107) empty -> .
     [               shift and go to state 111
-    ,               reduce using rule 104 (empty -> .)
-    ;               reduce using rule 104 (empty -> .)
-    ASSIGN          reduce using rule 104 (empty -> .)
-    )               reduce using rule 104 (empty -> .)
-    DETERMINANT     reduce using rule 104 (empty -> .)
-    INVERSE         reduce using rule 104 (empty -> .)
-    TRANSPOSE       reduce using rule 104 (empty -> .)
-    DIVIDE          reduce using rule 104 (empty -> .)
-    TIMES           reduce using rule 104 (empty -> .)
-    MINUS           reduce using rule 104 (empty -> .)
-    PLUS            reduce using rule 104 (empty -> .)
-    ]               reduce using rule 104 (empty -> .)
-    NE              reduce using rule 104 (empty -> .)
-    EGT             reduce using rule 104 (empty -> .)
-    ELT             reduce using rule 104 (empty -> .)
-    EQ              reduce using rule 104 (empty -> .)
-    GT              reduce using rule 104 (empty -> .)
-    LT              reduce using rule 104 (empty -> .)
-    AND             reduce using rule 104 (empty -> .)
-    OR              reduce using rule 104 (empty -> .)
-    TO              reduce using rule 104 (empty -> .)
-    DO2             reduce using rule 104 (empty -> .)
+    ,               reduce using rule 107 (empty -> .)
+    ;               reduce using rule 107 (empty -> .)
+    ASSIGN          reduce using rule 107 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
+    DETERMINANT     reduce using rule 107 (empty -> .)
+    INVERSE         reduce using rule 107 (empty -> .)
+    TRANSPOSE       reduce using rule 107 (empty -> .)
+    DIVIDE          reduce using rule 107 (empty -> .)
+    TIMES           reduce using rule 107 (empty -> .)
+    MINUS           reduce using rule 107 (empty -> .)
+    PLUS            reduce using rule 107 (empty -> .)
+    ]               reduce using rule 107 (empty -> .)
+    NE              reduce using rule 107 (empty -> .)
+    EGT             reduce using rule 107 (empty -> .)
+    ELT             reduce using rule 107 (empty -> .)
+    EQ              reduce using rule 107 (empty -> .)
+    GT              reduce using rule 107 (empty -> .)
+    LT              reduce using rule 107 (empty -> .)
+    AND             reduce using rule 107 (empty -> .)
+    OR              reduce using rule 107 (empty -> .)
+    TO              reduce using rule 107 (empty -> .)
+    DO2             reduce using rule 107 (empty -> .)
 
     identificadores3               shift and go to state 112
     empty                          shift and go to state 113
 
 state 82
 
-    (74) exp -> termino exp2 .
-    ]               reduce using rule 74 (exp -> termino exp2 .)
-    )               reduce using rule 74 (exp -> termino exp2 .)
-    ,               reduce using rule 74 (exp -> termino exp2 .)
-    NE              reduce using rule 74 (exp -> termino exp2 .)
-    EGT             reduce using rule 74 (exp -> termino exp2 .)
-    ELT             reduce using rule 74 (exp -> termino exp2 .)
-    EQ              reduce using rule 74 (exp -> termino exp2 .)
-    GT              reduce using rule 74 (exp -> termino exp2 .)
-    LT              reduce using rule 74 (exp -> termino exp2 .)
-    AND             reduce using rule 74 (exp -> termino exp2 .)
-    OR              reduce using rule 74 (exp -> termino exp2 .)
-    TO              reduce using rule 74 (exp -> termino exp2 .)
-    ;               reduce using rule 74 (exp -> termino exp2 .)
-    DO2             reduce using rule 74 (exp -> termino exp2 .)
+    (77) exp -> termino exp2 .
+    ]               reduce using rule 77 (exp -> termino exp2 .)
+    )               reduce using rule 77 (exp -> termino exp2 .)
+    ,               reduce using rule 77 (exp -> termino exp2 .)
+    NE              reduce using rule 77 (exp -> termino exp2 .)
+    EGT             reduce using rule 77 (exp -> termino exp2 .)
+    ELT             reduce using rule 77 (exp -> termino exp2 .)
+    EQ              reduce using rule 77 (exp -> termino exp2 .)
+    GT              reduce using rule 77 (exp -> termino exp2 .)
+    LT              reduce using rule 77 (exp -> termino exp2 .)
+    AND             reduce using rule 77 (exp -> termino exp2 .)
+    OR              reduce using rule 77 (exp -> termino exp2 .)
+    TO              reduce using rule 77 (exp -> termino exp2 .)
+    ;               reduce using rule 77 (exp -> termino exp2 .)
+    DO2             reduce using rule 77 (exp -> termino exp2 .)
 
 
 state 83
 
-    (75) exp2 -> empty .
-    ]               reduce using rule 75 (exp2 -> empty .)
-    )               reduce using rule 75 (exp2 -> empty .)
-    ,               reduce using rule 75 (exp2 -> empty .)
-    NE              reduce using rule 75 (exp2 -> empty .)
-    EGT             reduce using rule 75 (exp2 -> empty .)
-    ELT             reduce using rule 75 (exp2 -> empty .)
-    EQ              reduce using rule 75 (exp2 -> empty .)
-    GT              reduce using rule 75 (exp2 -> empty .)
-    LT              reduce using rule 75 (exp2 -> empty .)
-    AND             reduce using rule 75 (exp2 -> empty .)
-    OR              reduce using rule 75 (exp2 -> empty .)
-    TO              reduce using rule 75 (exp2 -> empty .)
-    ;               reduce using rule 75 (exp2 -> empty .)
-    DO2             reduce using rule 75 (exp2 -> empty .)
+    (78) exp2 -> empty .
+    ]               reduce using rule 78 (exp2 -> empty .)
+    )               reduce using rule 78 (exp2 -> empty .)
+    ,               reduce using rule 78 (exp2 -> empty .)
+    NE              reduce using rule 78 (exp2 -> empty .)
+    EGT             reduce using rule 78 (exp2 -> empty .)
+    ELT             reduce using rule 78 (exp2 -> empty .)
+    EQ              reduce using rule 78 (exp2 -> empty .)
+    GT              reduce using rule 78 (exp2 -> empty .)
+    LT              reduce using rule 78 (exp2 -> empty .)
+    AND             reduce using rule 78 (exp2 -> empty .)
+    OR              reduce using rule 78 (exp2 -> empty .)
+    TO              reduce using rule 78 (exp2 -> empty .)
+    ;               reduce using rule 78 (exp2 -> empty .)
+    DO2             reduce using rule 78 (exp2 -> empty .)
 
 
 state 84
 
-    (76) exp2 -> MINUS . exp_op_insert exp
-    (78) exp_op_insert -> .
-    MINUS           reduce using rule 78 (exp_op_insert -> .)
-    PLUS            reduce using rule 78 (exp_op_insert -> .)
-    (               reduce using rule 78 (exp_op_insert -> .)
-    FLOATNUMBER     reduce using rule 78 (exp_op_insert -> .)
-    CHARACTER       reduce using rule 78 (exp_op_insert -> .)
-    INTNUMBER       reduce using rule 78 (exp_op_insert -> .)
-    ID              reduce using rule 78 (exp_op_insert -> .)
+    (79) exp2 -> MINUS . exp_op_insert exp
+    (81) exp_op_insert -> .
+    MINUS           reduce using rule 81 (exp_op_insert -> .)
+    PLUS            reduce using rule 81 (exp_op_insert -> .)
+    (               reduce using rule 81 (exp_op_insert -> .)
+    FLOATNUMBER     reduce using rule 81 (exp_op_insert -> .)
+    CHARACTER       reduce using rule 81 (exp_op_insert -> .)
+    INTNUMBER       reduce using rule 81 (exp_op_insert -> .)
+    ID              reduce using rule 81 (exp_op_insert -> .)
 
     exp_op_insert                  shift and go to state 114
 
 state 85
 
-    (77) exp2 -> PLUS . exp_op_insert exp
-    (78) exp_op_insert -> .
-    MINUS           reduce using rule 78 (exp_op_insert -> .)
-    PLUS            reduce using rule 78 (exp_op_insert -> .)
-    (               reduce using rule 78 (exp_op_insert -> .)
-    FLOATNUMBER     reduce using rule 78 (exp_op_insert -> .)
-    CHARACTER       reduce using rule 78 (exp_op_insert -> .)
-    INTNUMBER       reduce using rule 78 (exp_op_insert -> .)
-    ID              reduce using rule 78 (exp_op_insert -> .)
+    (80) exp2 -> PLUS . exp_op_insert exp
+    (81) exp_op_insert -> .
+    MINUS           reduce using rule 81 (exp_op_insert -> .)
+    PLUS            reduce using rule 81 (exp_op_insert -> .)
+    (               reduce using rule 81 (exp_op_insert -> .)
+    FLOATNUMBER     reduce using rule 81 (exp_op_insert -> .)
+    CHARACTER       reduce using rule 81 (exp_op_insert -> .)
+    INTNUMBER       reduce using rule 81 (exp_op_insert -> .)
+    ID              reduce using rule 81 (exp_op_insert -> .)
 
     exp_op_insert                  shift and go to state 115
 
 state 86
 
-    (90) termino -> opmat termino2 .
-    MINUS           reduce using rule 90 (termino -> opmat termino2 .)
-    PLUS            reduce using rule 90 (termino -> opmat termino2 .)
-    ]               reduce using rule 90 (termino -> opmat termino2 .)
-    )               reduce using rule 90 (termino -> opmat termino2 .)
-    ,               reduce using rule 90 (termino -> opmat termino2 .)
-    NE              reduce using rule 90 (termino -> opmat termino2 .)
-    EGT             reduce using rule 90 (termino -> opmat termino2 .)
-    ELT             reduce using rule 90 (termino -> opmat termino2 .)
-    EQ              reduce using rule 90 (termino -> opmat termino2 .)
-    GT              reduce using rule 90 (termino -> opmat termino2 .)
-    LT              reduce using rule 90 (termino -> opmat termino2 .)
-    AND             reduce using rule 90 (termino -> opmat termino2 .)
-    OR              reduce using rule 90 (termino -> opmat termino2 .)
-    TO              reduce using rule 90 (termino -> opmat termino2 .)
-    ;               reduce using rule 90 (termino -> opmat termino2 .)
-    DO2             reduce using rule 90 (termino -> opmat termino2 .)
+    (93) termino -> opmat termino2 .
+    MINUS           reduce using rule 93 (termino -> opmat termino2 .)
+    PLUS            reduce using rule 93 (termino -> opmat termino2 .)
+    ]               reduce using rule 93 (termino -> opmat termino2 .)
+    )               reduce using rule 93 (termino -> opmat termino2 .)
+    ,               reduce using rule 93 (termino -> opmat termino2 .)
+    NE              reduce using rule 93 (termino -> opmat termino2 .)
+    EGT             reduce using rule 93 (termino -> opmat termino2 .)
+    ELT             reduce using rule 93 (termino -> opmat termino2 .)
+    EQ              reduce using rule 93 (termino -> opmat termino2 .)
+    GT              reduce using rule 93 (termino -> opmat termino2 .)
+    LT              reduce using rule 93 (termino -> opmat termino2 .)
+    AND             reduce using rule 93 (termino -> opmat termino2 .)
+    OR              reduce using rule 93 (termino -> opmat termino2 .)
+    TO              reduce using rule 93 (termino -> opmat termino2 .)
+    ;               reduce using rule 93 (termino -> opmat termino2 .)
+    DO2             reduce using rule 93 (termino -> opmat termino2 .)
 
 
 state 87
 
-    (91) termino2 -> empty .
-    MINUS           reduce using rule 91 (termino2 -> empty .)
-    PLUS            reduce using rule 91 (termino2 -> empty .)
-    ]               reduce using rule 91 (termino2 -> empty .)
-    )               reduce using rule 91 (termino2 -> empty .)
-    ,               reduce using rule 91 (termino2 -> empty .)
-    NE              reduce using rule 91 (termino2 -> empty .)
-    EGT             reduce using rule 91 (termino2 -> empty .)
-    ELT             reduce using rule 91 (termino2 -> empty .)
-    EQ              reduce using rule 91 (termino2 -> empty .)
-    GT              reduce using rule 91 (termino2 -> empty .)
-    LT              reduce using rule 91 (termino2 -> empty .)
-    AND             reduce using rule 91 (termino2 -> empty .)
-    OR              reduce using rule 91 (termino2 -> empty .)
-    TO              reduce using rule 91 (termino2 -> empty .)
-    ;               reduce using rule 91 (termino2 -> empty .)
-    DO2             reduce using rule 91 (termino2 -> empty .)
+    (94) termino2 -> empty .
+    MINUS           reduce using rule 94 (termino2 -> empty .)
+    PLUS            reduce using rule 94 (termino2 -> empty .)
+    ]               reduce using rule 94 (termino2 -> empty .)
+    )               reduce using rule 94 (termino2 -> empty .)
+    ,               reduce using rule 94 (termino2 -> empty .)
+    NE              reduce using rule 94 (termino2 -> empty .)
+    EGT             reduce using rule 94 (termino2 -> empty .)
+    ELT             reduce using rule 94 (termino2 -> empty .)
+    EQ              reduce using rule 94 (termino2 -> empty .)
+    GT              reduce using rule 94 (termino2 -> empty .)
+    LT              reduce using rule 94 (termino2 -> empty .)
+    AND             reduce using rule 94 (termino2 -> empty .)
+    OR              reduce using rule 94 (termino2 -> empty .)
+    TO              reduce using rule 94 (termino2 -> empty .)
+    ;               reduce using rule 94 (termino2 -> empty .)
+    DO2             reduce using rule 94 (termino2 -> empty .)
 
 
 state 88
 
-    (92) termino2 -> DIVIDE . term_op_insert termino
-    (94) term_op_insert -> .
-    MINUS           reduce using rule 94 (term_op_insert -> .)
-    PLUS            reduce using rule 94 (term_op_insert -> .)
-    (               reduce using rule 94 (term_op_insert -> .)
-    FLOATNUMBER     reduce using rule 94 (term_op_insert -> .)
-    CHARACTER       reduce using rule 94 (term_op_insert -> .)
-    INTNUMBER       reduce using rule 94 (term_op_insert -> .)
-    ID              reduce using rule 94 (term_op_insert -> .)
+    (95) termino2 -> DIVIDE . term_op_insert termino
+    (97) term_op_insert -> .
+    MINUS           reduce using rule 97 (term_op_insert -> .)
+    PLUS            reduce using rule 97 (term_op_insert -> .)
+    (               reduce using rule 97 (term_op_insert -> .)
+    FLOATNUMBER     reduce using rule 97 (term_op_insert -> .)
+    CHARACTER       reduce using rule 97 (term_op_insert -> .)
+    INTNUMBER       reduce using rule 97 (term_op_insert -> .)
+    ID              reduce using rule 97 (term_op_insert -> .)
 
     term_op_insert                 shift and go to state 116
 
 state 89
 
-    (93) termino2 -> TIMES . term_op_insert termino
-    (94) term_op_insert -> .
-    MINUS           reduce using rule 94 (term_op_insert -> .)
-    PLUS            reduce using rule 94 (term_op_insert -> .)
-    (               reduce using rule 94 (term_op_insert -> .)
-    FLOATNUMBER     reduce using rule 94 (term_op_insert -> .)
-    CHARACTER       reduce using rule 94 (term_op_insert -> .)
-    INTNUMBER       reduce using rule 94 (term_op_insert -> .)
-    ID              reduce using rule 94 (term_op_insert -> .)
+    (96) termino2 -> TIMES . term_op_insert termino
+    (97) term_op_insert -> .
+    MINUS           reduce using rule 97 (term_op_insert -> .)
+    PLUS            reduce using rule 97 (term_op_insert -> .)
+    (               reduce using rule 97 (term_op_insert -> .)
+    FLOATNUMBER     reduce using rule 97 (term_op_insert -> .)
+    CHARACTER       reduce using rule 97 (term_op_insert -> .)
+    INTNUMBER       reduce using rule 97 (term_op_insert -> .)
+    ID              reduce using rule 97 (term_op_insert -> .)
 
     term_op_insert                 shift and go to state 117
 
 state 90
 
-    (85) opmat -> factor opmat2 .
-    DIVIDE          reduce using rule 85 (opmat -> factor opmat2 .)
-    TIMES           reduce using rule 85 (opmat -> factor opmat2 .)
-    MINUS           reduce using rule 85 (opmat -> factor opmat2 .)
-    PLUS            reduce using rule 85 (opmat -> factor opmat2 .)
-    ]               reduce using rule 85 (opmat -> factor opmat2 .)
-    )               reduce using rule 85 (opmat -> factor opmat2 .)
-    ,               reduce using rule 85 (opmat -> factor opmat2 .)
-    NE              reduce using rule 85 (opmat -> factor opmat2 .)
-    EGT             reduce using rule 85 (opmat -> factor opmat2 .)
-    ELT             reduce using rule 85 (opmat -> factor opmat2 .)
-    EQ              reduce using rule 85 (opmat -> factor opmat2 .)
-    GT              reduce using rule 85 (opmat -> factor opmat2 .)
-    LT              reduce using rule 85 (opmat -> factor opmat2 .)
-    AND             reduce using rule 85 (opmat -> factor opmat2 .)
-    OR              reduce using rule 85 (opmat -> factor opmat2 .)
-    TO              reduce using rule 85 (opmat -> factor opmat2 .)
-    ;               reduce using rule 85 (opmat -> factor opmat2 .)
-    DO2             reduce using rule 85 (opmat -> factor opmat2 .)
+    (88) opmat -> factor opmat2 .
+    DIVIDE          reduce using rule 88 (opmat -> factor opmat2 .)
+    TIMES           reduce using rule 88 (opmat -> factor opmat2 .)
+    MINUS           reduce using rule 88 (opmat -> factor opmat2 .)
+    PLUS            reduce using rule 88 (opmat -> factor opmat2 .)
+    ]               reduce using rule 88 (opmat -> factor opmat2 .)
+    )               reduce using rule 88 (opmat -> factor opmat2 .)
+    ,               reduce using rule 88 (opmat -> factor opmat2 .)
+    NE              reduce using rule 88 (opmat -> factor opmat2 .)
+    EGT             reduce using rule 88 (opmat -> factor opmat2 .)
+    ELT             reduce using rule 88 (opmat -> factor opmat2 .)
+    EQ              reduce using rule 88 (opmat -> factor opmat2 .)
+    GT              reduce using rule 88 (opmat -> factor opmat2 .)
+    LT              reduce using rule 88 (opmat -> factor opmat2 .)
+    AND             reduce using rule 88 (opmat -> factor opmat2 .)
+    OR              reduce using rule 88 (opmat -> factor opmat2 .)
+    TO              reduce using rule 88 (opmat -> factor opmat2 .)
+    ;               reduce using rule 88 (opmat -> factor opmat2 .)
+    DO2             reduce using rule 88 (opmat -> factor opmat2 .)
 
 
 state 91
 
-    (86) opmat2 -> empty .
-    DIVIDE          reduce using rule 86 (opmat2 -> empty .)
-    TIMES           reduce using rule 86 (opmat2 -> empty .)
-    MINUS           reduce using rule 86 (opmat2 -> empty .)
-    PLUS            reduce using rule 86 (opmat2 -> empty .)
-    ]               reduce using rule 86 (opmat2 -> empty .)
-    )               reduce using rule 86 (opmat2 -> empty .)
-    ,               reduce using rule 86 (opmat2 -> empty .)
-    NE              reduce using rule 86 (opmat2 -> empty .)
-    EGT             reduce using rule 86 (opmat2 -> empty .)
-    ELT             reduce using rule 86 (opmat2 -> empty .)
-    EQ              reduce using rule 86 (opmat2 -> empty .)
-    GT              reduce using rule 86 (opmat2 -> empty .)
-    LT              reduce using rule 86 (opmat2 -> empty .)
-    AND             reduce using rule 86 (opmat2 -> empty .)
-    OR              reduce using rule 86 (opmat2 -> empty .)
-    TO              reduce using rule 86 (opmat2 -> empty .)
-    ;               reduce using rule 86 (opmat2 -> empty .)
-    DO2             reduce using rule 86 (opmat2 -> empty .)
+    (89) opmat2 -> empty .
+    DIVIDE          reduce using rule 89 (opmat2 -> empty .)
+    TIMES           reduce using rule 89 (opmat2 -> empty .)
+    MINUS           reduce using rule 89 (opmat2 -> empty .)
+    PLUS            reduce using rule 89 (opmat2 -> empty .)
+    ]               reduce using rule 89 (opmat2 -> empty .)
+    )               reduce using rule 89 (opmat2 -> empty .)
+    ,               reduce using rule 89 (opmat2 -> empty .)
+    NE              reduce using rule 89 (opmat2 -> empty .)
+    EGT             reduce using rule 89 (opmat2 -> empty .)
+    ELT             reduce using rule 89 (opmat2 -> empty .)
+    EQ              reduce using rule 89 (opmat2 -> empty .)
+    GT              reduce using rule 89 (opmat2 -> empty .)
+    LT              reduce using rule 89 (opmat2 -> empty .)
+    AND             reduce using rule 89 (opmat2 -> empty .)
+    OR              reduce using rule 89 (opmat2 -> empty .)
+    TO              reduce using rule 89 (opmat2 -> empty .)
+    ;               reduce using rule 89 (opmat2 -> empty .)
+    DO2             reduce using rule 89 (opmat2 -> empty .)
 
 
 state 92
 
-    (87) opmat2 -> DETERMINANT .
-    DIVIDE          reduce using rule 87 (opmat2 -> DETERMINANT .)
-    TIMES           reduce using rule 87 (opmat2 -> DETERMINANT .)
-    MINUS           reduce using rule 87 (opmat2 -> DETERMINANT .)
-    PLUS            reduce using rule 87 (opmat2 -> DETERMINANT .)
-    ]               reduce using rule 87 (opmat2 -> DETERMINANT .)
-    )               reduce using rule 87 (opmat2 -> DETERMINANT .)
-    ,               reduce using rule 87 (opmat2 -> DETERMINANT .)
-    NE              reduce using rule 87 (opmat2 -> DETERMINANT .)
-    EGT             reduce using rule 87 (opmat2 -> DETERMINANT .)
-    ELT             reduce using rule 87 (opmat2 -> DETERMINANT .)
-    EQ              reduce using rule 87 (opmat2 -> DETERMINANT .)
-    GT              reduce using rule 87 (opmat2 -> DETERMINANT .)
-    LT              reduce using rule 87 (opmat2 -> DETERMINANT .)
-    AND             reduce using rule 87 (opmat2 -> DETERMINANT .)
-    OR              reduce using rule 87 (opmat2 -> DETERMINANT .)
-    TO              reduce using rule 87 (opmat2 -> DETERMINANT .)
-    ;               reduce using rule 87 (opmat2 -> DETERMINANT .)
-    DO2             reduce using rule 87 (opmat2 -> DETERMINANT .)
+    (90) opmat2 -> DETERMINANT .
+    DIVIDE          reduce using rule 90 (opmat2 -> DETERMINANT .)
+    TIMES           reduce using rule 90 (opmat2 -> DETERMINANT .)
+    MINUS           reduce using rule 90 (opmat2 -> DETERMINANT .)
+    PLUS            reduce using rule 90 (opmat2 -> DETERMINANT .)
+    ]               reduce using rule 90 (opmat2 -> DETERMINANT .)
+    )               reduce using rule 90 (opmat2 -> DETERMINANT .)
+    ,               reduce using rule 90 (opmat2 -> DETERMINANT .)
+    NE              reduce using rule 90 (opmat2 -> DETERMINANT .)
+    EGT             reduce using rule 90 (opmat2 -> DETERMINANT .)
+    ELT             reduce using rule 90 (opmat2 -> DETERMINANT .)
+    EQ              reduce using rule 90 (opmat2 -> DETERMINANT .)
+    GT              reduce using rule 90 (opmat2 -> DETERMINANT .)
+    LT              reduce using rule 90 (opmat2 -> DETERMINANT .)
+    AND             reduce using rule 90 (opmat2 -> DETERMINANT .)
+    OR              reduce using rule 90 (opmat2 -> DETERMINANT .)
+    TO              reduce using rule 90 (opmat2 -> DETERMINANT .)
+    ;               reduce using rule 90 (opmat2 -> DETERMINANT .)
+    DO2             reduce using rule 90 (opmat2 -> DETERMINANT .)
 
 
 state 93
 
-    (88) opmat2 -> INVERSE .
-    DIVIDE          reduce using rule 88 (opmat2 -> INVERSE .)
-    TIMES           reduce using rule 88 (opmat2 -> INVERSE .)
-    MINUS           reduce using rule 88 (opmat2 -> INVERSE .)
-    PLUS            reduce using rule 88 (opmat2 -> INVERSE .)
-    ]               reduce using rule 88 (opmat2 -> INVERSE .)
-    )               reduce using rule 88 (opmat2 -> INVERSE .)
-    ,               reduce using rule 88 (opmat2 -> INVERSE .)
-    NE              reduce using rule 88 (opmat2 -> INVERSE .)
-    EGT             reduce using rule 88 (opmat2 -> INVERSE .)
-    ELT             reduce using rule 88 (opmat2 -> INVERSE .)
-    EQ              reduce using rule 88 (opmat2 -> INVERSE .)
-    GT              reduce using rule 88 (opmat2 -> INVERSE .)
-    LT              reduce using rule 88 (opmat2 -> INVERSE .)
-    AND             reduce using rule 88 (opmat2 -> INVERSE .)
-    OR              reduce using rule 88 (opmat2 -> INVERSE .)
-    TO              reduce using rule 88 (opmat2 -> INVERSE .)
-    ;               reduce using rule 88 (opmat2 -> INVERSE .)
-    DO2             reduce using rule 88 (opmat2 -> INVERSE .)
+    (91) opmat2 -> INVERSE .
+    DIVIDE          reduce using rule 91 (opmat2 -> INVERSE .)
+    TIMES           reduce using rule 91 (opmat2 -> INVERSE .)
+    MINUS           reduce using rule 91 (opmat2 -> INVERSE .)
+    PLUS            reduce using rule 91 (opmat2 -> INVERSE .)
+    ]               reduce using rule 91 (opmat2 -> INVERSE .)
+    )               reduce using rule 91 (opmat2 -> INVERSE .)
+    ,               reduce using rule 91 (opmat2 -> INVERSE .)
+    NE              reduce using rule 91 (opmat2 -> INVERSE .)
+    EGT             reduce using rule 91 (opmat2 -> INVERSE .)
+    ELT             reduce using rule 91 (opmat2 -> INVERSE .)
+    EQ              reduce using rule 91 (opmat2 -> INVERSE .)
+    GT              reduce using rule 91 (opmat2 -> INVERSE .)
+    LT              reduce using rule 91 (opmat2 -> INVERSE .)
+    AND             reduce using rule 91 (opmat2 -> INVERSE .)
+    OR              reduce using rule 91 (opmat2 -> INVERSE .)
+    TO              reduce using rule 91 (opmat2 -> INVERSE .)
+    ;               reduce using rule 91 (opmat2 -> INVERSE .)
+    DO2             reduce using rule 91 (opmat2 -> INVERSE .)
 
 
 state 94
 
-    (89) opmat2 -> TRANSPOSE .
-    DIVIDE          reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    TIMES           reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    MINUS           reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    PLUS            reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    ]               reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    )               reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    ,               reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    NE              reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    EGT             reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    ELT             reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    EQ              reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    GT              reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    LT              reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    AND             reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    OR              reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    TO              reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    ;               reduce using rule 89 (opmat2 -> TRANSPOSE .)
-    DO2             reduce using rule 89 (opmat2 -> TRANSPOSE .)
+    (92) opmat2 -> TRANSPOSE .
+    DIVIDE          reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    TIMES           reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    MINUS           reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    PLUS            reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    ]               reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    )               reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    ,               reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    NE              reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    EGT             reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    ELT             reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    EQ              reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    GT              reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    LT              reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    AND             reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    OR              reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    TO              reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    ;               reduce using rule 92 (opmat2 -> TRANSPOSE .)
+    DO2             reduce using rule 92 (opmat2 -> TRANSPOSE .)
 
 
 state 95
 
-    (80) factor -> MINUS varcte .
-    DETERMINANT     reduce using rule 80 (factor -> MINUS varcte .)
-    INVERSE         reduce using rule 80 (factor -> MINUS varcte .)
-    TRANSPOSE       reduce using rule 80 (factor -> MINUS varcte .)
-    DIVIDE          reduce using rule 80 (factor -> MINUS varcte .)
-    TIMES           reduce using rule 80 (factor -> MINUS varcte .)
-    MINUS           reduce using rule 80 (factor -> MINUS varcte .)
-    PLUS            reduce using rule 80 (factor -> MINUS varcte .)
-    ]               reduce using rule 80 (factor -> MINUS varcte .)
-    )               reduce using rule 80 (factor -> MINUS varcte .)
-    ,               reduce using rule 80 (factor -> MINUS varcte .)
-    NE              reduce using rule 80 (factor -> MINUS varcte .)
-    EGT             reduce using rule 80 (factor -> MINUS varcte .)
-    ELT             reduce using rule 80 (factor -> MINUS varcte .)
-    EQ              reduce using rule 80 (factor -> MINUS varcte .)
-    GT              reduce using rule 80 (factor -> MINUS varcte .)
-    LT              reduce using rule 80 (factor -> MINUS varcte .)
-    AND             reduce using rule 80 (factor -> MINUS varcte .)
-    OR              reduce using rule 80 (factor -> MINUS varcte .)
-    TO              reduce using rule 80 (factor -> MINUS varcte .)
-    ;               reduce using rule 80 (factor -> MINUS varcte .)
-    DO2             reduce using rule 80 (factor -> MINUS varcte .)
+    (83) factor -> MINUS varcte .
+    DETERMINANT     reduce using rule 83 (factor -> MINUS varcte .)
+    INVERSE         reduce using rule 83 (factor -> MINUS varcte .)
+    TRANSPOSE       reduce using rule 83 (factor -> MINUS varcte .)
+    DIVIDE          reduce using rule 83 (factor -> MINUS varcte .)
+    TIMES           reduce using rule 83 (factor -> MINUS varcte .)
+    MINUS           reduce using rule 83 (factor -> MINUS varcte .)
+    PLUS            reduce using rule 83 (factor -> MINUS varcte .)
+    ]               reduce using rule 83 (factor -> MINUS varcte .)
+    )               reduce using rule 83 (factor -> MINUS varcte .)
+    ,               reduce using rule 83 (factor -> MINUS varcte .)
+    NE              reduce using rule 83 (factor -> MINUS varcte .)
+    EGT             reduce using rule 83 (factor -> MINUS varcte .)
+    ELT             reduce using rule 83 (factor -> MINUS varcte .)
+    EQ              reduce using rule 83 (factor -> MINUS varcte .)
+    GT              reduce using rule 83 (factor -> MINUS varcte .)
+    LT              reduce using rule 83 (factor -> MINUS varcte .)
+    AND             reduce using rule 83 (factor -> MINUS varcte .)
+    OR              reduce using rule 83 (factor -> MINUS varcte .)
+    TO              reduce using rule 83 (factor -> MINUS varcte .)
+    ;               reduce using rule 83 (factor -> MINUS varcte .)
+    DO2             reduce using rule 83 (factor -> MINUS varcte .)
 
 
 state 96
 
-    (81) factor -> PLUS varcte .
-    DETERMINANT     reduce using rule 81 (factor -> PLUS varcte .)
-    INVERSE         reduce using rule 81 (factor -> PLUS varcte .)
-    TRANSPOSE       reduce using rule 81 (factor -> PLUS varcte .)
-    DIVIDE          reduce using rule 81 (factor -> PLUS varcte .)
-    TIMES           reduce using rule 81 (factor -> PLUS varcte .)
-    MINUS           reduce using rule 81 (factor -> PLUS varcte .)
-    PLUS            reduce using rule 81 (factor -> PLUS varcte .)
-    ]               reduce using rule 81 (factor -> PLUS varcte .)
-    )               reduce using rule 81 (factor -> PLUS varcte .)
-    ,               reduce using rule 81 (factor -> PLUS varcte .)
-    NE              reduce using rule 81 (factor -> PLUS varcte .)
-    EGT             reduce using rule 81 (factor -> PLUS varcte .)
-    ELT             reduce using rule 81 (factor -> PLUS varcte .)
-    EQ              reduce using rule 81 (factor -> PLUS varcte .)
-    GT              reduce using rule 81 (factor -> PLUS varcte .)
-    LT              reduce using rule 81 (factor -> PLUS varcte .)
-    AND             reduce using rule 81 (factor -> PLUS varcte .)
-    OR              reduce using rule 81 (factor -> PLUS varcte .)
-    TO              reduce using rule 81 (factor -> PLUS varcte .)
-    ;               reduce using rule 81 (factor -> PLUS varcte .)
-    DO2             reduce using rule 81 (factor -> PLUS varcte .)
+    (84) factor -> PLUS varcte .
+    DETERMINANT     reduce using rule 84 (factor -> PLUS varcte .)
+    INVERSE         reduce using rule 84 (factor -> PLUS varcte .)
+    TRANSPOSE       reduce using rule 84 (factor -> PLUS varcte .)
+    DIVIDE          reduce using rule 84 (factor -> PLUS varcte .)
+    TIMES           reduce using rule 84 (factor -> PLUS varcte .)
+    MINUS           reduce using rule 84 (factor -> PLUS varcte .)
+    PLUS            reduce using rule 84 (factor -> PLUS varcte .)
+    ]               reduce using rule 84 (factor -> PLUS varcte .)
+    )               reduce using rule 84 (factor -> PLUS varcte .)
+    ,               reduce using rule 84 (factor -> PLUS varcte .)
+    NE              reduce using rule 84 (factor -> PLUS varcte .)
+    EGT             reduce using rule 84 (factor -> PLUS varcte .)
+    ELT             reduce using rule 84 (factor -> PLUS varcte .)
+    EQ              reduce using rule 84 (factor -> PLUS varcte .)
+    GT              reduce using rule 84 (factor -> PLUS varcte .)
+    LT              reduce using rule 84 (factor -> PLUS varcte .)
+    AND             reduce using rule 84 (factor -> PLUS varcte .)
+    OR              reduce using rule 84 (factor -> PLUS varcte .)
+    TO              reduce using rule 84 (factor -> PLUS varcte .)
+    ;               reduce using rule 84 (factor -> PLUS varcte .)
+    DO2             reduce using rule 84 (factor -> PLUS varcte .)
 
 
 state 97
 
-    (82) factor -> ( exp_par_start . exp ) exp_par_end
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (85) factor -> ( exp_par_start . exp ) exp_par_end
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -1640,22 +1646,22 @@ state 97
 
 state 98
 
-    (95) llamada -> ID ( . llamada2 )
-    (96) llamada2 -> . exp llamada3
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (98) llamada -> ID ( . llamada2 )
+    (99) llamada2 -> . exp llamada3
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -1699,20 +1705,20 @@ state 100
 state 101
 
     (45) regresa -> RETURN ( . exp ) ;
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -1731,24 +1737,24 @@ state 101
 
 state 102
 
-    (50) estRepCond -> WHILE ( . expOR ) DO bloque
-    (60) expOR -> . expAND expOR2
-    (63) expAND -> . expresion expAND2
-    (66) expresion -> . exp expresion2
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (51) estRepCond -> WHILE ( . expOR ) DO bloque
+    (61) expOR -> . expAND expOR2
+    (64) expAND -> . expresion expAND2
+    (67) expresion -> . exp expresion2 quad_expresion
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -1770,7 +1776,7 @@ state 102
 
 state 103
 
-    (51) estRepNoCond -> FROM identificadores . ASSIGN exp TO exp DO2 bloque
+    (52) estRepNoCond -> FROM identificadores . ASSIGN exp TO exp DO2 bloque
     ASSIGN          shift and go to state 126
 
 
@@ -1782,24 +1788,24 @@ state 104
 
 state 105
 
-    (46) estDesicion -> IF ( . expOR ) if_gotF bloque estDesicion2
-    (60) expOR -> . expAND expOR2
-    (63) expAND -> . expresion expAND2
-    (66) expresion -> . exp expresion2
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (46) estDesicion -> IF ( . expOR ) if_gotF bloque estDesicion2 if_fill_gotF
+    (61) expOR -> . expAND expOR2
+    (64) expAND -> . expresion expAND2
+    (67) expresion -> . exp expresion2 quad_expresion
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -1823,7 +1829,7 @@ state 106
 
     (36) lee -> PRINT ( . lee2 ) ;
     (37) lee2 -> . identificadores lee3
-    (52) identificadores -> . ID identificadores2
+    (53) identificadores -> . ID identificadores2
     ID              shift and go to state 29
 
     lee2                           shift and go to state 129
@@ -1834,20 +1840,20 @@ state 107
     (40) escritura -> WRITE ( . escritura2 ) ;
     (41) escritura2 -> . STRING escritura3
     (42) escritura2 -> . exp escritura3
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     STRING          shift and go to state 132
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
@@ -1884,30 +1890,30 @@ state 110
     (20) parametros2 -> tipo ID . parametros3
     (21) parametros3 -> . empty
     (22) parametros3 -> . , parametros2
-    (104) empty -> .
+    (107) empty -> .
     ,               shift and go to state 136
-    )               reduce using rule 104 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
 
     parametros3                    shift and go to state 134
     empty                          shift and go to state 135
 
 state 111
 
-    (56) identificadores3 -> [ . exp ]
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (57) identificadores3 -> [ . exp ]
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -1926,75 +1932,75 @@ state 111
 
 state 112
 
-    (54) identificadores2 -> [ exp ] identificadores3 .
-    ,               reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    ;               reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    ASSIGN          reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    )               reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    DETERMINANT     reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    INVERSE         reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    TRANSPOSE       reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    DIVIDE          reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    TIMES           reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    MINUS           reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    PLUS            reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    ]               reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    NE              reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    EGT             reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    ELT             reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    EQ              reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    GT              reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    LT              reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    AND             reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    OR              reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    TO              reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
-    DO2             reduce using rule 54 (identificadores2 -> [ exp ] identificadores3 .)
+    (55) identificadores2 -> [ exp ] identificadores3 .
+    ,               reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    ;               reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    ASSIGN          reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    )               reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    DETERMINANT     reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    INVERSE         reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    TRANSPOSE       reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    DIVIDE          reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    TIMES           reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    MINUS           reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    PLUS            reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    ]               reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    NE              reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    EGT             reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    ELT             reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    EQ              reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    GT              reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    LT              reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    AND             reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    OR              reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    TO              reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
+    DO2             reduce using rule 55 (identificadores2 -> [ exp ] identificadores3 .)
 
 
 state 113
 
-    (55) identificadores3 -> empty .
-    ,               reduce using rule 55 (identificadores3 -> empty .)
-    ;               reduce using rule 55 (identificadores3 -> empty .)
-    ASSIGN          reduce using rule 55 (identificadores3 -> empty .)
-    )               reduce using rule 55 (identificadores3 -> empty .)
-    DETERMINANT     reduce using rule 55 (identificadores3 -> empty .)
-    INVERSE         reduce using rule 55 (identificadores3 -> empty .)
-    TRANSPOSE       reduce using rule 55 (identificadores3 -> empty .)
-    DIVIDE          reduce using rule 55 (identificadores3 -> empty .)
-    TIMES           reduce using rule 55 (identificadores3 -> empty .)
-    MINUS           reduce using rule 55 (identificadores3 -> empty .)
-    PLUS            reduce using rule 55 (identificadores3 -> empty .)
-    ]               reduce using rule 55 (identificadores3 -> empty .)
-    NE              reduce using rule 55 (identificadores3 -> empty .)
-    EGT             reduce using rule 55 (identificadores3 -> empty .)
-    ELT             reduce using rule 55 (identificadores3 -> empty .)
-    EQ              reduce using rule 55 (identificadores3 -> empty .)
-    GT              reduce using rule 55 (identificadores3 -> empty .)
-    LT              reduce using rule 55 (identificadores3 -> empty .)
-    AND             reduce using rule 55 (identificadores3 -> empty .)
-    OR              reduce using rule 55 (identificadores3 -> empty .)
-    TO              reduce using rule 55 (identificadores3 -> empty .)
-    DO2             reduce using rule 55 (identificadores3 -> empty .)
+    (56) identificadores3 -> empty .
+    ,               reduce using rule 56 (identificadores3 -> empty .)
+    ;               reduce using rule 56 (identificadores3 -> empty .)
+    ASSIGN          reduce using rule 56 (identificadores3 -> empty .)
+    )               reduce using rule 56 (identificadores3 -> empty .)
+    DETERMINANT     reduce using rule 56 (identificadores3 -> empty .)
+    INVERSE         reduce using rule 56 (identificadores3 -> empty .)
+    TRANSPOSE       reduce using rule 56 (identificadores3 -> empty .)
+    DIVIDE          reduce using rule 56 (identificadores3 -> empty .)
+    TIMES           reduce using rule 56 (identificadores3 -> empty .)
+    MINUS           reduce using rule 56 (identificadores3 -> empty .)
+    PLUS            reduce using rule 56 (identificadores3 -> empty .)
+    ]               reduce using rule 56 (identificadores3 -> empty .)
+    NE              reduce using rule 56 (identificadores3 -> empty .)
+    EGT             reduce using rule 56 (identificadores3 -> empty .)
+    ELT             reduce using rule 56 (identificadores3 -> empty .)
+    EQ              reduce using rule 56 (identificadores3 -> empty .)
+    GT              reduce using rule 56 (identificadores3 -> empty .)
+    LT              reduce using rule 56 (identificadores3 -> empty .)
+    AND             reduce using rule 56 (identificadores3 -> empty .)
+    OR              reduce using rule 56 (identificadores3 -> empty .)
+    TO              reduce using rule 56 (identificadores3 -> empty .)
+    DO2             reduce using rule 56 (identificadores3 -> empty .)
 
 
 state 114
 
-    (76) exp2 -> MINUS exp_op_insert . exp
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (79) exp2 -> MINUS exp_op_insert . exp
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2013,21 +2019,21 @@ state 114
 
 state 115
 
-    (77) exp2 -> PLUS exp_op_insert . exp
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (80) exp2 -> PLUS exp_op_insert . exp
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2046,20 +2052,20 @@ state 115
 
 state 116
 
-    (92) termino2 -> DIVIDE term_op_insert . termino
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (95) termino2 -> DIVIDE term_op_insert . termino
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2077,20 +2083,20 @@ state 116
 
 state 117
 
-    (93) termino2 -> TIMES term_op_insert . termino
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (96) termino2 -> TIMES term_op_insert . termino
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2108,24 +2114,24 @@ state 117
 
 state 118
 
-    (82) factor -> ( exp_par_start exp . ) exp_par_end
+    (85) factor -> ( exp_par_start exp . ) exp_par_end
     )               shift and go to state 142
 
 
 state 119
 
-    (95) llamada -> ID ( llamada2 . )
+    (98) llamada -> ID ( llamada2 . )
     )               shift and go to state 143
 
 
 state 120
 
-    (96) llamada2 -> exp . llamada3
-    (97) llamada3 -> . empty
-    (98) llamada3 -> . , llamada2
-    (104) empty -> .
+    (99) llamada2 -> exp . llamada3
+    (100) llamada3 -> . empty
+    (101) llamada3 -> . , llamada2
+    (107) empty -> .
     ,               shift and go to state 146
-    )               reduce using rule 104 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
 
     llamada3                       shift and go to state 144
     empty                          shift and go to state 145
@@ -2138,76 +2144,76 @@ state 121
 
 state 122
 
-    (50) estRepCond -> WHILE ( expOR . ) DO bloque
+    (51) estRepCond -> WHILE ( expOR . ) DO bloque
     )               shift and go to state 148
 
 
 state 123
 
-    (60) expOR -> expAND . expOR2
-    (61) expOR2 -> . empty
-    (62) expOR2 -> . OR expOR
-    (104) empty -> .
+    (61) expOR -> expAND . expOR2
+    (62) expOR2 -> . empty
+    (63) expOR2 -> . OR expOR
+    (107) empty -> .
     OR              shift and go to state 151
-    )               reduce using rule 104 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
 
     expOR2                         shift and go to state 149
     empty                          shift and go to state 150
 
 state 124
 
-    (63) expAND -> expresion . expAND2
-    (64) expAND2 -> . empty
-    (65) expAND2 -> . AND expAND
-    (104) empty -> .
+    (64) expAND -> expresion . expAND2
+    (65) expAND2 -> . empty
+    (66) expAND2 -> . AND expAND
+    (107) empty -> .
     AND             shift and go to state 154
-    OR              reduce using rule 104 (empty -> .)
-    )               reduce using rule 104 (empty -> .)
+    OR              reduce using rule 107 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
 
     expAND2                        shift and go to state 152
     empty                          shift and go to state 153
 
 state 125
 
-    (66) expresion -> exp . expresion2
-    (67) expresion2 -> . empty
-    (68) expresion2 -> . NE exp
-    (69) expresion2 -> . EGT exp
-    (70) expresion2 -> . ELT exp
-    (71) expresion2 -> . EQ exp
-    (72) expresion2 -> . GT exp
-    (73) expresion2 -> . LT exp
-    (104) empty -> .
+    (67) expresion -> exp . expresion2 quad_expresion
+    (69) expresion2 -> . empty
+    (70) expresion2 -> . NE exp
+    (71) expresion2 -> . EGT push_bool_op exp
+    (72) expresion2 -> . ELT push_bool_op exp
+    (73) expresion2 -> . EQ push_bool_op exp
+    (74) expresion2 -> . GT push_bool_op exp
+    (75) expresion2 -> . LT push_bool_op exp
+    (107) empty -> .
     NE              shift and go to state 157
     EGT             shift and go to state 158
     ELT             shift and go to state 159
     EQ              shift and go to state 160
     GT              shift and go to state 161
     LT              shift and go to state 162
-    AND             reduce using rule 104 (empty -> .)
-    OR              reduce using rule 104 (empty -> .)
-    )               reduce using rule 104 (empty -> .)
+    AND             reduce using rule 107 (empty -> .)
+    OR              reduce using rule 107 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
 
     expresion2                     shift and go to state 155
     empty                          shift and go to state 156
 
 state 126
 
-    (51) estRepNoCond -> FROM identificadores ASSIGN . exp TO exp DO2 bloque
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (52) estRepNoCond -> FROM identificadores ASSIGN . exp TO exp DO2 bloque
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2227,20 +2233,20 @@ state 126
 state 127
 
     (33) asignacion -> identificadores asignacion_insert_var ASSIGN . exp asignacion_pop_all ;
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2259,7 +2265,7 @@ state 127
 
 state 128
 
-    (46) estDesicion -> IF ( expOR . ) if_gotF bloque estDesicion2
+    (46) estDesicion -> IF ( expOR . ) if_gotF bloque estDesicion2 if_fill_gotF
     )               shift and go to state 165
 
 
@@ -2274,9 +2280,9 @@ state 130
     (37) lee2 -> identificadores . lee3
     (38) lee3 -> . empty
     (39) lee3 -> . , lee2
-    (104) empty -> .
+    (107) empty -> .
     ,               shift and go to state 169
-    )               reduce using rule 104 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
 
     lee3                           shift and go to state 167
     empty                          shift and go to state 168
@@ -2292,9 +2298,9 @@ state 132
     (41) escritura2 -> STRING . escritura3
     (43) escritura3 -> . empty
     (44) escritura3 -> . , escritura2
-    (104) empty -> .
+    (107) empty -> .
     ,               shift and go to state 173
-    )               reduce using rule 104 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
 
     escritura3                     shift and go to state 171
     empty                          shift and go to state 172
@@ -2304,9 +2310,9 @@ state 133
     (42) escritura2 -> exp . escritura3
     (43) escritura3 -> . empty
     (44) escritura3 -> . , escritura2
-    (104) empty -> .
+    (107) empty -> .
     ,               shift and go to state 173
-    )               reduce using rule 104 (empty -> .)
+    )               reduce using rule 107 (empty -> .)
 
     escritura3                     shift and go to state 174
     empty                          shift and go to state 172
@@ -2327,9 +2333,9 @@ state 136
 
     (22) parametros3 -> , . parametros2
     (20) parametros2 -> . tipo ID parametros3
-    (57) tipo -> . FLOAT
-    (58) tipo -> . CHAR
-    (59) tipo -> . INT
+    (58) tipo -> . FLOAT
+    (59) tipo -> . CHAR
+    (60) tipo -> . INT
     FLOAT           shift and go to state 16
     CHAR            shift and go to state 17
     INT             shift and go to state 18
@@ -2339,174 +2345,174 @@ state 136
 
 state 137
 
-    (56) identificadores3 -> [ exp . ]
+    (57) identificadores3 -> [ exp . ]
     ]               shift and go to state 176
 
 
 state 138
 
-    (76) exp2 -> MINUS exp_op_insert exp .
-    ]               reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    )               reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    ,               reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    NE              reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    EGT             reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    ELT             reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    EQ              reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    GT              reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    LT              reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    AND             reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    OR              reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    TO              reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    ;               reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
-    DO2             reduce using rule 76 (exp2 -> MINUS exp_op_insert exp .)
+    (79) exp2 -> MINUS exp_op_insert exp .
+    ]               reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    )               reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    ,               reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    NE              reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    EGT             reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    ELT             reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    EQ              reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    GT              reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    LT              reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    AND             reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    OR              reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    TO              reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    ;               reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
+    DO2             reduce using rule 79 (exp2 -> MINUS exp_op_insert exp .)
 
 
 state 139
 
-    (77) exp2 -> PLUS exp_op_insert exp .
-    ]               reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    )               reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    ,               reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    NE              reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    EGT             reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    ELT             reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    EQ              reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    GT              reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    LT              reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    AND             reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    OR              reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    TO              reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    ;               reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
-    DO2             reduce using rule 77 (exp2 -> PLUS exp_op_insert exp .)
+    (80) exp2 -> PLUS exp_op_insert exp .
+    ]               reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    )               reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    ,               reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    NE              reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    EGT             reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    ELT             reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    EQ              reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    GT              reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    LT              reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    AND             reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    OR              reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    TO              reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    ;               reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
+    DO2             reduce using rule 80 (exp2 -> PLUS exp_op_insert exp .)
 
 
 state 140
 
-    (92) termino2 -> DIVIDE term_op_insert termino .
-    MINUS           reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    PLUS            reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    ]               reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    )               reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    ,               reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    NE              reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    EGT             reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    ELT             reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    EQ              reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    GT              reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    LT              reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    AND             reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    OR              reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    TO              reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    ;               reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
-    DO2             reduce using rule 92 (termino2 -> DIVIDE term_op_insert termino .)
+    (95) termino2 -> DIVIDE term_op_insert termino .
+    MINUS           reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    PLUS            reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    ]               reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    )               reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    ,               reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    NE              reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    EGT             reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    ELT             reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    EQ              reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    GT              reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    LT              reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    AND             reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    OR              reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    TO              reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    ;               reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
+    DO2             reduce using rule 95 (termino2 -> DIVIDE term_op_insert termino .)
 
 
 state 141
 
-    (93) termino2 -> TIMES term_op_insert termino .
-    MINUS           reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    PLUS            reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    ]               reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    )               reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    ,               reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    NE              reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    EGT             reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    ELT             reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    EQ              reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    GT              reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    LT              reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    AND             reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    OR              reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    TO              reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    ;               reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
-    DO2             reduce using rule 93 (termino2 -> TIMES term_op_insert termino .)
+    (96) termino2 -> TIMES term_op_insert termino .
+    MINUS           reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    PLUS            reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    ]               reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    )               reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    ,               reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    NE              reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    EGT             reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    ELT             reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    EQ              reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    GT              reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    LT              reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    AND             reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    OR              reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    TO              reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    ;               reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
+    DO2             reduce using rule 96 (termino2 -> TIMES term_op_insert termino .)
 
 
 state 142
 
-    (82) factor -> ( exp_par_start exp ) . exp_par_end
-    (84) exp_par_end -> .
-    DETERMINANT     reduce using rule 84 (exp_par_end -> .)
-    INVERSE         reduce using rule 84 (exp_par_end -> .)
-    TRANSPOSE       reduce using rule 84 (exp_par_end -> .)
-    DIVIDE          reduce using rule 84 (exp_par_end -> .)
-    TIMES           reduce using rule 84 (exp_par_end -> .)
-    MINUS           reduce using rule 84 (exp_par_end -> .)
-    PLUS            reduce using rule 84 (exp_par_end -> .)
-    ]               reduce using rule 84 (exp_par_end -> .)
-    )               reduce using rule 84 (exp_par_end -> .)
-    ,               reduce using rule 84 (exp_par_end -> .)
-    NE              reduce using rule 84 (exp_par_end -> .)
-    EGT             reduce using rule 84 (exp_par_end -> .)
-    ELT             reduce using rule 84 (exp_par_end -> .)
-    EQ              reduce using rule 84 (exp_par_end -> .)
-    GT              reduce using rule 84 (exp_par_end -> .)
-    LT              reduce using rule 84 (exp_par_end -> .)
-    AND             reduce using rule 84 (exp_par_end -> .)
-    OR              reduce using rule 84 (exp_par_end -> .)
-    TO              reduce using rule 84 (exp_par_end -> .)
-    ;               reduce using rule 84 (exp_par_end -> .)
-    DO2             reduce using rule 84 (exp_par_end -> .)
+    (85) factor -> ( exp_par_start exp ) . exp_par_end
+    (87) exp_par_end -> .
+    DETERMINANT     reduce using rule 87 (exp_par_end -> .)
+    INVERSE         reduce using rule 87 (exp_par_end -> .)
+    TRANSPOSE       reduce using rule 87 (exp_par_end -> .)
+    DIVIDE          reduce using rule 87 (exp_par_end -> .)
+    TIMES           reduce using rule 87 (exp_par_end -> .)
+    MINUS           reduce using rule 87 (exp_par_end -> .)
+    PLUS            reduce using rule 87 (exp_par_end -> .)
+    ]               reduce using rule 87 (exp_par_end -> .)
+    )               reduce using rule 87 (exp_par_end -> .)
+    ,               reduce using rule 87 (exp_par_end -> .)
+    NE              reduce using rule 87 (exp_par_end -> .)
+    EGT             reduce using rule 87 (exp_par_end -> .)
+    ELT             reduce using rule 87 (exp_par_end -> .)
+    EQ              reduce using rule 87 (exp_par_end -> .)
+    GT              reduce using rule 87 (exp_par_end -> .)
+    LT              reduce using rule 87 (exp_par_end -> .)
+    AND             reduce using rule 87 (exp_par_end -> .)
+    OR              reduce using rule 87 (exp_par_end -> .)
+    TO              reduce using rule 87 (exp_par_end -> .)
+    ;               reduce using rule 87 (exp_par_end -> .)
+    DO2             reduce using rule 87 (exp_par_end -> .)
 
     exp_par_end                    shift and go to state 177
 
 state 143
 
-    (95) llamada -> ID ( llamada2 ) .
-    DETERMINANT     reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    INVERSE         reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    TRANSPOSE       reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    DIVIDE          reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    TIMES           reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    MINUS           reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    PLUS            reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    ]               reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    )               reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    ,               reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    NE              reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    EGT             reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    ELT             reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    EQ              reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    GT              reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    LT              reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    AND             reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    OR              reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    TO              reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    ;               reduce using rule 95 (llamada -> ID ( llamada2 ) .)
-    DO2             reduce using rule 95 (llamada -> ID ( llamada2 ) .)
+    (98) llamada -> ID ( llamada2 ) .
+    DETERMINANT     reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    INVERSE         reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    TRANSPOSE       reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    DIVIDE          reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    TIMES           reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    MINUS           reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    PLUS            reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    ]               reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    )               reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    ,               reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    NE              reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    EGT             reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    ELT             reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    EQ              reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    GT              reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    LT              reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    AND             reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    OR              reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    TO              reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    ;               reduce using rule 98 (llamada -> ID ( llamada2 ) .)
+    DO2             reduce using rule 98 (llamada -> ID ( llamada2 ) .)
 
 
 state 144
 
-    (96) llamada2 -> exp llamada3 .
-    )               reduce using rule 96 (llamada2 -> exp llamada3 .)
+    (99) llamada2 -> exp llamada3 .
+    )               reduce using rule 99 (llamada2 -> exp llamada3 .)
 
 
 state 145
 
-    (97) llamada3 -> empty .
-    )               reduce using rule 97 (llamada3 -> empty .)
+    (100) llamada3 -> empty .
+    )               reduce using rule 100 (llamada3 -> empty .)
 
 
 state 146
 
-    (98) llamada3 -> , . llamada2
-    (96) llamada2 -> . exp llamada3
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (101) llamada3 -> , . llamada2
+    (99) llamada2 -> . exp llamada3
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2532,42 +2538,42 @@ state 147
 
 state 148
 
-    (50) estRepCond -> WHILE ( expOR ) . DO bloque
+    (51) estRepCond -> WHILE ( expOR ) . DO bloque
     DO              shift and go to state 180
 
 
 state 149
 
-    (60) expOR -> expAND expOR2 .
-    )               reduce using rule 60 (expOR -> expAND expOR2 .)
+    (61) expOR -> expAND expOR2 .
+    )               reduce using rule 61 (expOR -> expAND expOR2 .)
 
 
 state 150
 
-    (61) expOR2 -> empty .
-    )               reduce using rule 61 (expOR2 -> empty .)
+    (62) expOR2 -> empty .
+    )               reduce using rule 62 (expOR2 -> empty .)
 
 
 state 151
 
-    (62) expOR2 -> OR . expOR
-    (60) expOR -> . expAND expOR2
-    (63) expAND -> . expresion expAND2
-    (66) expresion -> . exp expresion2
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (63) expOR2 -> OR . expOR
+    (61) expOR -> . expAND expOR2
+    (64) expAND -> . expresion expAND2
+    (67) expresion -> . exp expresion2 quad_expresion
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2589,37 +2595,37 @@ state 151
 
 state 152
 
-    (63) expAND -> expresion expAND2 .
-    OR              reduce using rule 63 (expAND -> expresion expAND2 .)
-    )               reduce using rule 63 (expAND -> expresion expAND2 .)
+    (64) expAND -> expresion expAND2 .
+    OR              reduce using rule 64 (expAND -> expresion expAND2 .)
+    )               reduce using rule 64 (expAND -> expresion expAND2 .)
 
 
 state 153
 
-    (64) expAND2 -> empty .
-    OR              reduce using rule 64 (expAND2 -> empty .)
-    )               reduce using rule 64 (expAND2 -> empty .)
+    (65) expAND2 -> empty .
+    OR              reduce using rule 65 (expAND2 -> empty .)
+    )               reduce using rule 65 (expAND2 -> empty .)
 
 
 state 154
 
-    (65) expAND2 -> AND . expAND
-    (63) expAND -> . expresion expAND2
-    (66) expresion -> . exp expresion2
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (66) expAND2 -> AND . expAND
+    (64) expAND -> . expresion expAND2
+    (67) expresion -> . exp expresion2 quad_expresion
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2640,70 +2646,39 @@ state 154
 
 state 155
 
-    (66) expresion -> exp expresion2 .
-    AND             reduce using rule 66 (expresion -> exp expresion2 .)
-    OR              reduce using rule 66 (expresion -> exp expresion2 .)
-    )               reduce using rule 66 (expresion -> exp expresion2 .)
+    (67) expresion -> exp expresion2 . quad_expresion
+    (68) quad_expresion -> .
+    AND             reduce using rule 68 (quad_expresion -> .)
+    OR              reduce using rule 68 (quad_expresion -> .)
+    )               reduce using rule 68 (quad_expresion -> .)
 
+    quad_expresion                 shift and go to state 183
 
 state 156
 
-    (67) expresion2 -> empty .
-    AND             reduce using rule 67 (expresion2 -> empty .)
-    OR              reduce using rule 67 (expresion2 -> empty .)
-    )               reduce using rule 67 (expresion2 -> empty .)
+    (69) expresion2 -> empty .
+    AND             reduce using rule 69 (expresion2 -> empty .)
+    OR              reduce using rule 69 (expresion2 -> empty .)
+    )               reduce using rule 69 (expresion2 -> empty .)
 
 
 state 157
 
-    (68) expresion2 -> NE . exp
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
-    MINUS           shift and go to state 52
-    PLUS            shift and go to state 53
-    (               shift and go to state 54
-    FLOATNUMBER     shift and go to state 56
-    CHARACTER       shift and go to state 57
-    INTNUMBER       shift and go to state 58
-    ID              shift and go to state 60
-
-    exp                            shift and go to state 183
-    termino                        shift and go to state 48
-    opmat                          shift and go to state 49
-    factor                         shift and go to state 50
-    varcte                         shift and go to state 51
-    llamada                        shift and go to state 55
-    identificadores                shift and go to state 59
-
-state 158
-
-    (69) expresion2 -> EGT . exp
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (70) expresion2 -> NE . exp
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -2720,142 +2695,80 @@ state 158
     llamada                        shift and go to state 55
     identificadores                shift and go to state 59
 
+state 158
+
+    (71) expresion2 -> EGT . push_bool_op exp
+    (76) push_bool_op -> .
+    MINUS           reduce using rule 76 (push_bool_op -> .)
+    PLUS            reduce using rule 76 (push_bool_op -> .)
+    (               reduce using rule 76 (push_bool_op -> .)
+    FLOATNUMBER     reduce using rule 76 (push_bool_op -> .)
+    CHARACTER       reduce using rule 76 (push_bool_op -> .)
+    INTNUMBER       reduce using rule 76 (push_bool_op -> .)
+    ID              reduce using rule 76 (push_bool_op -> .)
+
+    push_bool_op                   shift and go to state 185
+
 state 159
 
-    (70) expresion2 -> ELT . exp
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
-    MINUS           shift and go to state 52
-    PLUS            shift and go to state 53
-    (               shift and go to state 54
-    FLOATNUMBER     shift and go to state 56
-    CHARACTER       shift and go to state 57
-    INTNUMBER       shift and go to state 58
-    ID              shift and go to state 60
+    (72) expresion2 -> ELT . push_bool_op exp
+    (76) push_bool_op -> .
+    MINUS           reduce using rule 76 (push_bool_op -> .)
+    PLUS            reduce using rule 76 (push_bool_op -> .)
+    (               reduce using rule 76 (push_bool_op -> .)
+    FLOATNUMBER     reduce using rule 76 (push_bool_op -> .)
+    CHARACTER       reduce using rule 76 (push_bool_op -> .)
+    INTNUMBER       reduce using rule 76 (push_bool_op -> .)
+    ID              reduce using rule 76 (push_bool_op -> .)
 
-    exp                            shift and go to state 185
-    termino                        shift and go to state 48
-    opmat                          shift and go to state 49
-    factor                         shift and go to state 50
-    varcte                         shift and go to state 51
-    llamada                        shift and go to state 55
-    identificadores                shift and go to state 59
+    push_bool_op                   shift and go to state 186
 
 state 160
 
-    (71) expresion2 -> EQ . exp
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
-    MINUS           shift and go to state 52
-    PLUS            shift and go to state 53
-    (               shift and go to state 54
-    FLOATNUMBER     shift and go to state 56
-    CHARACTER       shift and go to state 57
-    INTNUMBER       shift and go to state 58
-    ID              shift and go to state 60
+    (73) expresion2 -> EQ . push_bool_op exp
+    (76) push_bool_op -> .
+    MINUS           reduce using rule 76 (push_bool_op -> .)
+    PLUS            reduce using rule 76 (push_bool_op -> .)
+    (               reduce using rule 76 (push_bool_op -> .)
+    FLOATNUMBER     reduce using rule 76 (push_bool_op -> .)
+    CHARACTER       reduce using rule 76 (push_bool_op -> .)
+    INTNUMBER       reduce using rule 76 (push_bool_op -> .)
+    ID              reduce using rule 76 (push_bool_op -> .)
 
-    exp                            shift and go to state 186
-    termino                        shift and go to state 48
-    opmat                          shift and go to state 49
-    factor                         shift and go to state 50
-    varcte                         shift and go to state 51
-    llamada                        shift and go to state 55
-    identificadores                shift and go to state 59
+    push_bool_op                   shift and go to state 187
 
 state 161
 
-    (72) expresion2 -> GT . exp
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
-    MINUS           shift and go to state 52
-    PLUS            shift and go to state 53
-    (               shift and go to state 54
-    FLOATNUMBER     shift and go to state 56
-    CHARACTER       shift and go to state 57
-    INTNUMBER       shift and go to state 58
-    ID              shift and go to state 60
+    (74) expresion2 -> GT . push_bool_op exp
+    (76) push_bool_op -> .
+    MINUS           reduce using rule 76 (push_bool_op -> .)
+    PLUS            reduce using rule 76 (push_bool_op -> .)
+    (               reduce using rule 76 (push_bool_op -> .)
+    FLOATNUMBER     reduce using rule 76 (push_bool_op -> .)
+    CHARACTER       reduce using rule 76 (push_bool_op -> .)
+    INTNUMBER       reduce using rule 76 (push_bool_op -> .)
+    ID              reduce using rule 76 (push_bool_op -> .)
 
-    exp                            shift and go to state 187
-    termino                        shift and go to state 48
-    opmat                          shift and go to state 49
-    factor                         shift and go to state 50
-    varcte                         shift and go to state 51
-    llamada                        shift and go to state 55
-    identificadores                shift and go to state 59
+    push_bool_op                   shift and go to state 188
 
 state 162
 
-    (73) expresion2 -> LT . exp
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
-    MINUS           shift and go to state 52
-    PLUS            shift and go to state 53
-    (               shift and go to state 54
-    FLOATNUMBER     shift and go to state 56
-    CHARACTER       shift and go to state 57
-    INTNUMBER       shift and go to state 58
-    ID              shift and go to state 60
+    (75) expresion2 -> LT . push_bool_op exp
+    (76) push_bool_op -> .
+    MINUS           reduce using rule 76 (push_bool_op -> .)
+    PLUS            reduce using rule 76 (push_bool_op -> .)
+    (               reduce using rule 76 (push_bool_op -> .)
+    FLOATNUMBER     reduce using rule 76 (push_bool_op -> .)
+    CHARACTER       reduce using rule 76 (push_bool_op -> .)
+    INTNUMBER       reduce using rule 76 (push_bool_op -> .)
+    ID              reduce using rule 76 (push_bool_op -> .)
 
-    exp                            shift and go to state 188
-    termino                        shift and go to state 48
-    opmat                          shift and go to state 49
-    factor                         shift and go to state 50
-    varcte                         shift and go to state 51
-    llamada                        shift and go to state 55
-    identificadores                shift and go to state 59
+    push_bool_op                   shift and go to state 189
 
 state 163
 
-    (51) estRepNoCond -> FROM identificadores ASSIGN exp . TO exp DO2 bloque
-    TO              shift and go to state 189
+    (52) estRepNoCond -> FROM identificadores ASSIGN exp . TO exp DO2 bloque
+    TO              shift and go to state 190
 
 
 state 164
@@ -2864,20 +2777,20 @@ state 164
     (35) asignacion_pop_all -> .
     ;               reduce using rule 35 (asignacion_pop_all -> .)
 
-    asignacion_pop_all             shift and go to state 190
+    asignacion_pop_all             shift and go to state 191
 
 state 165
 
-    (46) estDesicion -> IF ( expOR ) . if_gotF bloque estDesicion2
+    (46) estDesicion -> IF ( expOR ) . if_gotF bloque estDesicion2 if_fill_gotF
     (47) if_gotF -> .
     {               reduce using rule 47 (if_gotF -> .)
 
-    if_gotF                        shift and go to state 191
+    if_gotF                        shift and go to state 192
 
 state 166
 
     (36) lee -> PRINT ( lee2 ) . ;
-    ;               shift and go to state 192
+    ;               shift and go to state 193
 
 
 state 167
@@ -2896,16 +2809,16 @@ state 169
 
     (39) lee3 -> , . lee2
     (37) lee2 -> . identificadores lee3
-    (52) identificadores -> . ID identificadores2
+    (53) identificadores -> . ID identificadores2
     ID              shift and go to state 29
 
-    lee2                           shift and go to state 193
+    lee2                           shift and go to state 194
     identificadores                shift and go to state 130
 
 state 170
 
     (40) escritura -> WRITE ( escritura2 ) . ;
-    ;               shift and go to state 194
+    ;               shift and go to state 195
 
 
 state 171
@@ -2925,20 +2838,20 @@ state 173
     (44) escritura3 -> , . escritura2
     (41) escritura2 -> . STRING escritura3
     (42) escritura2 -> . exp escritura3
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     STRING          shift and go to state 132
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
@@ -2948,7 +2861,7 @@ state 173
     INTNUMBER       shift and go to state 58
     ID              shift and go to state 60
 
-    escritura2                     shift and go to state 195
+    escritura2                     shift and go to state 196
     exp                            shift and go to state 133
     termino                        shift and go to state 48
     opmat                          shift and go to state 49
@@ -2971,61 +2884,61 @@ state 175
 
 state 176
 
-    (56) identificadores3 -> [ exp ] .
-    ,               reduce using rule 56 (identificadores3 -> [ exp ] .)
-    ;               reduce using rule 56 (identificadores3 -> [ exp ] .)
-    ASSIGN          reduce using rule 56 (identificadores3 -> [ exp ] .)
-    )               reduce using rule 56 (identificadores3 -> [ exp ] .)
-    DETERMINANT     reduce using rule 56 (identificadores3 -> [ exp ] .)
-    INVERSE         reduce using rule 56 (identificadores3 -> [ exp ] .)
-    TRANSPOSE       reduce using rule 56 (identificadores3 -> [ exp ] .)
-    DIVIDE          reduce using rule 56 (identificadores3 -> [ exp ] .)
-    TIMES           reduce using rule 56 (identificadores3 -> [ exp ] .)
-    MINUS           reduce using rule 56 (identificadores3 -> [ exp ] .)
-    PLUS            reduce using rule 56 (identificadores3 -> [ exp ] .)
-    ]               reduce using rule 56 (identificadores3 -> [ exp ] .)
-    NE              reduce using rule 56 (identificadores3 -> [ exp ] .)
-    EGT             reduce using rule 56 (identificadores3 -> [ exp ] .)
-    ELT             reduce using rule 56 (identificadores3 -> [ exp ] .)
-    EQ              reduce using rule 56 (identificadores3 -> [ exp ] .)
-    GT              reduce using rule 56 (identificadores3 -> [ exp ] .)
-    LT              reduce using rule 56 (identificadores3 -> [ exp ] .)
-    AND             reduce using rule 56 (identificadores3 -> [ exp ] .)
-    OR              reduce using rule 56 (identificadores3 -> [ exp ] .)
-    TO              reduce using rule 56 (identificadores3 -> [ exp ] .)
-    DO2             reduce using rule 56 (identificadores3 -> [ exp ] .)
+    (57) identificadores3 -> [ exp ] .
+    ,               reduce using rule 57 (identificadores3 -> [ exp ] .)
+    ;               reduce using rule 57 (identificadores3 -> [ exp ] .)
+    ASSIGN          reduce using rule 57 (identificadores3 -> [ exp ] .)
+    )               reduce using rule 57 (identificadores3 -> [ exp ] .)
+    DETERMINANT     reduce using rule 57 (identificadores3 -> [ exp ] .)
+    INVERSE         reduce using rule 57 (identificadores3 -> [ exp ] .)
+    TRANSPOSE       reduce using rule 57 (identificadores3 -> [ exp ] .)
+    DIVIDE          reduce using rule 57 (identificadores3 -> [ exp ] .)
+    TIMES           reduce using rule 57 (identificadores3 -> [ exp ] .)
+    MINUS           reduce using rule 57 (identificadores3 -> [ exp ] .)
+    PLUS            reduce using rule 57 (identificadores3 -> [ exp ] .)
+    ]               reduce using rule 57 (identificadores3 -> [ exp ] .)
+    NE              reduce using rule 57 (identificadores3 -> [ exp ] .)
+    EGT             reduce using rule 57 (identificadores3 -> [ exp ] .)
+    ELT             reduce using rule 57 (identificadores3 -> [ exp ] .)
+    EQ              reduce using rule 57 (identificadores3 -> [ exp ] .)
+    GT              reduce using rule 57 (identificadores3 -> [ exp ] .)
+    LT              reduce using rule 57 (identificadores3 -> [ exp ] .)
+    AND             reduce using rule 57 (identificadores3 -> [ exp ] .)
+    OR              reduce using rule 57 (identificadores3 -> [ exp ] .)
+    TO              reduce using rule 57 (identificadores3 -> [ exp ] .)
+    DO2             reduce using rule 57 (identificadores3 -> [ exp ] .)
 
 
 state 177
 
-    (82) factor -> ( exp_par_start exp ) exp_par_end .
-    DETERMINANT     reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    INVERSE         reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    TRANSPOSE       reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    DIVIDE          reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    TIMES           reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    MINUS           reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    PLUS            reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    ]               reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    )               reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    ,               reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    NE              reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    EGT             reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    ELT             reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    EQ              reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    GT              reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    LT              reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    AND             reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    OR              reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    TO              reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    ;               reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
-    DO2             reduce using rule 82 (factor -> ( exp_par_start exp ) exp_par_end .)
+    (85) factor -> ( exp_par_start exp ) exp_par_end .
+    DETERMINANT     reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    INVERSE         reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    TRANSPOSE       reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    DIVIDE          reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    TIMES           reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    MINUS           reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    PLUS            reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    ]               reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    )               reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    ,               reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    NE              reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    EGT             reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    ELT             reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    EQ              reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    GT              reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    LT              reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    AND             reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    OR              reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    TO              reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    ;               reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
+    DO2             reduce using rule 85 (factor -> ( exp_par_start exp ) exp_par_end .)
 
 
 state 178
 
-    (98) llamada3 -> , llamada2 .
-    )               reduce using rule 98 (llamada3 -> , llamada2 .)
+    (101) llamada3 -> , llamada2 .
+    )               reduce using rule 101 (llamada3 -> , llamada2 .)
 
 
 state 179
@@ -3043,90 +2956,223 @@ state 179
 
 state 180
 
-    (50) estRepCond -> WHILE ( expOR ) DO . bloque
+    (51) estRepCond -> WHILE ( expOR ) DO . bloque
     (23) bloque -> . { bloque2 }
     {               shift and go to state 40
 
-    bloque                         shift and go to state 196
+    bloque                         shift and go to state 197
 
 state 181
 
-    (62) expOR2 -> OR expOR .
-    )               reduce using rule 62 (expOR2 -> OR expOR .)
+    (63) expOR2 -> OR expOR .
+    )               reduce using rule 63 (expOR2 -> OR expOR .)
 
 
 state 182
 
-    (65) expAND2 -> AND expAND .
-    OR              reduce using rule 65 (expAND2 -> AND expAND .)
-    )               reduce using rule 65 (expAND2 -> AND expAND .)
+    (66) expAND2 -> AND expAND .
+    OR              reduce using rule 66 (expAND2 -> AND expAND .)
+    )               reduce using rule 66 (expAND2 -> AND expAND .)
 
 
 state 183
 
-    (68) expresion2 -> NE exp .
-    AND             reduce using rule 68 (expresion2 -> NE exp .)
-    OR              reduce using rule 68 (expresion2 -> NE exp .)
-    )               reduce using rule 68 (expresion2 -> NE exp .)
+    (67) expresion -> exp expresion2 quad_expresion .
+    AND             reduce using rule 67 (expresion -> exp expresion2 quad_expresion .)
+    OR              reduce using rule 67 (expresion -> exp expresion2 quad_expresion .)
+    )               reduce using rule 67 (expresion -> exp expresion2 quad_expresion .)
 
 
 state 184
 
-    (69) expresion2 -> EGT exp .
-    AND             reduce using rule 69 (expresion2 -> EGT exp .)
-    OR              reduce using rule 69 (expresion2 -> EGT exp .)
-    )               reduce using rule 69 (expresion2 -> EGT exp .)
+    (70) expresion2 -> NE exp .
+    AND             reduce using rule 70 (expresion2 -> NE exp .)
+    OR              reduce using rule 70 (expresion2 -> NE exp .)
+    )               reduce using rule 70 (expresion2 -> NE exp .)
 
 
 state 185
 
-    (70) expresion2 -> ELT exp .
-    AND             reduce using rule 70 (expresion2 -> ELT exp .)
-    OR              reduce using rule 70 (expresion2 -> ELT exp .)
-    )               reduce using rule 70 (expresion2 -> ELT exp .)
+    (71) expresion2 -> EGT push_bool_op . exp
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
+    MINUS           shift and go to state 52
+    PLUS            shift and go to state 53
+    (               shift and go to state 54
+    FLOATNUMBER     shift and go to state 56
+    CHARACTER       shift and go to state 57
+    INTNUMBER       shift and go to state 58
+    ID              shift and go to state 60
 
+    exp                            shift and go to state 198
+    termino                        shift and go to state 48
+    opmat                          shift and go to state 49
+    factor                         shift and go to state 50
+    varcte                         shift and go to state 51
+    llamada                        shift and go to state 55
+    identificadores                shift and go to state 59
 
 state 186
 
-    (71) expresion2 -> EQ exp .
-    AND             reduce using rule 71 (expresion2 -> EQ exp .)
-    OR              reduce using rule 71 (expresion2 -> EQ exp .)
-    )               reduce using rule 71 (expresion2 -> EQ exp .)
+    (72) expresion2 -> ELT push_bool_op . exp
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
+    MINUS           shift and go to state 52
+    PLUS            shift and go to state 53
+    (               shift and go to state 54
+    FLOATNUMBER     shift and go to state 56
+    CHARACTER       shift and go to state 57
+    INTNUMBER       shift and go to state 58
+    ID              shift and go to state 60
 
+    exp                            shift and go to state 199
+    termino                        shift and go to state 48
+    opmat                          shift and go to state 49
+    factor                         shift and go to state 50
+    varcte                         shift and go to state 51
+    llamada                        shift and go to state 55
+    identificadores                shift and go to state 59
 
 state 187
 
-    (72) expresion2 -> GT exp .
-    AND             reduce using rule 72 (expresion2 -> GT exp .)
-    OR              reduce using rule 72 (expresion2 -> GT exp .)
-    )               reduce using rule 72 (expresion2 -> GT exp .)
+    (73) expresion2 -> EQ push_bool_op . exp
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
+    MINUS           shift and go to state 52
+    PLUS            shift and go to state 53
+    (               shift and go to state 54
+    FLOATNUMBER     shift and go to state 56
+    CHARACTER       shift and go to state 57
+    INTNUMBER       shift and go to state 58
+    ID              shift and go to state 60
 
+    exp                            shift and go to state 200
+    termino                        shift and go to state 48
+    opmat                          shift and go to state 49
+    factor                         shift and go to state 50
+    varcte                         shift and go to state 51
+    llamada                        shift and go to state 55
+    identificadores                shift and go to state 59
 
 state 188
 
-    (73) expresion2 -> LT exp .
-    AND             reduce using rule 73 (expresion2 -> LT exp .)
-    OR              reduce using rule 73 (expresion2 -> LT exp .)
-    )               reduce using rule 73 (expresion2 -> LT exp .)
+    (74) expresion2 -> GT push_bool_op . exp
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
+    MINUS           shift and go to state 52
+    PLUS            shift and go to state 53
+    (               shift and go to state 54
+    FLOATNUMBER     shift and go to state 56
+    CHARACTER       shift and go to state 57
+    INTNUMBER       shift and go to state 58
+    ID              shift and go to state 60
 
+    exp                            shift and go to state 201
+    termino                        shift and go to state 48
+    opmat                          shift and go to state 49
+    factor                         shift and go to state 50
+    varcte                         shift and go to state 51
+    llamada                        shift and go to state 55
+    identificadores                shift and go to state 59
 
 state 189
 
-    (51) estRepNoCond -> FROM identificadores ASSIGN exp TO . exp DO2 bloque
-    (74) exp -> . termino exp2
-    (90) termino -> . opmat termino2
-    (85) opmat -> . factor opmat2
-    (79) factor -> . varcte
-    (80) factor -> . MINUS varcte
-    (81) factor -> . PLUS varcte
-    (82) factor -> . ( exp_par_start exp ) exp_par_end
-    (99) varcte -> . llamada
-    (100) varcte -> . FLOATNUMBER
-    (101) varcte -> . CHARACTER
-    (102) varcte -> . INTNUMBER
-    (103) varcte -> . identificadores
-    (95) llamada -> . ID ( llamada2 )
-    (52) identificadores -> . ID identificadores2
+    (75) expresion2 -> LT push_bool_op . exp
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
+    MINUS           shift and go to state 52
+    PLUS            shift and go to state 53
+    (               shift and go to state 54
+    FLOATNUMBER     shift and go to state 56
+    CHARACTER       shift and go to state 57
+    INTNUMBER       shift and go to state 58
+    ID              shift and go to state 60
+
+    exp                            shift and go to state 202
+    termino                        shift and go to state 48
+    opmat                          shift and go to state 49
+    factor                         shift and go to state 50
+    varcte                         shift and go to state 51
+    llamada                        shift and go to state 55
+    identificadores                shift and go to state 59
+
+state 190
+
+    (52) estRepNoCond -> FROM identificadores ASSIGN exp TO . exp DO2 bloque
+    (77) exp -> . termino exp2
+    (93) termino -> . opmat termino2
+    (88) opmat -> . factor opmat2
+    (82) factor -> . varcte
+    (83) factor -> . MINUS varcte
+    (84) factor -> . PLUS varcte
+    (85) factor -> . ( exp_par_start exp ) exp_par_end
+    (102) varcte -> . llamada
+    (103) varcte -> . FLOATNUMBER
+    (104) varcte -> . CHARACTER
+    (105) varcte -> . INTNUMBER
+    (106) varcte -> . identificadores
+    (98) llamada -> . ID ( llamada2 )
+    (53) identificadores -> . ID identificadores2
     MINUS           shift and go to state 52
     PLUS            shift and go to state 53
     (               shift and go to state 54
@@ -3136,28 +3182,28 @@ state 189
     ID              shift and go to state 60
 
     identificadores                shift and go to state 59
-    exp                            shift and go to state 197
+    exp                            shift and go to state 203
     termino                        shift and go to state 48
     opmat                          shift and go to state 49
     factor                         shift and go to state 50
     varcte                         shift and go to state 51
     llamada                        shift and go to state 55
 
-state 190
-
-    (33) asignacion -> identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all . ;
-    ;               shift and go to state 198
-
-
 state 191
 
-    (46) estDesicion -> IF ( expOR ) if_gotF . bloque estDesicion2
+    (33) asignacion -> identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all . ;
+    ;               shift and go to state 204
+
+
+state 192
+
+    (46) estDesicion -> IF ( expOR ) if_gotF . bloque estDesicion2 if_fill_gotF
     (23) bloque -> . { bloque2 }
     {               shift and go to state 40
 
-    bloque                         shift and go to state 199
+    bloque                         shift and go to state 205
 
-state 192
+state 193
 
     (36) lee -> PRINT ( lee2 ) ; .
     RETURN          reduce using rule 36 (lee -> PRINT ( lee2 ) ; .)
@@ -3170,13 +3216,13 @@ state 192
     }               reduce using rule 36 (lee -> PRINT ( lee2 ) ; .)
 
 
-state 193
+state 194
 
     (39) lee3 -> , lee2 .
     )               reduce using rule 39 (lee3 -> , lee2 .)
 
 
-state 194
+state 195
 
     (40) escritura -> WRITE ( escritura2 ) ; .
     RETURN          reduce using rule 40 (escritura -> WRITE ( escritura2 ) ; .)
@@ -3189,32 +3235,72 @@ state 194
     }               reduce using rule 40 (escritura -> WRITE ( escritura2 ) ; .)
 
 
-state 195
+state 196
 
     (44) escritura3 -> , escritura2 .
     )               reduce using rule 44 (escritura3 -> , escritura2 .)
 
 
-state 196
-
-    (50) estRepCond -> WHILE ( expOR ) DO bloque .
-    RETURN          reduce using rule 50 (estRepCond -> WHILE ( expOR ) DO bloque .)
-    WHILE           reduce using rule 50 (estRepCond -> WHILE ( expOR ) DO bloque .)
-    FROM            reduce using rule 50 (estRepCond -> WHILE ( expOR ) DO bloque .)
-    IF              reduce using rule 50 (estRepCond -> WHILE ( expOR ) DO bloque .)
-    PRINT           reduce using rule 50 (estRepCond -> WHILE ( expOR ) DO bloque .)
-    WRITE           reduce using rule 50 (estRepCond -> WHILE ( expOR ) DO bloque .)
-    ID              reduce using rule 50 (estRepCond -> WHILE ( expOR ) DO bloque .)
-    }               reduce using rule 50 (estRepCond -> WHILE ( expOR ) DO bloque .)
-
-
 state 197
 
-    (51) estRepNoCond -> FROM identificadores ASSIGN exp TO exp . DO2 bloque
-    DO2             shift and go to state 200
+    (51) estRepCond -> WHILE ( expOR ) DO bloque .
+    RETURN          reduce using rule 51 (estRepCond -> WHILE ( expOR ) DO bloque .)
+    WHILE           reduce using rule 51 (estRepCond -> WHILE ( expOR ) DO bloque .)
+    FROM            reduce using rule 51 (estRepCond -> WHILE ( expOR ) DO bloque .)
+    IF              reduce using rule 51 (estRepCond -> WHILE ( expOR ) DO bloque .)
+    PRINT           reduce using rule 51 (estRepCond -> WHILE ( expOR ) DO bloque .)
+    WRITE           reduce using rule 51 (estRepCond -> WHILE ( expOR ) DO bloque .)
+    ID              reduce using rule 51 (estRepCond -> WHILE ( expOR ) DO bloque .)
+    }               reduce using rule 51 (estRepCond -> WHILE ( expOR ) DO bloque .)
 
 
 state 198
+
+    (71) expresion2 -> EGT push_bool_op exp .
+    AND             reduce using rule 71 (expresion2 -> EGT push_bool_op exp .)
+    OR              reduce using rule 71 (expresion2 -> EGT push_bool_op exp .)
+    )               reduce using rule 71 (expresion2 -> EGT push_bool_op exp .)
+
+
+state 199
+
+    (72) expresion2 -> ELT push_bool_op exp .
+    AND             reduce using rule 72 (expresion2 -> ELT push_bool_op exp .)
+    OR              reduce using rule 72 (expresion2 -> ELT push_bool_op exp .)
+    )               reduce using rule 72 (expresion2 -> ELT push_bool_op exp .)
+
+
+state 200
+
+    (73) expresion2 -> EQ push_bool_op exp .
+    AND             reduce using rule 73 (expresion2 -> EQ push_bool_op exp .)
+    OR              reduce using rule 73 (expresion2 -> EQ push_bool_op exp .)
+    )               reduce using rule 73 (expresion2 -> EQ push_bool_op exp .)
+
+
+state 201
+
+    (74) expresion2 -> GT push_bool_op exp .
+    AND             reduce using rule 74 (expresion2 -> GT push_bool_op exp .)
+    OR              reduce using rule 74 (expresion2 -> GT push_bool_op exp .)
+    )               reduce using rule 74 (expresion2 -> GT push_bool_op exp .)
+
+
+state 202
+
+    (75) expresion2 -> LT push_bool_op exp .
+    AND             reduce using rule 75 (expresion2 -> LT push_bool_op exp .)
+    OR              reduce using rule 75 (expresion2 -> LT push_bool_op exp .)
+    )               reduce using rule 75 (expresion2 -> LT push_bool_op exp .)
+
+
+state 203
+
+    (52) estRepNoCond -> FROM identificadores ASSIGN exp TO exp . DO2 bloque
+    DO2             shift and go to state 206
+
+
+state 204
 
     (33) asignacion -> identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ; .
     RETURN          reduce using rule 33 (asignacion -> identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ; .)
@@ -3227,88 +3313,103 @@ state 198
     }               reduce using rule 33 (asignacion -> identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ; .)
 
 
-state 199
-
-    (46) estDesicion -> IF ( expOR ) if_gotF bloque . estDesicion2
-    (48) estDesicion2 -> . empty
-    (49) estDesicion2 -> . ELSE bloque
-    (104) empty -> .
-    ELSE            shift and go to state 203
-    RETURN          reduce using rule 104 (empty -> .)
-    WHILE           reduce using rule 104 (empty -> .)
-    FROM            reduce using rule 104 (empty -> .)
-    IF              reduce using rule 104 (empty -> .)
-    PRINT           reduce using rule 104 (empty -> .)
-    WRITE           reduce using rule 104 (empty -> .)
-    ID              reduce using rule 104 (empty -> .)
-    }               reduce using rule 104 (empty -> .)
-
-    estDesicion2                   shift and go to state 201
-    empty                          shift and go to state 202
-
-state 200
-
-    (51) estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 . bloque
-    (23) bloque -> . { bloque2 }
-    {               shift and go to state 40
-
-    bloque                         shift and go to state 204
-
-state 201
-
-    (46) estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 .
-    RETURN          reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 .)
-    WHILE           reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 .)
-    FROM            reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 .)
-    IF              reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 .)
-    PRINT           reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 .)
-    WRITE           reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 .)
-    ID              reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 .)
-    }               reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 .)
-
-
-state 202
-
-    (48) estDesicion2 -> empty .
-    RETURN          reduce using rule 48 (estDesicion2 -> empty .)
-    WHILE           reduce using rule 48 (estDesicion2 -> empty .)
-    FROM            reduce using rule 48 (estDesicion2 -> empty .)
-    IF              reduce using rule 48 (estDesicion2 -> empty .)
-    PRINT           reduce using rule 48 (estDesicion2 -> empty .)
-    WRITE           reduce using rule 48 (estDesicion2 -> empty .)
-    ID              reduce using rule 48 (estDesicion2 -> empty .)
-    }               reduce using rule 48 (estDesicion2 -> empty .)
-
-
-state 203
-
-    (49) estDesicion2 -> ELSE . bloque
-    (23) bloque -> . { bloque2 }
-    {               shift and go to state 40
-
-    bloque                         shift and go to state 205
-
-state 204
-
-    (51) estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .
-    RETURN          reduce using rule 51 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
-    WHILE           reduce using rule 51 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
-    FROM            reduce using rule 51 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
-    IF              reduce using rule 51 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
-    PRINT           reduce using rule 51 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
-    WRITE           reduce using rule 51 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
-    ID              reduce using rule 51 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
-    }               reduce using rule 51 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
-
-
 state 205
 
-    (49) estDesicion2 -> ELSE bloque .
-    RETURN          reduce using rule 49 (estDesicion2 -> ELSE bloque .)
-    WHILE           reduce using rule 49 (estDesicion2 -> ELSE bloque .)
-    FROM            reduce using rule 49 (estDesicion2 -> ELSE bloque .)
-    IF              reduce using rule 49 (estDesicion2 -> ELSE bloque .)
-    PRINT           reduce using rule 49 (estDesicion2 -> ELSE bloque .)
-    WRITE           reduce using rule 49 (estDesicion2 -> ELSE bloque .)
-    ID              reduce using rule 49 (estDesicion2 -> ELSE bloque .)
-    }               reduce using rule 49 (estDesicion2 -> ELSE bloque .)
+    (46) estDesicion -> IF ( expOR ) if_gotF bloque . estDesicion2 if_fill_gotF
+    (49) estDesicion2 -> . empty
+    (50) estDesicion2 -> . ELSE bloque
+    (107) empty -> .
+    ELSE            shift and go to state 209
+    RETURN          reduce using rule 107 (empty -> .)
+    WHILE           reduce using rule 107 (empty -> .)
+    FROM            reduce using rule 107 (empty -> .)
+    IF              reduce using rule 107 (empty -> .)
+    PRINT           reduce using rule 107 (empty -> .)
+    WRITE           reduce using rule 107 (empty -> .)
+    ID              reduce using rule 107 (empty -> .)
+    }               reduce using rule 107 (empty -> .)
+
+    estDesicion2                   shift and go to state 207
+    empty                          shift and go to state 208
+
+state 206
+
+    (52) estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 . bloque
+    (23) bloque -> . { bloque2 }
+    {               shift and go to state 40
+
+    bloque                         shift and go to state 210
+
+state 207
+
+    (46) estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 . if_fill_gotF
+    (48) if_fill_gotF -> .
+    RETURN          reduce using rule 48 (if_fill_gotF -> .)
+    WHILE           reduce using rule 48 (if_fill_gotF -> .)
+    FROM            reduce using rule 48 (if_fill_gotF -> .)
+    IF              reduce using rule 48 (if_fill_gotF -> .)
+    PRINT           reduce using rule 48 (if_fill_gotF -> .)
+    WRITE           reduce using rule 48 (if_fill_gotF -> .)
+    ID              reduce using rule 48 (if_fill_gotF -> .)
+    }               reduce using rule 48 (if_fill_gotF -> .)
+
+    if_fill_gotF                   shift and go to state 211
+
+state 208
+
+    (49) estDesicion2 -> empty .
+    RETURN          reduce using rule 49 (estDesicion2 -> empty .)
+    WHILE           reduce using rule 49 (estDesicion2 -> empty .)
+    FROM            reduce using rule 49 (estDesicion2 -> empty .)
+    IF              reduce using rule 49 (estDesicion2 -> empty .)
+    PRINT           reduce using rule 49 (estDesicion2 -> empty .)
+    WRITE           reduce using rule 49 (estDesicion2 -> empty .)
+    ID              reduce using rule 49 (estDesicion2 -> empty .)
+    }               reduce using rule 49 (estDesicion2 -> empty .)
+
+
+state 209
+
+    (50) estDesicion2 -> ELSE . bloque
+    (23) bloque -> . { bloque2 }
+    {               shift and go to state 40
+
+    bloque                         shift and go to state 212
+
+state 210
+
+    (52) estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .
+    RETURN          reduce using rule 52 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
+    WHILE           reduce using rule 52 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
+    FROM            reduce using rule 52 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
+    IF              reduce using rule 52 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
+    PRINT           reduce using rule 52 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
+    WRITE           reduce using rule 52 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
+    ID              reduce using rule 52 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
+    }               reduce using rule 52 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
+
+
+state 211
+
+    (46) estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .
+    RETURN          reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
+    WHILE           reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
+    FROM            reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
+    IF              reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
+    PRINT           reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
+    WRITE           reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
+    ID              reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
+    }               reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
+
+
+state 212
+
+    (50) estDesicion2 -> ELSE bloque .
+    RETURN          reduce using rule 50 (estDesicion2 -> ELSE bloque .)
+    WHILE           reduce using rule 50 (estDesicion2 -> ELSE bloque .)
+    FROM            reduce using rule 50 (estDesicion2 -> ELSE bloque .)
+    IF              reduce using rule 50 (estDesicion2 -> ELSE bloque .)
+    PRINT           reduce using rule 50 (estDesicion2 -> ELSE bloque .)
+    WRITE           reduce using rule 50 (estDesicion2 -> ELSE bloque .)
+    ID              reduce using rule 50 (estDesicion2 -> ELSE bloque .)
+    }               reduce using rule 50 (estDesicion2 -> ELSE bloque .)

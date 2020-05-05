@@ -30,6 +30,18 @@ class TypeMatching():
                 'int': 'bool',
                 'float': 'bool'
             },
+            '<=': {
+                'int': 'bool',
+                'float': 'bool'
+            },
+            '>=': {
+                'int': 'bool',
+                'float': 'bool'
+            },
+            '!=': {
+                'int': 'bool',
+                'float': 'bool'
+            },
             '==': {
                 'int': 'bool',
                 'float': 'bool'
@@ -64,6 +76,18 @@ class TypeMatching():
                 'float': 'bool'
             },
             '>': {
+                'int': 'bool',
+                'float': 'bool'
+            },
+            '<=': {
+                'int': 'bool',
+                'float': 'bool'
+            },
+            '>=': {
+                'int': 'bool',
+                'float': 'bool'
+            },
+            '!=': {
                 'int': 'bool',
                 'float': 'bool'
             },
