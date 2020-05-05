@@ -37,7 +37,7 @@ def assignQuad(opSt, operSt, typeSt, quad):
     quad.add(op, r, None, l)
 
 def gotoFQuad(operSt, typeSt, jumpSt, quad):
-    print("IF")
+    quad.print()
     boolType = typeSt.pop()
 
     if boolType != "bool":
@@ -49,6 +49,16 @@ def gotoFQuad(operSt, typeSt, jumpSt, quad):
     jumpSt.print()
 
 def fillGotoFQuad(quad, jumpSt):
-    print("IF END")
     index = jumpSt.pop()
     quad.update(index, quad.getCount())
+
+def gotoQuad(quad, jumpSt):
+    #add goto
+    indexGOTO = quad.getCount()
+    quad.add("GOTO", None, None, None)
+    #update gotoF
+    index = jumpSt.pop()
+    quad.update(index, quad.getCount())
+
+    #push goto index
+    jumpSt.push(indexGOTO)

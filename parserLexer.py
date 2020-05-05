@@ -385,6 +385,7 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def if_gotF(self, p):
+        print(p[-4])
         gotoFQuad(
             self.pilaOper,
             self.pilaType,
@@ -395,11 +396,20 @@ class CalcParser(Parser):
     #embeded action     
     @_('')
     def if_fill_gotF(self, p):
+        print("if_fill_gotF")
         fillGotoFQuad(self.quad, self.pilaJump)
         
-    @_('ELSE bloque')
+    @_('ELSE if_goto bloque')
     def estDesicion2(self, p):
         pass
+    
+    #embeded action
+    @_('')
+    def if_goto(self, p):
+        gotoQuad(
+            self.quad,
+            self.pilaJump
+        )
 
     @_('empty')
     def estDesicion2(self, p):
