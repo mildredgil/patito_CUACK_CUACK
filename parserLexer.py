@@ -377,9 +377,14 @@ class CalcParser(Parser):
 
     #estatuto de decision
 
-    @_('IF "(" expOR ")" bloque estDesicion2')
+    @_('IF "(" expOR ")" if_gotF bloque estDesicion2')
     def estDesicion(self, p):
         pass
+
+    @_('')
+    def if_gotF(self, p):
+        print("IF")
+        self.pilaOper.print()
 
     @_('ELSE bloque')
     def estDesicion2(self, p):

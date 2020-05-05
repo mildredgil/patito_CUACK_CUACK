@@ -1,0 +1,79 @@
+programa patito;
+var ent a,b,c,d,e,f,g,h,i,j,k;
+
+principal () {
+    #asignacion
+    a = b;
+    # = b  _   a
+
+    #asignacion
+    a = -b;
+    # - b   _   t1
+    # = t1  _   a
+
+    #suma
+    a = b + c + d;
+    # + b   c   t1
+    # + t1  d   t2
+    # = t2  _   a
+
+    #resta
+    a = b - c - d;
+    # - b   c   t3
+    # - t3  d   t4
+    # = t4  _   a
+
+    #suma y resta
+    a = b + c - d;
+    # + b   c   t5
+    # - t5  d   t6
+    # = t6  _   a
+
+    #multiplicacion y division
+    a = b * c / d;
+    # * b   c   t7
+    # / t7  d   t8
+    # = t8  _   a
+
+    #multiplicacion y suma
+    a = b + c * d + e;
+    # * c   d    t9
+    # + b   t9   t10
+    # + t10  e   t11 
+    # = t11  _   a
+
+    #division multiplicacion suma y resta
+    f = g + h * i / j - b * - c;
+    # * c   d    t10
+    # + b   t10  t11
+    # + t11  e   t12
+    # = t12  _   a
+
+    #parentesis
+    f = (a);
+    # = a  _   f
+
+    #parentesis y suma
+    f = (a) + b;
+    # + a   b  t13
+    # = t13 _  f 
+
+    #parentesis suma y resta
+    h = b + (a - c);
+    # - a   c   t14
+    # + b   t14 t15
+    # = t15 _   h
+
+
+    #parentesis suma resta multiplicacion y division
+    i = b + (a - c) * g - h + (a + -b / f);
+    # - a   c   t16
+    # * t16 g   t17
+    # + b   t17 t18
+    # - t18 h   t19
+    # - b   _   t20
+    # / t20 f   t21
+    # + a   t21 t22
+    # + t19 t22 t23
+    # = t23 _   i
+}
