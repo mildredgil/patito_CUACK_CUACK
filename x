@@ -1,5 +1,5 @@
 programa patito;
-var ent b;
+var ent b, a , c, d, e, g;
 
 
 

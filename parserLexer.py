@@ -8,7 +8,8 @@ from dataTable import *
 from dataStructure import stack
 from typeMatching import *
 from quad import *
-import copy
+from stackHelpers import *
+
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
     tokens = { 
@@ -260,8 +261,8 @@ class CalcParser(Parser):
     #embedded action
     @_('')
     def asignacion_insert_var(self, p):    
-        self.pilaOper.push(p[-1])
-        self.pilaType.push(self.currentType)
+        t = self.dataTable.getTypeVar(p[-1], self.currentFunc)
+        pushOperandType(self.pilaOper, self.pilaType, p[-1], t)
         self.pilaOp.push("=")
         
     #embedded action
@@ -269,23 +270,49 @@ class CalcParser(Parser):
     def asignacion_pop_all(self, p):
         self.pilaOper.print()
         self.pilaOp.print()
-        while self.pilaOper.length() > 2:
+        print("sacando")
+        while self.pilaOp.length() > 0:
+            if self.pilaOp.top() != "=":
+                print("normal")
+                normalQuad(
+                    self.pilaOp,
+                    self.pilaOper, 
+                    self.pilaType,
+                    self.quad, 
+                    self.tempVar)
+            else:
+                print("assign")
+                assignQuad(
+                self.pilaOp,
+                self.pilaOper, 
+                self.pilaType,
+                self.quad)
+            
+            self.tempVar = self.tempVar + 1
+            
+            '''                
             r = self.pilaOper.pop()
             l = self.pilaOper.pop()
             op = self.pilaOp.pop()
             temp = "t" + str(self.tempVar)
             self.quad.add(op, l, r, temp)
             self.pilaOper.push(temp)
-            # self.pilaType.push(newType)
+            self.pilaType.push(newType)
             self.tempVar = self.tempVar + 1
-        
+            
         if self.pilaOper.length()==2:
+            assignQuad(
+                self.pilaOp,
+                self.pilaOper, 
+                self.pilaType,
+                self.quad)
+
             r = self.pilaOper.pop()
             l = self.pilaOper.pop()
             op = self.pilaOp.pop()
             self.quad.add(op, l, r, l)
-
-        # print("operadores", op, operL, operR)
+            '''
+        
         '''
         if operR and operL:
             if op == "=":
@@ -301,7 +328,6 @@ class CalcParser(Parser):
         else:
             raise Exception("error value expected")
         '''    
-        self.pilaOp.pop()
 
         
     #lee
@@ -491,12 +517,14 @@ class CalcParser(Parser):
         if self.pilaOper.length() > 1:
             if self.pilaOp.top() == "/" or self.pilaOp.top() == "*":
                 while self.pilaOp.top() == "/" or self.pilaOp.top() == "*":
-                    r = self.pilaOper.pop()
-                    l = self.pilaOper.pop()
-                    temp = "t" + str(self.tempVar)
-                    self.quad.add(self.pilaOp.top(), l, r, temp)
-                    self.pilaOper.push(temp)
-                    # self.pilaType.push(newType)
+                    normalQuad(
+                        self.pilaOp,
+                        self.pilaOper, 
+                        self.pilaType,
+                        self.quad, 
+                        self.tempVar)
+                    self.tempVar = self.tempVar + 1
+                    
                     self.tempVar = self.tempVar + 1
                     self.pilaOp.pop()
                 self.pilaOp.push(p[-1])
@@ -523,30 +551,27 @@ class CalcParser(Parser):
     @_('')
     def exp_par_end(self, p):
         while self.pilaOp.top() != '(':
-            r = self.pilaOper.pop()
-            l = self.pilaOper.pop()
-            op = self.pilaOp.pop()
-            temp = "t" + str(self.tempVar)
-            self.quad.add(op, l, r, temp)
-            self.pilaOper.push(temp)
-            # self.pilaType.push(newType)
+            normalQuad(
+                self.pilaOp,
+                self.pilaOper, 
+                self.pilaType,
+                self.quad, 
+                self.tempVar)
             self.tempVar = self.tempVar + 1
         self.pilaOp.pop()
 
     @_('PLUS varcte')
     def factor(self, p):
-        return p.varcte
-
+        pass
+        
     @_('MINUS varcte')
     def factor(self, p):
-        return (- p.varcte)
-
+        pass
+        
     @_('varcte')
     def factor(self, p):
-        self.pilaOper.push(p[0])
-        self.pilaType.push(self.currentType)
-        return p[0]
-
+        pass
+        
     #OPMAT
     @_('factor opmat2')
     def opmat(self, p):
@@ -590,7 +615,7 @@ class CalcParser(Parser):
                 temp = "t" + str(self.tempVar)
                 self.quad.add(op, r, l, temp)
                 self.pilaOper.push(temp)
-                # self.pilaType.push(newType)
+                self.pilaType.push(newType)
                 self.tempVar = self.tempVar + 1
                 pilaOp.pop()
             else:
@@ -622,7 +647,12 @@ class CalcParser(Parser):
     # VARCTE
     @_('identificadores')
     def varcte(self, p):
-        return p[0]
+        t = self.dataTable.getTypeVar(p[0], self.currentFunc)
+        pushOperandType(
+            self.pilaOper, 
+            self.pilaType, 
+            p[0], 
+            t)
 
     @_('INTNUMBER')
     def varcte(self, p):
