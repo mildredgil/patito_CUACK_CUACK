@@ -523,15 +523,10 @@ class CalcParser(Parser):
                         self.pilaType,
                         self.quad, 
                         self.tempVar)
-                    self.tempVar = self.tempVar + 1
                     
                     self.tempVar = self.tempVar + 1
-                    self.pilaOp.pop()
-                self.pilaOp.push(p[-1])
-            else:
-                self.pilaOp.push(p[-1])
-        else:
-            self.pilaOp.push(p[-1])
+                   
+        self.pilaOp.push(p[-1])
         
 
     @_('empty')
