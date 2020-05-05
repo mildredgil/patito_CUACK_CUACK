@@ -16,7 +16,7 @@ if __name__ == '__main__':
     
     print("dataTable:")
     parser.dataTable.print()
-    print("quadruple")
+    print("quadruple:")
     parser.quad.print()
     #parser.printTokens()
     

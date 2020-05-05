@@ -24,7 +24,9 @@ class Stack:
 
     def print(self):
         print(self.data)
-            
+    
+    def length(self):
+        return len(self.data)
 
 '''
 def main():

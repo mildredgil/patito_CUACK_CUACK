@@ -266,12 +266,26 @@ class CalcParser(Parser):
         
     #embedded action
     @_('')
-    def asignacion_pop_all(self, p):    
-        op = self.pilaOp.top()
-        operL = self.pilaOper.pop()
-        operR = self.pilaOper.pop()
+    def asignacion_pop_all(self, p):
+        self.pilaOper.print()
+        self.pilaOp.print()
+        while self.pilaOper.length() > 2:
+            r = self.pilaOper.pop()
+            l = self.pilaOper.pop()
+            op = self.pilaOp.pop()
+            temp = "t" + str(self.tempVar)
+            self.quad.add(op, l, r, temp)
+            self.pilaOper.push(temp)
+            # self.pilaType.push(newType)
+            self.tempVar = self.tempVar + 1
+        
+        if self.pilaOper.length()==2:
+            r = self.pilaOper.pop()
+            l = self.pilaOper.pop()
+            op = self.pilaOp.pop()
+            self.quad.add(op, l, r, l)
 
-        print("operadores", op, operL, operR)
+        # print("operadores", op, operL, operR)
         '''
         if operR and operL:
             if op == "=":
@@ -471,33 +485,25 @@ class CalcParser(Parser):
 
     @_('')
     def exp_op_insert(self, p):
-        op = self.pilaOp.top()
-        print("top op", op)
+        print("estamos sumando")
+        print("past op", self.pilaOp.top())
         print("current op", p[-1])
-        if op == "+" or op == "-":
-            operL = self.pilaOper.pop()
-            operR = self.pilaOper.pop()
-
-            if operR and operL:
-                typeL = self.pilaType.pop()
-                typeR = self.pilaType.pop()
-                newType = TypeMatching.sem(0, typeR, op, typeL)
-                temp = "t" + str(self.tempVar)
-
-                self.quad.add(op, operR, operL, temp)
-                self.pilaOper.push(temp)
-                self.pilaType.push(newType)
-                self.tempVar = self.tempVar + 1
+        if self.pilaOper.length() > 1:
+            if self.pilaOp.top() == "/" or self.pilaOp.top() == "*":
+                while self.pilaOp.top() == "/" or self.pilaOp.top() == "*":
+                    r = self.pilaOper.pop()
+                    l = self.pilaOper.pop()
+                    temp = "t" + str(self.tempVar)
+                    self.quad.add(self.pilaOp.top(), l, r, temp)
+                    self.pilaOper.push(temp)
+                    # self.pilaType.push(newType)
+                    self.tempVar = self.tempVar + 1
+                    self.pilaOp.pop()
+                self.pilaOp.push(p[-1])
             else:
-                raise Exception("error value expected")
-            
-            self.pilaOp.pop()
-
-        self.pilaOp.push(p[-1])
-        print("termino op insert PILAS")
-        self.pilaOper.print()
-        self.pilaOp.print()
-        print("-------")
+                self.pilaOp.push(p[-1])
+        else:
+            self.pilaOp.push(p[-1])
         
 
     @_('empty')
@@ -505,9 +511,27 @@ class CalcParser(Parser):
         pass
 
     # factor
-    @_('"(" exp ")"')
+    @_('"(" exp_par_start exp ")" exp_par_end ')
     def factor(self, p):
+        # self.pilaOper.push(p.exp)
         return p.exp
+
+    @_('')
+    def exp_par_start(self, p):
+        self.pilaOp.push(p[-1])
+
+    @_('')
+    def exp_par_end(self, p):
+        while self.pilaOp.top() != '(':
+            r = self.pilaOper.pop()
+            l = self.pilaOper.pop()
+            op = self.pilaOp.pop()
+            temp = "t" + str(self.tempVar)
+            self.quad.add(op, l, r, temp)
+            self.pilaOper.push(temp)
+            # self.pilaType.push(newType)
+            self.tempVar = self.tempVar + 1
+        self.pilaOp.pop()
 
     @_('PLUS varcte')
     def factor(self, p):
@@ -550,37 +574,29 @@ class CalcParser(Parser):
     @_('TIMES term_op_insert termino',
        'DIVIDE term_op_insert termino')
     def termino2(self, p):
+        print('estamos multiplicando')
         pass
     
     @_('')
     def term_op_insert(self, p):
+        print("estamos mult")
         op = self.pilaOp.top()
-        print("top op", op)
+        print("past op", op)
         print("current op", p[-1])
-        if op == "*" or op == "/":
-            operL = self.pilaOper.pop()
-            operR = self.pilaOper.pop()
-
-            if operR and operL:
-                typeL = self.pilaType.pop()
-                typeR = self.pilaType.pop()
-                newType = TypeMatching.sem(0, typeR, op, typeL)
+        if self.pilaOp.length() > 1:
+            if op == "$" or op == "!":
+                r = self.pilaOper.pop()
+                l = self.pilaOper.pop()
                 temp = "t" + str(self.tempVar)
-
-                self.quad.add(op, operR, operL, temp)
+                self.quad.add(op, r, l, temp)
                 self.pilaOper.push(temp)
-                self.pilaType.push(newType)
+                # self.pilaType.push(newType)
                 self.tempVar = self.tempVar + 1
+                pilaOp.pop()
             else:
-                raise Exception("error value expected")
-            
-            self.pilaOp.pop()
-
-        self.pilaOp.push(p[-1])
-        print("termino op insert PILAS")
-        self.pilaOper.print()
-        self.pilaOp.print()
-        print("-------")
+                self.pilaOp.push(p[-1])
+        else:
+            self.pilaOp.push(p[-1])
         
     @_('empty')
     def termino2(self, p):
