@@ -44,10 +44,13 @@ principal () {
 
     #division multiplicacion suma y resta
     f = g + h * i / j - b * - c;
-    # * c   d    t10
-    # + b   t10  t11
-    # + t11  e   t12
-    # = t12  _   a
+    # * h   i    t12
+    # / t12 j    t13
+    # + g   t13  t14
+    # - c   _    t15
+    # * b   t15  t16
+    # - t14 t16  t17
+    # = t17 _    f
 
     #parentesis
     f = (a);
@@ -55,15 +58,14 @@ principal () {
 
     #parentesis y suma
     f = (a) + b;
-    # + a   b  t13
-    # = t13 _  f 
+    # + a   b  t18
+    # = t18 _  f 
 
     #parentesis suma y resta
     h = b + (a - c);
-    # - a   c   t14
-    # + b   t14 t15
-    # = t15 _   h
-
+    # - a   c   t19
+    # + b   t19 t20
+    # = t20 _   h
 
     #parentesis suma resta multiplicacion y division
     i = b + (a - c) * g - h + (a + -b / f);
