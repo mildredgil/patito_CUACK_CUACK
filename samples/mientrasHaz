@@ -1,0 +1,12 @@
+programa patito;
+var ent a,i;
+    deci b, c;
+    
+
+principal () {
+    mientras(a > 2) haz {
+        a = a + a * b - c;
+        i = i - c;
+    }
+    a = 10;
+}

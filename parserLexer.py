@@ -677,15 +677,18 @@ class CalcParser(Parser):
 
     @_('INTNUMBER')
     def varcte(self, p):
-        return p[0]
+        self.pilaType.push("int")
+        pass
 
     @_('CHARACTER')
     def varcte(self, p):
-        return p[0]
+        self.pilaType.push("char")
+        pass
 
     @_('FLOATNUMBER')
     def varcte(self, p):
-        return p[0]
+        self.pilaType.push("float")
+        pass
 
     @_('llamada')
     def varcte(self, p):
