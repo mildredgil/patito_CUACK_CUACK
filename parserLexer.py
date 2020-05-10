@@ -512,7 +512,7 @@ class CalcParser(Parser):
         'EQ push_bool_op exp',
         'ELT push_bool_op exp',
         'EGT push_bool_op exp',
-        'NE exp')
+        'NE push_bool_op exp')
     def expresion2(self, p):
         pass
 

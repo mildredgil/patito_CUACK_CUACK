@@ -71,7 +71,7 @@ Rule 67    expAND2 -> AND expAND
 Rule 68    expresion -> exp expresion2 quad_expresion
 Rule 69    quad_expresion -> <empty>
 Rule 70    expresion2 -> empty
-Rule 71    expresion2 -> NE exp
+Rule 71    expresion2 -> NE push_bool_op exp
 Rule 72    expresion2 -> EGT push_bool_op exp
 Rule 73    expresion2 -> ELT push_bool_op exp
 Rule 74    expresion2 -> EQ push_bool_op exp
@@ -213,7 +213,7 @@ parametros3          : 20
 programa             : 0
 programa2            : 1
 programa3            : 1 6
-push_bool_op         : 72 73 74 75 76
+push_bool_op         : 71 72 73 74 75 76
 quad_expresion       : 68
 regresa              : 26
 save_id              : 15
@@ -2179,7 +2179,7 @@ state 125
 
     (68) expresion -> exp . expresion2 quad_expresion
     (70) expresion2 -> . empty
-    (71) expresion2 -> . NE exp
+    (71) expresion2 -> . NE push_bool_op exp
     (72) expresion2 -> . EGT push_bool_op exp
     (73) expresion2 -> . ELT push_bool_op exp
     (74) expresion2 -> . EQ push_bool_op exp
@@ -2666,36 +2666,17 @@ state 156
 
 state 157
 
-    (71) expresion2 -> NE . exp
-    (78) exp -> . termino exp2
-    (94) termino -> . opmat termino2
-    (89) opmat -> . factor opmat2
-    (83) factor -> . varcte
-    (84) factor -> . MINUS varcte
-    (85) factor -> . PLUS varcte
-    (86) factor -> . ( exp_par_start exp ) exp_par_end
-    (103) varcte -> . llamada
-    (104) varcte -> . FLOATNUMBER
-    (105) varcte -> . CHARACTER
-    (106) varcte -> . INTNUMBER
-    (107) varcte -> . identificadores
-    (99) llamada -> . ID ( llamada2 )
-    (54) identificadores -> . ID identificadores2
-    MINUS           shift and go to state 52
-    PLUS            shift and go to state 53
-    (               shift and go to state 54
-    FLOATNUMBER     shift and go to state 56
-    CHARACTER       shift and go to state 57
-    INTNUMBER       shift and go to state 58
-    ID              shift and go to state 60
+    (71) expresion2 -> NE . push_bool_op exp
+    (77) push_bool_op -> .
+    MINUS           reduce using rule 77 (push_bool_op -> .)
+    PLUS            reduce using rule 77 (push_bool_op -> .)
+    (               reduce using rule 77 (push_bool_op -> .)
+    FLOATNUMBER     reduce using rule 77 (push_bool_op -> .)
+    CHARACTER       reduce using rule 77 (push_bool_op -> .)
+    INTNUMBER       reduce using rule 77 (push_bool_op -> .)
+    ID              reduce using rule 77 (push_bool_op -> .)
 
-    exp                            shift and go to state 184
-    termino                        shift and go to state 48
-    opmat                          shift and go to state 49
-    factor                         shift and go to state 50
-    varcte                         shift and go to state 51
-    llamada                        shift and go to state 55
-    identificadores                shift and go to state 59
+    push_bool_op                   shift and go to state 184
 
 state 158
 
@@ -2987,11 +2968,36 @@ state 183
 
 state 184
 
-    (71) expresion2 -> NE exp .
-    AND             reduce using rule 71 (expresion2 -> NE exp .)
-    OR              reduce using rule 71 (expresion2 -> NE exp .)
-    )               reduce using rule 71 (expresion2 -> NE exp .)
+    (71) expresion2 -> NE push_bool_op . exp
+    (78) exp -> . termino exp2
+    (94) termino -> . opmat termino2
+    (89) opmat -> . factor opmat2
+    (83) factor -> . varcte
+    (84) factor -> . MINUS varcte
+    (85) factor -> . PLUS varcte
+    (86) factor -> . ( exp_par_start exp ) exp_par_end
+    (103) varcte -> . llamada
+    (104) varcte -> . FLOATNUMBER
+    (105) varcte -> . CHARACTER
+    (106) varcte -> . INTNUMBER
+    (107) varcte -> . identificadores
+    (99) llamada -> . ID ( llamada2 )
+    (54) identificadores -> . ID identificadores2
+    MINUS           shift and go to state 52
+    PLUS            shift and go to state 53
+    (               shift and go to state 54
+    FLOATNUMBER     shift and go to state 56
+    CHARACTER       shift and go to state 57
+    INTNUMBER       shift and go to state 58
+    ID              shift and go to state 60
 
+    exp                            shift and go to state 198
+    termino                        shift and go to state 48
+    opmat                          shift and go to state 49
+    factor                         shift and go to state 50
+    varcte                         shift and go to state 51
+    llamada                        shift and go to state 55
+    identificadores                shift and go to state 59
 
 state 185
 
@@ -3018,7 +3024,7 @@ state 185
     INTNUMBER       shift and go to state 58
     ID              shift and go to state 60
 
-    exp                            shift and go to state 198
+    exp                            shift and go to state 199
     termino                        shift and go to state 48
     opmat                          shift and go to state 49
     factor                         shift and go to state 50
@@ -3051,7 +3057,7 @@ state 186
     INTNUMBER       shift and go to state 58
     ID              shift and go to state 60
 
-    exp                            shift and go to state 199
+    exp                            shift and go to state 200
     termino                        shift and go to state 48
     opmat                          shift and go to state 49
     factor                         shift and go to state 50
@@ -3084,7 +3090,7 @@ state 187
     INTNUMBER       shift and go to state 58
     ID              shift and go to state 60
 
-    exp                            shift and go to state 200
+    exp                            shift and go to state 201
     termino                        shift and go to state 48
     opmat                          shift and go to state 49
     factor                         shift and go to state 50
@@ -3117,7 +3123,7 @@ state 188
     INTNUMBER       shift and go to state 58
     ID              shift and go to state 60
 
-    exp                            shift and go to state 201
+    exp                            shift and go to state 202
     termino                        shift and go to state 48
     opmat                          shift and go to state 49
     factor                         shift and go to state 50
@@ -3150,7 +3156,7 @@ state 189
     INTNUMBER       shift and go to state 58
     ID              shift and go to state 60
 
-    exp                            shift and go to state 202
+    exp                            shift and go to state 203
     termino                        shift and go to state 48
     opmat                          shift and go to state 49
     factor                         shift and go to state 50
@@ -3184,7 +3190,7 @@ state 190
     ID              shift and go to state 60
 
     identificadores                shift and go to state 59
-    exp                            shift and go to state 203
+    exp                            shift and go to state 204
     termino                        shift and go to state 48
     opmat                          shift and go to state 49
     factor                         shift and go to state 50
@@ -3194,7 +3200,7 @@ state 190
 state 191
 
     (33) asignacion -> identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all . ;
-    ;               shift and go to state 204
+    ;               shift and go to state 205
 
 
 state 192
@@ -3203,7 +3209,7 @@ state 192
     (23) bloque -> . { bloque2 }
     {               shift and go to state 40
 
-    bloque                         shift and go to state 205
+    bloque                         shift and go to state 206
 
 state 193
 
@@ -3258,13 +3264,21 @@ state 197
 
 state 198
 
+    (71) expresion2 -> NE push_bool_op exp .
+    AND             reduce using rule 71 (expresion2 -> NE push_bool_op exp .)
+    OR              reduce using rule 71 (expresion2 -> NE push_bool_op exp .)
+    )               reduce using rule 71 (expresion2 -> NE push_bool_op exp .)
+
+
+state 199
+
     (72) expresion2 -> EGT push_bool_op exp .
     AND             reduce using rule 72 (expresion2 -> EGT push_bool_op exp .)
     OR              reduce using rule 72 (expresion2 -> EGT push_bool_op exp .)
     )               reduce using rule 72 (expresion2 -> EGT push_bool_op exp .)
 
 
-state 199
+state 200
 
     (73) expresion2 -> ELT push_bool_op exp .
     AND             reduce using rule 73 (expresion2 -> ELT push_bool_op exp .)
@@ -3272,7 +3286,7 @@ state 199
     )               reduce using rule 73 (expresion2 -> ELT push_bool_op exp .)
 
 
-state 200
+state 201
 
     (74) expresion2 -> EQ push_bool_op exp .
     AND             reduce using rule 74 (expresion2 -> EQ push_bool_op exp .)
@@ -3280,7 +3294,7 @@ state 200
     )               reduce using rule 74 (expresion2 -> EQ push_bool_op exp .)
 
 
-state 201
+state 202
 
     (75) expresion2 -> GT push_bool_op exp .
     AND             reduce using rule 75 (expresion2 -> GT push_bool_op exp .)
@@ -3288,7 +3302,7 @@ state 201
     )               reduce using rule 75 (expresion2 -> GT push_bool_op exp .)
 
 
-state 202
+state 203
 
     (76) expresion2 -> LT push_bool_op exp .
     AND             reduce using rule 76 (expresion2 -> LT push_bool_op exp .)
@@ -3296,13 +3310,13 @@ state 202
     )               reduce using rule 76 (expresion2 -> LT push_bool_op exp .)
 
 
-state 203
+state 204
 
     (53) estRepNoCond -> FROM identificadores ASSIGN exp TO exp . DO2 bloque
-    DO2             shift and go to state 206
+    DO2             shift and go to state 207
 
 
-state 204
+state 205
 
     (33) asignacion -> identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ; .
     RETURN          reduce using rule 33 (asignacion -> identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ; .)
@@ -3315,13 +3329,13 @@ state 204
     }               reduce using rule 33 (asignacion -> identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ; .)
 
 
-state 205
+state 206
 
     (46) estDesicion -> IF ( expOR ) if_gotF bloque . estDesicion2 if_fill_gotF
     (49) estDesicion2 -> . empty
     (50) estDesicion2 -> . ELSE if_goto bloque
     (108) empty -> .
-    ELSE            shift and go to state 209
+    ELSE            shift and go to state 210
     RETURN          reduce using rule 108 (empty -> .)
     WHILE           reduce using rule 108 (empty -> .)
     FROM            reduce using rule 108 (empty -> .)
@@ -3331,18 +3345,18 @@ state 205
     ID              reduce using rule 108 (empty -> .)
     }               reduce using rule 108 (empty -> .)
 
-    estDesicion2                   shift and go to state 207
-    empty                          shift and go to state 208
+    estDesicion2                   shift and go to state 208
+    empty                          shift and go to state 209
 
-state 206
+state 207
 
     (53) estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 . bloque
     (23) bloque -> . { bloque2 }
     {               shift and go to state 40
 
-    bloque                         shift and go to state 210
+    bloque                         shift and go to state 211
 
-state 207
+state 208
 
     (46) estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 . if_fill_gotF
     (48) if_fill_gotF -> .
@@ -3355,9 +3369,9 @@ state 207
     ID              reduce using rule 48 (if_fill_gotF -> .)
     }               reduce using rule 48 (if_fill_gotF -> .)
 
-    if_fill_gotF                   shift and go to state 211
+    if_fill_gotF                   shift and go to state 212
 
-state 208
+state 209
 
     (49) estDesicion2 -> empty .
     RETURN          reduce using rule 49 (estDesicion2 -> empty .)
@@ -3370,15 +3384,15 @@ state 208
     }               reduce using rule 49 (estDesicion2 -> empty .)
 
 
-state 209
+state 210
 
     (50) estDesicion2 -> ELSE . if_goto bloque
     (51) if_goto -> .
     {               reduce using rule 51 (if_goto -> .)
 
-    if_goto                        shift and go to state 212
+    if_goto                        shift and go to state 213
 
-state 210
+state 211
 
     (53) estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .
     RETURN          reduce using rule 53 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
@@ -3391,7 +3405,7 @@ state 210
     }               reduce using rule 53 (estRepNoCond -> FROM identificadores ASSIGN exp TO exp DO2 bloque .)
 
 
-state 211
+state 212
 
     (46) estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .
     RETURN          reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
@@ -3404,15 +3418,15 @@ state 211
     }               reduce using rule 46 (estDesicion -> IF ( expOR ) if_gotF bloque estDesicion2 if_fill_gotF .)
 
 
-state 212
+state 213
 
     (50) estDesicion2 -> ELSE if_goto . bloque
     (23) bloque -> . { bloque2 }
     {               shift and go to state 40
 
-    bloque                         shift and go to state 213
+    bloque                         shift and go to state 214
 
-state 213
+state 214
 
     (50) estDesicion2 -> ELSE if_goto bloque .
     RETURN          reduce using rule 50 (estDesicion2 -> ELSE if_goto bloque .)

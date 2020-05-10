@@ -3,6 +3,10 @@ var ent a, e, b, c;
 
   principal ()
   {
+    si (e!=c) {
+        b = a;
+    }
+
     si (a>=e) {
         b = a;
     }
@@ -14,8 +18,4 @@ var ent a, e, b, c;
     si (a==b) {
         b = a;
     }
-
-    #si (e!=c) {
-        #b = a;
-    #}
   }
