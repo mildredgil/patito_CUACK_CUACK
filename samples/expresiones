@@ -8,8 +8,8 @@ principal () {
 
     #asignacion
     a = -b;
-    # - b   _   t1
-    # = t1  _   a
+    # - b   _  t1
+    # = t1  _  a
 
     #suma
     a = b + c + d;
