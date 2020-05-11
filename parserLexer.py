@@ -386,7 +386,6 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def if_gotF(self, p):
-        print(p[-4])
         gotoFQuad(
             self.pilaOper,
             self.pilaType,
@@ -397,7 +396,6 @@ class CalcParser(Parser):
     #embeded action     
     @_('')
     def if_fill_gotF(self, p):
-        print("if_fill_gotF")
         fillGotoFQuad(self.quad, self.pilaJump)
         
     @_('ELSE if_goto bloque')
@@ -418,9 +416,29 @@ class CalcParser(Parser):
     
     # estatuto de repeticion condicional
 
-    @_('WHILE "(" expOR ")" DO bloque')
+    @_('while_push_pila_jumps WHILE "(" expOR ")" if_gotF DO bloque while_goto')
     def estRepCond(self, p):
         pass
+
+    #embedded action
+    @_('')
+    def while_push_pila_jumps(self, p):
+        self.pilaJump.push(self.quad.getCount())
+
+    #embeded action
+    @_('')
+    def while_goto(self, p):
+        print("PILA:    ---------------------")
+        self.pilaJump.print()
+        gotoQuad(
+            self.quad,
+            self.pilaJump
+        )
+        self.pilaJump.print()
+        fillGotoQuad(
+            self.quad,
+            self.pilaJump
+        )
 
     # estatuto de repeticion no condicional
 
@@ -452,7 +470,6 @@ class CalcParser(Parser):
         pass
 
     # TIPO
-    
     @_('INT')
     def tipo(self, p):
         return 'int'
@@ -699,16 +716,19 @@ class CalcParser(Parser):
     @_('INTNUMBER')
     def varcte(self, p):
         self.pilaType.push("int")
+        self.pilaOper.push(p[0])
         pass
 
     @_('CHARACTER')
     def varcte(self, p):
         self.pilaType.push("char")
+        self.pilaOper.push(p[0])
         pass
 
     @_('FLOATNUMBER')
     def varcte(self, p):
         self.pilaType.push("float")
+        self.pilaOper.push(p[0])
         pass
 
     @_('llamada')
