@@ -513,7 +513,7 @@ class CalcParser(Parser):
         'EQ push_bool_op exp',
         'ELT push_bool_op exp',
         'EGT push_bool_op exp',
-        'NE exp')
+        'NE push_bool_op exp')
     def expresion2(self, p):
         pass
 
@@ -698,15 +698,18 @@ class CalcParser(Parser):
 
     @_('INTNUMBER')
     def varcte(self, p):
-        return p[0]
+        self.pilaType.push("int")
+        pass
 
     @_('CHARACTER')
     def varcte(self, p):
-        return p[0]
+        self.pilaType.push("char")
+        pass
 
     @_('FLOATNUMBER')
     def varcte(self, p):
-        return p[0]
+        self.pilaType.push("float")
+        pass
 
     @_('llamada')
     def varcte(self, p):
