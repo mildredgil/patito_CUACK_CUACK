@@ -7,9 +7,9 @@ principal () {
     # = b  _   a
 
     #asignacion
-    a = -b;
-    # - b   _   t1
-    # = t1  _   a
+    a = - b;
+    # - b   _   t0
+    # = t0  _   a
 
     #suma
     a = b + c + d;
@@ -69,13 +69,13 @@ principal () {
 
     #parentesis suma resta multiplicacion y division
     i = b + (a - c) * g - h + (a + -b / f);
-    # - a   c   t16
-    # * t16 g   t17
-    # + b   t17 t18
-    # - t18 h   t19
-    # - b   _   t20
-    # / t20 f   t21
-    # + a   t21 t22
-    # + t19 t22 t23
-    # = t23 _   i
+    # - a   c   t21
+    # * t22 g   t22
+    # + b   t17 t23
+    # - t23 h   t24
+    # - b   _   t25
+    # / t25 f   t26
+    # + a   t26 t27
+    # + t19 t27 t28
+    # = t28 _   i
 }

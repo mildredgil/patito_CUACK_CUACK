@@ -36,6 +36,14 @@ def assignQuad(opSt, operSt, typeSt, quad):
     
     quad.add(op, r, None, l)
 
+def singeOpQuad(opSt, operSt, quad, temp):
+    operSt.print()
+    opSt.print()
+    op = opSt.pop()
+    r = operSt.pop()
+    
+    quad.add(op, r, None, temp)
+
 def gotoFQuad(operSt, typeSt, jumpSt, quad):
     quad.print()
     boolType = typeSt.pop()

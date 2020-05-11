@@ -28,6 +28,9 @@ class Stack:
     def length(self):
         return len(self.data)
 
+    def flip(self):
+        self.data.reverse()
+
 '''
 def main():
     print("---- stack ----")

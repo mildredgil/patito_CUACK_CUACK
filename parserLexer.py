@@ -281,6 +281,8 @@ class CalcParser(Parser):
                     self.pilaType,
                     self.quad, 
                     self.tempVar)
+                self.tempVar = self.tempVar + 1
+
             else:
                 print("assign")
                 assignQuad(
@@ -288,8 +290,7 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.quad)
-            
-            self.tempVar = self.tempVar + 1
+                # self.tempVar = self.tempVar + 1
             
             '''                
             r = self.pilaOper.pop()
@@ -547,11 +548,18 @@ class CalcParser(Parser):
                         self.pilaOp,
                         self.pilaOper, 
                         self.pilaType,
-                        self.quad, 
+                        self.quad,
                         self.tempVar)
-                    
                     self.tempVar = self.tempVar + 1
-                   
+            if self.pilaOp.top() == "+" or self.pilaOp.top() == "-":
+                while self.pilaOp.top() == "+" or self.pilaOp.top() == "-":
+                    normalQuad(
+                        self.pilaOp,
+                        self.pilaOper, 
+                        self.pilaType,
+                        self.quad,
+                        self.tempVar)
+                    self.tempVar = self.tempVar + 1
         self.pilaOp.push(p[-1])
         
 
@@ -581,14 +589,29 @@ class CalcParser(Parser):
             self.tempVar = self.tempVar + 1
         self.pilaOp.pop()
 
-    @_('PLUS varcte')
+    @_('PLUS varcte plus_varcte')
     def factor(self, p):
         pass
-        
-    @_('MINUS varcte')
+
+    @_('MINUS varcte plus_varcte')
     def factor(self, p):
+        print('#################################################################################')
+        print(p.varcte)
         pass
+
+    @_('')
+    def plus_varcte(self, p):
         
+        self.quad.add(
+            p[-2],
+            p[-1],
+            None,
+            't' + str(self.tempVar)
+        )
+        self.pilaOper.push('t' + str(self.tempVar))
+        self.tempVar = self.tempVar + 1
+        
+
     @_('varcte')
     def factor(self, p):
         pass
@@ -630,19 +653,16 @@ class CalcParser(Parser):
         print("past op", op)
         print("current op", p[-1])
         if self.pilaOp.length() > 1:
-            if op == "$" or op == "!":
-                r = self.pilaOper.pop()
-                l = self.pilaOper.pop()
-                temp = "t" + str(self.tempVar)
-                self.quad.add(op, r, l, temp)
-                self.pilaOper.push(temp)
-                self.pilaType.push(newType)
+            if op == "/" or op == "*":
+                normalQuad(
+                    self.pilaOp,
+                    self.pilaOper, 
+                    self.pilaType,
+                    self.quad, 
+                    self.tempVar
+                )
                 self.tempVar = self.tempVar + 1
-                pilaOp.pop()
-            else:
-                self.pilaOp.push(p[-1])
-        else:
-            self.pilaOp.push(p[-1])
+        self.pilaOp.push(p[-1])
         
     @_('empty')
     def termino2(self, p):
@@ -674,6 +694,7 @@ class CalcParser(Parser):
             self.pilaType, 
             p[0], 
             t)
+        return p.identificadores
 
     @_('INTNUMBER')
     def varcte(self, p):
