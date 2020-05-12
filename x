@@ -1,8 +1,11 @@
 programa patito;
-var ent b, a , c, d, e, g;
+var ent a,i;
+    deci b, c;
+    
 
+principal () {
+    desde a = 0 hasta 2 hacer {
 
-
-  principal () {
-    a = b * c * (d + e) / g;
-  }
+        b = b + 1;
+    }
+}

@@ -74,4 +74,15 @@ def gotoQuad(quad, jumpSt):
 def fillGotoQuad(quad, jumpSt):
     index = jumpSt.pop()
     quad.update(index, jumpSt.pop())
-    
+
+
+def gotoQuadFor(quad, jumpSt):
+    #add goto
+    indexGOTO = quad.getCount()
+    quad.add("GOTO", None, None, None)
+    #update gotoF
+    index = jumpSt.pop()
+    quad.update(index, quad.getCount() + 1)
+
+    #push goto index
+    jumpSt.push(indexGOTO)

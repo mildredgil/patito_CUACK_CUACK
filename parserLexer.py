@@ -116,6 +116,8 @@ class CalcParser(Parser):
         self.pilaOper = stack.Stack()
         self.pilaType = stack.Stack()
         self.pilaJump = stack.Stack()
+        self.pilaForOp = stack.Stack()
+        self.pilaForGo = stack.Stack()
         self.quad = Quad()
         self.tempVar = 0
         self.tempVarTable = VarTable()
@@ -442,9 +444,93 @@ class CalcParser(Parser):
 
     # estatuto de repeticion no condicional
 
-    @_('FROM identificadores ASSIGN exp TO exp DO2 bloque')
+    @_(' FROM identificadores ASSIGN from_create exp from_assign TO exp from_gotF DO2 bloque from_suma from_goto')
     def estRepNoCond(self, p):
         pass
+    
+    #embeded action
+    @_('')
+    def from_create(self, p):
+        print("parte 1")
+        self.pilaForOp.push(p[-2])
+        self.pilaOper.push(p[-2])
+        self.pilaType.push('int')
+        self.pilaOp.push('=')
+
+        
+    
+    #embeded action
+    @_('')
+    def from_assign(self, p):
+        print("parte 2")
+        # self.pilaForGo.push()
+        assignQuad(
+                self.pilaOp,
+                self.pilaOper, 
+                self.pilaType,
+                self.quad)
+        self.quad.print()
+        
+
+    #embeded action
+    @_('')
+    def from_gotF(self, p):
+        self.pilaOper.push(self.pilaForOp.top())
+        self.pilaOp.push('>')
+        # self.pilaOper.push(p[1])
+        self.pilaType.push('int')
+        normalQuad(
+            self.pilaOp,
+            self.pilaOper, 
+            self.pilaType,
+            self.quad,
+            self.tempVar)
+        self.tempVar= self.tempVar +1
+        self.pilaJump.push(self.quad.getCount())
+        self.pilaJump.push(self.quad.getCount())
+        # self.pilaOper
+        self.quad.add("GOTOF", self.pilaOper.top(), None, None)
+        print('acabo desmadre')
+
+    @_('')
+    def from_goto(self, p):
+        gotoQuadFor(
+            self.quad,
+            self.pilaJump
+        )
+        self.pilaJump.print()
+        self.pilaJump.push(self.pilaJump.pop())
+        fillGotoQuad(
+            self.quad,
+            self.pilaJump
+        )
+
+    @_('')
+    def from_suma(self, p):
+        self.pilaOper.push(self.pilaForOp.top())
+        self.pilaType.push('int')
+        self.pilaOper.push(1)
+        self.pilaType.push('int')
+        self.pilaOp.push('+')
+        normalQuad(
+            self.pilaOp,
+            self.pilaOper, 
+            self.pilaType,
+            self.quad,
+            self.tempVar)
+        
+        self.pilaOper.push(self.pilaForOp.pop())
+        self.pilaType.push('int')
+        self.pilaOper.push('t'+str(self.tempVar))
+        self.pilaType.push('int')
+        self.pilaOp.push('=')
+        assignQuad(
+            self.pilaOp,
+            self.pilaOper, 
+            self.pilaType,
+            self.quad)
+        
+        self.tempVar=self.tempVar+1
     
     # identificadores
     @_('ID identificadores2')
