@@ -16,7 +16,7 @@ class CalcLexer(Lexer):
         STRING, INTNUMBER, FLOATNUMBER, CHARACTER, 
         ID, VAR, PROGRAM, PRINCIPAL,
         IF, ELSE, WHILE,
-        PRINT, WRITE,
+        PRINT, READ,
         DO, FROM, TO, DO2,
         FUNCTION, RETURN, INT, FLOAT, CHAR, VOID,
         PLUS, MINUS, TIMES, DIVIDE, ASSIGN,
@@ -60,8 +60,8 @@ class CalcLexer(Lexer):
     ID['var'] = VAR
     ID['si'] = IF
     ID['sino'] = ELSE
-    ID['lee'] = PRINT
-    ID['escribe'] = WRITE
+    ID['escribe'] = PRINT
+    ID['lee'] = READ
     ID['mientras'] = WHILE
     ID['haz'] = DO
     ID['hacer'] = DO2
@@ -335,7 +335,7 @@ class CalcParser(Parser):
 
         
     #lee
-    @_('PRINT "(" lee2 ")" ";"')
+    @_('READ "(" lee2 ")" ";"')
     def lee(self, p):
         pass
 
@@ -353,7 +353,7 @@ class CalcParser(Parser):
 
     #escritura
     
-    @_('WRITE "(" escritura2 ")" ";"')
+    @_('PRINT "(" escritura2 ")" ";"')
     def escritura(self, p):
         pass
 

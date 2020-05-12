@@ -1,0 +1,7 @@
+programa x;
+var ent a;
+
+  principal ()
+  {
+    lee(a,b,c);
+  }
