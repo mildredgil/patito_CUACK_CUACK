@@ -7,15 +7,9 @@ principal () {
     # = b  _   a
 
     #asignacion
-<<<<<<< HEAD
-    a = - b;
-    # - b   _   t0
-    # = t0  _   a
-=======
     a = -b;
     # - b   _  t1
     # = t1  _  a
->>>>>>> e9eb6b8710612bb8b4cc3e59560167ce053c3695
 
     #suma
     a = b + c + d;

@@ -5,6 +5,15 @@ var ent a,i;
 
 principal () {
     mientras(a > 2) haz {
+        a = b;
+    }
+
+    #1 > a 2 t0
+    #2 gotof t0
+    #3 = b   a
+    #4 goto  1
+
+    mientras(a > 2) haz {
         a = a + a * b - c;
         i = i - c;
     }
