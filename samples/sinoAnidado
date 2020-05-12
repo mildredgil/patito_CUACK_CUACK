@@ -1,0 +1,16 @@
+programa x2 ;
+var ent a, e, b, c;
+
+  principal ()
+  {
+    si (e!=c) {
+        b = a;
+        si (a >= e) {
+            e = a;
+        } sino {
+            a = e;
+        }   
+    }
+    
+    c = 10;
+  }

@@ -1,0 +1,23 @@
+programa x;
+    var ent m, a, p, id, h, i;
+        letra char;
+  principal () {
+    m = a;
+    char = 'a';
+    p = h + a;
+    #  escribe("hola");
+    mientras(10 > i) haz {
+      p = a + a * 12.1 - 1.1;
+
+      desde i = 0 hasta 10 hacer {
+       # lee(a);
+       p = 1 + p;
+      }
+    }
+
+    si (10 > p) {
+        p = 10;
+    } sino {
+        p = 9;
+    }
+  }
