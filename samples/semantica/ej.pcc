@@ -1,5 +1,7 @@
 programa patito;
 var ent b;
+    deci k;
+    letra z;
 
   funcion ent suma(ent i, ent k)
   var ent j, l, m;

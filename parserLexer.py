@@ -159,16 +159,11 @@ class CalcParser(Parser):
     # VARS
     @_('VAR var1')
     def vars(self, p):
-        return p.var1
-
-    @_('tipo set_type ids ";" var2')
-    def var1(self, p):
         pass
 
-    #embedded action
-    @_('')
-    def set_type(self, p):
-        self.currentType = p[-1]
+    @_('tipo ids ";" var2')
+    def var1(self, p):
+        pass
         
     @_('var1')
     def var2(self, p):
@@ -178,9 +173,14 @@ class CalcParser(Parser):
     def var2(self, p):
         pass
 
-    @_('identificadores ids2')
+    @_('identificadores set_id ids2')
     def ids(self, p):
-        self.dataTable.getTable(self.currentFunc).insert(p.identificadores,self.currentType)
+        pass
+    
+    #embeded action
+    @_('')
+    def set_id(self, p):
+        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType)
         
     @_('"," ids')
     def ids2(self, p):
@@ -199,14 +199,13 @@ class CalcParser(Parser):
     #embedded action
     @_('')
     def save_id(self, p):
-        print("save_id", p[-1], p[-2])
-        self.dataTable.insert(p[-1], p[-2])
+        #guardar funcion y tipo
+        self.dataTable.insert(p[-1], self.currentType)
         self.currentFunc = p[-1]
 
     @_('tipo')
     def funcion2(self, p):
-        self.currentType = p.tipo
-        return p.tipo
+        pass
 
     @_('VOID')
     def funcion2(self, p):
@@ -220,7 +219,8 @@ class CalcParser(Parser):
         
     @_('tipo ID parametros3')
     def parametros2(self, p):
-        self.dataTable.getTable(self.currentFunc).insert(p.ID,p.tipo)
+        self.currentId = p.ID
+        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType)
         
     @_('"," parametros2')
     def parametros3(self, p):
@@ -263,9 +263,9 @@ class CalcParser(Parser):
 
     #embedded action
     @_('')
-    def asignacion_insert_var(self, p):    
-        t = self.dataTable.getTypeVar(p[-1], self.currentFunc)
-        pushOperandType(self.pilaOper, self.pilaType, p[-1], t)
+    def asignacion_insert_var(self, p):  
+        t = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
+        pushOperandType(self.pilaOper, self.pilaType, self.currentId, t)
         self.pilaOp.push("=")
         
     #embedded action
@@ -339,9 +339,14 @@ class CalcParser(Parser):
     def lee(self, p):
         pass
 
-    @_('identificadores  lee3')
+    @_('identificadores lee_quad lee3')
     def lee2(self, p):
         pass
+
+    @_('')
+    def lee_quad(self, p):
+        self.pilaOper.print()
+        print("lee", p[-1])
 
     @_('"," lee2')
     def lee3(self, p):
@@ -451,9 +456,8 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def from_create(self, p):
-        print("parte 1")
-        self.pilaForOp.push(p[-2])
-        self.pilaOper.push(p[-2])
+        self.pilaForOp.push(self.currentId)
+        self.pilaOper.push(self.currentId)
         self.pilaType.push('int')
         self.pilaOp.push('=')
 
@@ -477,7 +481,6 @@ class CalcParser(Parser):
     def from_gotF(self, p):
         self.pilaOper.push(self.pilaForOp.top())
         self.pilaOp.push('>')
-        # self.pilaOper.push(p[1])
         self.pilaType.push('int')
         normalQuad(
             self.pilaOp,
@@ -488,7 +491,6 @@ class CalcParser(Parser):
         self.tempVar= self.tempVar +1
         self.pilaJump.push(self.quad.getCount())
         self.pilaJump.push(self.quad.getCount())
-        # self.pilaOper
         self.quad.add("GOTOF", self.pilaOper.top(), None, None)
         print('acabo desmadre')
 
@@ -536,9 +538,7 @@ class CalcParser(Parser):
     @_('ID identificadores2')
     def identificadores(self, p):
         self.currentId = p.ID
-        return p.ID
-        pass
-
+        
     @_('"[" exp "]" identificadores3')
     def identificadores2(self, p):
         pass
@@ -558,15 +558,15 @@ class CalcParser(Parser):
     # TIPO
     @_('INT')
     def tipo(self, p):
-        return 'int'
+        self.currentType = 'int'
 
     @_('CHAR')
     def tipo(self, p):
-        return 'char'
+        self.currentType = 'char'
 
     @_('FLOAT')
     def tipo(self, p):
-        return 'float'
+        self.currentType = 'float'
 
     # OR
     @_('expAND expOR2')
@@ -698,16 +698,13 @@ class CalcParser(Parser):
 
     @_('MINUS varcte plus_varcte')
     def factor(self, p):
-        print('#################################################################################')
-        print(p.varcte)
         pass
 
     @_('')
     def plus_varcte(self, p):
-        
         self.quad.add(
             p[-2],
-            p[-1],
+            self.currentId,
             None,
             't' + str(self.tempVar)
         )
@@ -791,31 +788,45 @@ class CalcParser(Parser):
     # VARCTE
     @_('identificadores')
     def varcte(self, p):
-        t = self.dataTable.getTypeVar(p[0], self.currentFunc)
+        t = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
         pushOperandType(
             self.pilaOper, 
             self.pilaType, 
-            p[0], 
+            self.currentId, 
             t)
-        return p.identificadores
 
     @_('INTNUMBER')
     def varcte(self, p):
-        self.pilaType.push("int")
-        self.pilaOper.push(p[0])
-        pass
-
+        pushOperandType(
+            self.pilaOper,
+            self.pilaType,
+            p[0],
+            "int"
+        )
+        self.currentId = p[0]
+        self.currentType = "int"
+        
     @_('CHARACTER')
     def varcte(self, p):
-        self.pilaType.push("char")
-        self.pilaOper.push(p[0])
-        pass
-
+        pushOperandType(
+            self.pilaOper,
+            self.pilaType,
+            p[0],
+            "char"
+        )
+        self.currentId = p[0]
+        self.currentType = "char"
+        
     @_('FLOATNUMBER')
     def varcte(self, p):
-        self.pilaType.push("float")
-        self.pilaOper.push(p[0])
-        pass
+        pushOperandType(
+            self.pilaOper,
+            self.pilaType,
+            p[0],
+            "float"
+        )
+        self.currentId = p[0]
+        self.currentType = "float"
 
     @_('llamada')
     def varcte(self, p):
