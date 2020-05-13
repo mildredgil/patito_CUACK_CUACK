@@ -86,3 +86,6 @@ def gotoQuadFor(quad, jumpSt):
 
     #push goto index
     jumpSt.push(indexGOTO)
+
+def printQuad(toPrint, quad):
+    quad.add('PRINT',toPrint,None,None)

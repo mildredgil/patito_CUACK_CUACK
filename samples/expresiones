@@ -68,7 +68,7 @@ principal () {
     # = t20 _   h
 
     #parentesis suma resta multiplicacion y division
-    i = b + (a - c) * g - h + (a + -b / f);
+    i = b + (a - c) * g - h + (a + - b / f);
     # - a   c   t21
     # * t22 g   t22
     # + b   t17 t23

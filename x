@@ -1,11 +1,8 @@
 programa patito;
-var ent a,i;
-    deci b, c;
-    
+var ent a,b;
 
 principal () {
-    desde a = 0 hasta 2 hacer {
+    
+    escribe (a, "lol", "funciona", b);
 
-        b = b + 1;
-    }
 }

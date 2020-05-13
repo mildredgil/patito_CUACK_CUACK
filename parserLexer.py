@@ -121,6 +121,7 @@ class CalcParser(Parser):
         self.quad = Quad()
         self.tempVar = 0
         self.tempVarTable = VarTable()
+        self.badAid = '0'
 
         self.currentId = None
         self.currentType = None
@@ -321,15 +322,15 @@ class CalcParser(Parser):
     def escritura(self, p):
         pass
 
-    @_('exp escritura3')
+    @_('exp print_quad1 escritura3')
     def escritura2(self, p):
         pass
 
-    @_('STRING escritura3')
+    @_('STRING print_quad2 escritura3')
     def escritura2(self, p):
         pass
 
-    @_('"," escritura2')
+    @_('"," print_next escritura2')
     def escritura3(self, p):
         pass
 
@@ -337,6 +338,22 @@ class CalcParser(Parser):
     def escritura3(self, p):
         pass
 
+    @_('')
+    def print_quad1(self, p):
+        printQuad(self.pilaOper.top(), self.quad)
+        pass
+
+    @_('')
+    def print_quad2(self, p):
+        printQuad(p[-1], self.quad)
+        pass
+
+    @_('')
+    def print_next(self, p):
+        printQuad(' ', self.quad)
+        pass
+
+    
     #regresa
 
     @_('RETURN "(" exp ")" ";"')
@@ -531,27 +548,64 @@ class CalcParser(Parser):
     def expOR(self, p):
         pass
 
-    @_('OR expOR')
+    @_('OR push_or expOR push_or2')
     def expOR2(self, p):
         pass
 
     @_('empty')
     def expOR2(self, p):
         pass
+
+    @_('')
+    def push_or(self, p):
+        print("lo que importa1")
+        self.pilaOp.push('|')
+        self.pilaOp.print()
+
+    @_('')
+    def push_or2(self, p):
+        print("lo que importa2")
+        self.pilaOp.print()
+        normalQuad(
+            self.pilaOp,
+            self.pilaOper, 
+            self.pilaType,
+            self.quad, 
+            self.tempVar)
 
     # AND
     @_('expresion expAND2')
     def expAND(self, p):
         pass
 
-    @_('AND expAND')
+    @_('AND push_and expAND push_and2')
     def expAND2(self, p):
         pass
 
     @_('empty')
     def expAND2(self, p):
         pass
+    
+    @_('')
+    def push_and(self, p):
+        print("lo que importa1")
+        self.pilaOp.push('&')
+        self.pilaOp.print()
 
+    @_('')
+    def push_and2(self, p):
+        print("lo que importa2")
+        self.pilaOp.print()
+        normalQuad(
+            self.pilaOp,
+            self.pilaOper, 
+            self.pilaType,
+            self.quad, 
+            self.tempVar)
+
+        self.tempVar = self.tempVar + 1
+        pass
+    
     #EXPRESION
 
     @_('exp expresion2 quad_expresion')
@@ -589,7 +643,8 @@ class CalcParser(Parser):
     #exp
 
     @_('termino exp2')
-    def exp(self, p):    
+    def exp(self, p):
+        print('entramos e xp', p[0])
         return p.termino
 
     @_('PLUS exp_op_insert exp',
@@ -650,28 +705,26 @@ class CalcParser(Parser):
             self.tempVar = self.tempVar + 1
         self.pilaOp.pop()
 
-    @_('PLUS varcte plus_varcte')
+    @_('PLUS plus_varcte varcte')
     def factor(self, p):
         pass
 
-    @_('MINUS varcte plus_varcte')
+    @_('MINUS minus_varcte varcte')
     def factor(self, p):
         pass
 
     @_('')
     def plus_varcte(self, p):
-        self.quad.add(
-            p[-2],
-            self.currentId,
-            None,
-            't' + str(self.tempVar)
-        )
-        self.pilaOper.push('t' + str(self.tempVar))
-        self.tempVar = self.tempVar + 1
-        
+        self.badAid = '+'
+    
+    @_('')
+    def minus_varcte(self, p):
+        self.badAid = '-'
+        print('entrooooooooooo')
 
     @_('varcte')
     def factor(self, p):
+        return p[0]
         pass
         
     #OPMAT
@@ -696,6 +749,7 @@ class CalcParser(Parser):
 
     @_('opmat termino2')
     def termino(self, p):
+        return p.opmat
         pass
         
     @_('TIMES term_op_insert termino',
@@ -746,25 +800,57 @@ class CalcParser(Parser):
     # VARCTE
     @_('identificadores')
     def varcte(self, p):
+        pastId = self.currentId
+        if not self.badAid.isdigit():
+            self.quad.add(
+                        self.badAid,
+                        self.currentId,
+                        None,
+                        't' + str(self.tempVar)
+                    )
+            self.badAid= '0'
+            self.currentId= 't' + str(self.tempVar)
+            self.tempVar = self.tempVar + 1
         pushOperandType(
             self.pilaOper, 
             self.pilaType, 
             self.currentId, 
-            self.dataTable.getTypeVar(self.currentId, self.currentFunc))
+            self.dataTable.getTypeVar(pastId, self.currentFunc))
 
     @_('INTNUMBER')
     def varcte(self, p):
+        pastId = p[0]
+        if not self.badAid.isdigit():
+            self.quad.add(
+                        self.badAid,
+                        p[0],
+                        None,
+                        't' + str(self.tempVar)
+                    )
+            self.badAid= '0'
+            pastId= 't' + str(self.tempVar)
+            self.tempVar = self.tempVar + 1
         pushOperandType(
             self.pilaOper,
             self.pilaType,
-            p[0],
+            pastId,
             "int"
         )
-        self.currentId = p[0]
+        self.currentId = pastId
         self.currentType = "int"
         
     @_('CHARACTER')
     def varcte(self, p):
+        if not self.badAid.isdigit():
+            self.quad.add(
+                        self.badAid,
+                        self.currentId,
+                        None,
+                        't' + str(self.tempVar)
+                    )
+            self.badAid= '0'
+            self.currentId= 't' + str(self.tempVar)
+            self.tempVar = self.tempVar + 1
         pushOperandType(
             self.pilaOper,
             self.pilaType,
@@ -776,13 +862,24 @@ class CalcParser(Parser):
         
     @_('FLOATNUMBER')
     def varcte(self, p):
+        pastId = p[0]
+        if not self.badAid.isdigit():
+            self.quad.add(
+                        self.badAid,
+                        p[0],
+                        None,
+                        't' + str(self.tempVar)
+                    )
+            self.badAid= '0'
+            pastId= 't' + str(self.tempVar)
+            self.tempVar = self.tempVar + 1
         pushOperandType(
             self.pilaOper,
             self.pilaType,
-            p[0],
+            pastId,
             "float"
         )
-        self.currentId = p[0]
+        self.currentId = pastId
         self.currentType = "float"
 
     @_('llamada')
