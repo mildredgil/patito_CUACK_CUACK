@@ -292,48 +292,7 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.quad)
-                # self.tempVar = self.tempVar + 1
             
-            '''                
-            r = self.pilaOper.pop()
-            l = self.pilaOper.pop()
-            op = self.pilaOp.pop()
-            temp = "t" + str(self.tempVar)
-            self.quad.add(op, l, r, temp)
-            self.pilaOper.push(temp)
-            self.pilaType.push(newType)
-            self.tempVar = self.tempVar + 1
-            
-        if self.pilaOper.length()==2:
-            assignQuad(
-                self.pilaOp,
-                self.pilaOper, 
-                self.pilaType,
-                self.quad)
-
-            r = self.pilaOper.pop()
-            l = self.pilaOper.pop()
-            op = self.pilaOp.pop()
-            self.quad.add(op, l, r, l)
-            '''
-        
-        '''
-        if operR and operL:
-            if op == "=":
-                typeL = self.pilaType.pop()
-                typeR = self.pilaType.pop()
-                print("types", typeR, typeL)
-                #check type is valid 
-                type_ = TypeMatching.sem(0, typeR, op, typeL)
-                
-                self.quad.add(op, operL, None, operR)
-            else:
-                raise Exception("error = expected")
-        else:
-            raise Exception("error value expected")
-        '''    
-
-        
     #lee
     @_('READ "(" lee2 ")" ";"')
     def lee(self, p):
@@ -345,8 +304,8 @@ class CalcParser(Parser):
 
     @_('')
     def lee_quad(self, p):
-        self.pilaOper.print()
-        print("lee", p[-1])
+        if self.dataTable.existVar(self.currentId, self.currentFunc):
+            self.quad.add("lee", None, None, self.currentId)
 
     @_('"," lee2')
     def lee3(self, p):
@@ -435,7 +394,6 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def while_goto(self, p):
-        print("PILA:    ---------------------")
         self.pilaJump.print()
         gotoQuad(
             self.quad,
@@ -788,12 +746,11 @@ class CalcParser(Parser):
     # VARCTE
     @_('identificadores')
     def varcte(self, p):
-        t = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
         pushOperandType(
             self.pilaOper, 
             self.pilaType, 
             self.currentId, 
-            t)
+            self.dataTable.getTypeVar(self.currentId, self.currentFunc))
 
     @_('INTNUMBER')
     def varcte(self, p):

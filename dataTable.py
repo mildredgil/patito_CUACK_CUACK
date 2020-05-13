@@ -99,6 +99,12 @@ class DirFunc():
             except:
                 notExist(varName)
 
+    def existVar(self, varName, funcName):
+        if self.getTable(funcName).exist(self.getTable(funcName).table, varName) or self.getTable("global").exist(self.getTable("global").table, varName):
+            return True
+        else:
+            notExist(varName)
+
     def print(self):
         for a in self.table:
             print(a)
