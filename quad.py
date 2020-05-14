@@ -14,6 +14,6 @@ class Quad():
         self.list[index][3] = result
 
     def print(self):
-        for el in self.list:
-            print(el)
+        for index, value in enumerate(self.list):
+            print(index, value)
 

@@ -130,7 +130,7 @@ class CalcParser(Parser):
         self.globalFunc = None
     
     # PROGRAMA
-    @_('PROGRAM ID set_global ";" programa2 programa3 PRINCIPAL "(" ")" bloque')
+    @_('PROGRAM ID set_global ";" programa2 programa3 PRINCIPAL set_principal_quad "(" ")" bloque')
     def programa(self, p):
         pass
     
@@ -140,6 +140,12 @@ class CalcParser(Parser):
         self.dataTable.insert("global", "void")
         self.globalFunc = p[-1]
         self.currentFunc = "global"
+        gotoSimpleQuad(self.quad, self.pilaJump)
+
+    #embedded action
+    @_('')
+    def set_principal_quad(self, p):
+        fillGotoFQuad(self.quad, self.pilaJump)
 
     @_('vars')
     def programa2(self, p):

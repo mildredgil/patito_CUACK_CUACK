@@ -71,6 +71,11 @@ def gotoQuad(quad, jumpSt):
     #push goto index
     jumpSt.push(indexGOTO)
 
+def gotoSimpleQuad(quad, jumpSt):
+    jumpSt.push(quad.getCount())
+    quad.add("GOTO", None, None, None)
+    
+
 def fillGotoQuad(quad, jumpSt):
     index = jumpSt.pop()
     quad.update(index, jumpSt.pop())
