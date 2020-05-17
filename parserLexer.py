@@ -145,6 +145,7 @@ class CalcParser(Parser):
     #embedded action
     @_('')
     def set_principal_quad(self, p):
+        self.currentFunc = self.globalFunc
         fillGotoFQuad(self.quad, self.pilaJump)
 
     @_('vars')
@@ -763,7 +764,11 @@ class CalcParser(Parser):
         validParamLen(self.parameterCount - 1, len(self.dataTable.getParams(self.currentCallId)), self.currentCallId)
         self.parameterCount = 1
         self.quad.add("GOSUB", p.ID, None, None)
-        self.pilaOper.push(p.ID)
+        funcType = self.dataTable.getType(self.currentCallId)
+        if funcType != 'void':
+            callAssignQuad(p.ID, funcType, self.tempVar, self.pilaType, self.pilaOper, self.quad)
+            self.tempVar = self.tempVar + 1
+            
 
     #embedded action
     @_('')

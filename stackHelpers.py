@@ -114,3 +114,9 @@ def validParamLen(paramCounter, funcParamLen, func):
     if paramCounter != funcParamLen:
         paramCountDif(func, funcParamLen)
 
+def callAssignQuad(funcName, funcType, temp, typeSt, operSt, quad):
+    newVar = "t" + str(temp)
+    quad.add("=", funcName, None, newVar)
+    typeSt.push(funcType)
+    operSt.push(newVar)
+

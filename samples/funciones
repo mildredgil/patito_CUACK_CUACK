@@ -19,6 +19,6 @@ var ent b;
   }
 
   principal () {
-    b = suma(1,2);
+    b = suma(1,2) + suma(4,5);
     z = leta('a');
   }
