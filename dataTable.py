@@ -58,11 +58,11 @@ class DirFunc():
     def exist(self, a, b):
         return b in a
 
-    def insert(self, funcName, funcType):
+    def insert(self, funcName, funcType, params='', startCounter=-1, numLocals=0):
         if(self.exist(self.table, funcName)):
             multipleDeclaration(funcName)
         else:
-            self.table[funcName] = {'type': funcType, 'table': VarTable(), 'params': '', 'startCounter': -1, 'numLocals': 0}
+            self.table[funcName] = {'type': funcType, 'table': VarTable(), 'params': params, 'startCounter': startCounter, 'numLocals': numLocals}
 
     def insertParam(self, funcName, param):
         self.table[funcName]['params'] += param
