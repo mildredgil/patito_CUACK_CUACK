@@ -1,3 +1,4 @@
+from err import *
 from typeMatching import *
 
 def pushOperandType(operSt, typeSt, oper, type):
@@ -5,8 +6,6 @@ def pushOperandType(operSt, typeSt, oper, type):
     typeSt.push(type)
 
 def normalQuad(opSt, operSt, typeSt, quad, temp):
-    operSt.print()
-    opSt.print()
     op = opSt.pop()
     r = operSt.pop()
     l = operSt.pop()
@@ -23,8 +22,6 @@ def normalQuad(opSt, operSt, typeSt, quad, temp):
     typeSt.push(newType)
 
 def assignQuad(opSt, operSt, typeSt, quad):
-    operSt.print()
-    opSt.print()
     op = opSt.pop()
     r = operSt.pop()
     l = operSt.pop()
@@ -37,25 +34,21 @@ def assignQuad(opSt, operSt, typeSt, quad):
     quad.add(op, r, None, l)
 
 def singeOpQuad(opSt, operSt, quad, temp):
-    operSt.print()
-    opSt.print()
     op = opSt.pop()
     r = operSt.pop()
     
     quad.add(op, r, None, temp)
 
 def gotoFQuad(operSt, typeSt, jumpSt, quad):
-    quad.print()
     boolType = typeSt.pop()
 
     if boolType != "bool":
-        raise Exception("Type mismatch. if was expecting a bool type")
+        missMatchTypeBool()
 
     result = operSt.pop()
     jumpSt.push(quad.getCount())
     quad.add("GOTOF", result, None, None)
-    jumpSt.print()
-
+    
 def fillGotoFQuad(quad, jumpSt):
     index = jumpSt.pop()
     quad.update(index, quad.getCount())
@@ -75,7 +68,6 @@ def gotoSimpleQuad(quad, jumpSt):
     jumpSt.push(quad.getCount())
     quad.add("GOTO", None, None, None)
     
-
 def fillGotoQuad(quad, jumpSt):
     index = jumpSt.pop()
     quad.update(index, jumpSt.pop())
@@ -94,3 +86,31 @@ def gotoQuadFor(quad, jumpSt):
 
 def printQuad(toPrint, quad):
     quad.add('PRINT',toPrint,None,None)
+
+def returnQuad(typeSt, operSt, dataTable, func, quad):
+    operType = typeSt.pop()
+    funcType = dataTable.getType(func)
+    _ = TypeMatching.sem(0,funcType, "=", operType)
+    quad.add("RETURN", None, None, operSt.pop())
+
+def paramQuad(typeSt, operSt, dataTable, func, quad, paramCounter):
+    params = dataTable.getParams(func)
+    operType = typeSt.pop()
+    
+    if paramCounter > len(params):
+        paramCountDif(func, len(params))
+    elif params[paramCounter - 1] != operType[0]:
+        paramMissMatch(func, params[paramCounter - 1])
+        
+    quad.add("PARAM", operSt.pop(), None, "p" + str(paramCounter))
+
+def eraQuad(dataTable, func, quad):
+    if dataTable.existFunc(func):
+        quad.add("ERA", func, None, None)
+    else:
+        notExist(func)
+
+def validParamLen(paramCounter, funcParamLen, func):
+    if paramCounter != funcParamLen:
+        paramCountDif(func, funcParamLen)
+

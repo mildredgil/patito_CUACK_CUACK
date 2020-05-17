@@ -134,9 +134,3 @@ class TypeMatching():
                 return self.typeMatchingTable[right][op][left]
             except:
                 self.error(self, line, right, op, left)
-
-'''    
-print(TypeMatching.sem(1,'int', '*', 'int'))
-print(TypeMatching.sem(1,'int', '*', 'char'))
-print(TypeMatching.sem(1,'int', '!', 'int'))
-'''

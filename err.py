@@ -1,8 +1,23 @@
 def notExist(a):
-    print("%s does not exist. Declare it before use it." % a)
+    raise Exception("{} does not exist. Declare it before use it.".format(a))
 
 def multipleDeclaration(a):
-    print("Multiple Declaration. %s already exist." % a)
+    raise Exception("Multiple Declaration. {} already exist.".format(a))
 
 def missMatchType(a, b):
-    print("Excepted a %s type for %s variable" % (a, b))
+    raise Exception("Excepted a {} type for {} variable".format(a,b))
+
+def missMatchTypeBool():
+    raise Exception("Excepted a bool type".format())
+
+def paramCountDif(func, paramsCount):
+    raise Exception("Function {} expecting {} parameters".format(func, paramsCount))
+
+def paramMissMatch(func, paramType):
+    switcher={
+                'i': 'int',
+                'f': 'float',
+                'c': 'char',
+                'b': 'bool'
+             }
+    raise Exception("Function {} expecting param of type: {}".format(func, switcher.get(paramType,"Invalid type")))

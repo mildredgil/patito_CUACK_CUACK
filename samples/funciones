@@ -8,10 +8,17 @@ var ent b;
       letra a;
   {
     j = i + k / i * l * m - m;
-     regresa(j);
+    regresa(j);
+  }
+
+  funcion letra leta(letra a)
+  var letra d;
+  {
+    d = a;
+    regresa(a);
   }
 
   principal () {
-    b = b + b;
-    b = suma();
+    b = suma(1,2);
+    z = leta('a');
   }

@@ -119,13 +119,13 @@ class CalcParser(Parser):
         self.pilaForOp = stack.Stack()
         self.pilaForGo = stack.Stack()
         self.quad = Quad()
+        self.parameterCount = 1
         self.tempVar = 0
-        self.tempVarTable = VarTable()
         self.badAid = '0'
 
         self.currentId = None
         self.currentType = None
-
+        self.currentCallId = None
         self.currentFunc = None
         self.globalFunc = None
     
@@ -188,6 +188,7 @@ class CalcParser(Parser):
     @_('')
     def set_id(self, p):
         self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType)
+        self.dataTable.addNumLocals(self.currentFunc)
         
     @_('"," ids')
     def ids2(self, p):
@@ -198,16 +199,17 @@ class CalcParser(Parser):
         pass
 
     # FUNCION
-    
     @_('FUNCTION funcion2 ID save_id parametros vars bloque')
     def funcion(self, p):
-        pass
-
+        self.quad.add("ENDPROC", None, None, None)
+        self.dataTable.deleteTable(self.currentFunc)
+        
     #embedded action
     @_('')
     def save_id(self, p):
         #guardar funcion y tipo
         self.dataTable.insert(p[-1], self.currentType)
+        self.dataTable.insertStartCounter(p[-1], self.quad.getCount())
         self.currentFunc = p[-1]
 
     @_('tipo')
@@ -216,7 +218,7 @@ class CalcParser(Parser):
 
     @_('VOID')
     def funcion2(self, p):
-        return 'void'
+        self.currentType = 'void'
 
     # PARAMETROS
     
@@ -228,6 +230,7 @@ class CalcParser(Parser):
     def parametros2(self, p):
         self.currentId = p.ID
         self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType)
+        self.dataTable.insertParam(self.currentFunc, self.currentType[0])
         
     @_('"," parametros2')
     def parametros3(self, p):
@@ -252,14 +255,14 @@ class CalcParser(Parser):
         pass
 
     #estatuto
-
     @_('asignacion',
         'escritura',
         'lee',
         'estDesicion',
         'estRepNoCond',
         'estRepCond',
-        'regresa')
+        'regresa',
+        'llamada ";"')
     def estatuto(self, p):
         pass
 
@@ -278,12 +281,8 @@ class CalcParser(Parser):
     #embedded action
     @_('')
     def asignacion_pop_all(self, p):
-        self.pilaOper.print()
-        self.pilaOp.print()
-        print("sacando")
         while self.pilaOp.length() > 0:
             if self.pilaOp.top() != "=":
-                print("normal")
                 normalQuad(
                     self.pilaOp,
                     self.pilaOper, 
@@ -293,7 +292,6 @@ class CalcParser(Parser):
                 self.tempVar = self.tempVar + 1
 
             else:
-                print("assign")
                 assignQuad(
                 self.pilaOp,
                 self.pilaOper, 
@@ -359,15 +357,12 @@ class CalcParser(Parser):
         printQuad(' ', self.quad)
         pass
 
-    
     #regresa
-
     @_('RETURN "(" exp ")" ";"')
     def regresa(self, p):
-        pass
+        returnQuad(self.pilaType, self.pilaOper, self.dataTable, self.currentFunc, self.quad)
 
     #estatuto de decision
-
     @_('IF "(" expOR ")" if_gotF bloque estDesicion2 if_fill_gotF')
     def estDesicion(self, p):
         pass
@@ -382,7 +377,7 @@ class CalcParser(Parser):
             self.quad
         )
 
-    #embeded action     
+    #embeded action
     @_('')
     def if_fill_gotF(self, p):
         fillGotoFQuad(self.quad, self.pilaJump)
@@ -417,12 +412,10 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def while_goto(self, p):
-        self.pilaJump.print()
         gotoQuad(
             self.quad,
             self.pilaJump
         )
-        self.pilaJump.print()
         fillGotoQuad(
             self.quad,
             self.pilaJump
@@ -447,16 +440,12 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def from_assign(self, p):
-        print("parte 2")
-        # self.pilaForGo.push()
         assignQuad(
                 self.pilaOp,
                 self.pilaOper, 
                 self.pilaType,
                 self.quad)
-        self.quad.print()
         
-
     #embeded action
     @_('')
     def from_gotF(self, p):
@@ -473,15 +462,14 @@ class CalcParser(Parser):
         self.pilaJump.push(self.quad.getCount())
         self.pilaJump.push(self.quad.getCount())
         self.quad.add("GOTOF", self.pilaOper.top(), None, None)
-        print('acabo desmadre')
-
+        
     @_('')
     def from_goto(self, p):
         gotoQuadFor(
             self.quad,
             self.pilaJump
         )
-        self.pilaJump.print()
+        
         self.pilaJump.push(self.pilaJump.pop())
         fillGotoQuad(
             self.quad,
@@ -564,14 +552,10 @@ class CalcParser(Parser):
 
     @_('')
     def push_or(self, p):
-        print("lo que importa1")
         self.pilaOp.push('|')
-        self.pilaOp.print()
-
+        
     @_('')
     def push_or2(self, p):
-        print("lo que importa2")
-        self.pilaOp.print()
         normalQuad(
             self.pilaOp,
             self.pilaOper, 
@@ -594,14 +578,10 @@ class CalcParser(Parser):
     
     @_('')
     def push_and(self, p):
-        print("lo que importa1")
         self.pilaOp.push('&')
-        self.pilaOp.print()
-
+        
     @_('')
     def push_and2(self, p):
-        print("lo que importa2")
-        self.pilaOp.print()
         normalQuad(
             self.pilaOp,
             self.pilaOper, 
@@ -650,7 +630,6 @@ class CalcParser(Parser):
 
     @_('termino exp2')
     def exp(self, p):
-        print('entramos e xp', p[0])
         return p.termino
 
     @_('PLUS exp_op_insert exp',
@@ -660,9 +639,6 @@ class CalcParser(Parser):
 
     @_('')
     def exp_op_insert(self, p):
-        print("estamos sumando")
-        print("past op", self.pilaOp.top())
-        print("current op", p[-1])
         if self.pilaOper.length() > 1:
             if self.pilaOp.top() == "/" or self.pilaOp.top() == "*":
                 while self.pilaOp.top() == "/" or self.pilaOp.top() == "*":
@@ -726,8 +702,7 @@ class CalcParser(Parser):
     @_('')
     def minus_varcte(self, p):
         self.badAid = '-'
-        print('entrooooooooooo')
-
+        
     @_('varcte')
     def factor(self, p):
         return p[0]
@@ -761,15 +736,11 @@ class CalcParser(Parser):
     @_('TIMES term_op_insert termino',
        'DIVIDE term_op_insert termino')
     def termino2(self, p):
-        print('estamos multiplicando')
         pass
     
     @_('')
     def term_op_insert(self, p):
-        print("estamos mult")
         op = self.pilaOp.top()
-        print("past op", op)
-        print("current op", p[-1])
         if self.pilaOp.length() > 1:
             if op == "/" or op == "*":
                 normalQuad(
@@ -787,13 +758,32 @@ class CalcParser(Parser):
         pass
 
     # LLAMADA    
-    @_('ID "(" llamada2 ")"')
+    @_('ID era_call "(" llamada2 ")"')
     def llamada(self, p):
-        pass
+        validParamLen(self.parameterCount - 1, len(self.dataTable.getParams(self.currentCallId)), self.currentCallId)
+        self.parameterCount = 1
+        self.quad.add("GOSUB", p.ID, None, None)
+        self.pilaOper.push(p.ID)
 
-    @_('exp llamada3')
+    #embedded action
+    @_('')
+    def era_call(self, p):
+        self.currentCallId = p[-1]
+        eraQuad(self.dataTable, self.currentCallId, self.quad)
+
+    @_('exp param_call llamada3')
     def llamada2(self, p):
         pass
+
+    @_('empty')
+    def llamada2(self, p):
+        pass
+
+    #embedded action
+    @_('')
+    def param_call(self, p):
+        paramQuad(self.pilaType, self.pilaOper, self.dataTable, self.currentCallId, self.quad, self.parameterCount)
+        self.parameterCount = self.parameterCount + 1
 
     @_('"," llamada2')
     def llamada3(self, p):

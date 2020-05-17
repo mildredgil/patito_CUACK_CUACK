@@ -1,13 +1,5 @@
 import json
-
-def notExist(a):
-    raise Exception("{} does not exist. Declare it before use it.".format(a))
-
-def multipleDeclaration(a):
-    raise Exception("Multiple Declaration. {} already exist.".format(a))
-
-def missMatchType(a, b):
-    raise Exception("Excepted a {} type for {} variable".format(a,b))
+from err import *
 
 class VarTable():
     def __init__(self, table=None):
@@ -48,15 +40,21 @@ class VarTable():
                 missMatchType(self.table[varName]['type'], varName)
         else:
             notExist(varName)
+
+    def delete(self):
+        self.table = None
             
     def print(self, name):
-        print("printing data from %s:" % name)
+        print("printing varTable from %s:" % name)
         print(json.dumps(self.table, indent=2))
 
 class DirFunc():
     def __init__(self):
         self.table = {}
         
+    def existFunc(self, func):
+        return func in self.table
+
     def exist(self, a, b):
         return b in a
 
@@ -64,11 +62,20 @@ class DirFunc():
         if(self.exist(self.table, funcName)):
             multipleDeclaration(funcName)
         else:
-            self.table[funcName] = {'type': funcType, 'table': VarTable()}
-    
-    def insertVarTable(self, funcName, varTable):
-        self.table[funcName]['variables'] = varTable.table
+            self.table[funcName] = {'type': funcType, 'table': VarTable(), 'params': '', 'startCounter': -1, 'numLocals': 0}
 
+    def insertParam(self, funcName, param):
+        self.table[funcName]['params'] += param
+
+    def getParams(self, funcName):
+        return self.table[funcName]['params']
+        
+    def insertStartCounter(self, funcName, counter):
+        self.table[funcName]['startCounter'] = counter
+
+    def addNumLocals(self, funcName):
+        self.table[funcName]['numLocals'] += 1
+    
     def getTable(self, funcName):
         if(self.exist(self.table, funcName)):
             return self.table[funcName]['table']
@@ -105,34 +112,20 @@ class DirFunc():
         else:
             notExist(varName)
 
+    def deleteTable(self, funcName): 
+        if self.existFunc(funcName):
+            self.getTable(funcName).delete
+            self.table[funcName]["table"] = None
+        else:
+            notExist(funcName)
+
     def print(self):
         for a in self.table:
-            print(a)
-            self.getTable(a).print(a)
+            print("function: ", a," type: ", self.table[a]["type"], "   params: ", self.table[a]["params"], ' startCounter: ', self.table[a]["startCounter"], ' numLocals: ', self.table[a]["numLocals"])
+            if self.table[a]["table"]:
+                self.getTable(a).print(a)
 
 '''
-    def look(self, funcName):
-        if(self.exist(self.table, funcName)):
-            return self.table[funcName]
-        else:
-            notExist(funcName)
-
-    def funcHasVars(self, funcName):
-        if (self.exist(self.table, funcName)):
-            return not self.table[funcName]
-
-    def insertVarTable(self, funcName, varTable):
-        self.table[funcName]['variables'] = varTable.table
-
-    def getVariables(self, funcName):
-        return self.table[funcName]['variables']
-
-    def getTypeFunc(self, funcName='global'):
-        if self.exist(self.table, funcName):
-            return self.table[funcName]["type"]
-        else:
-            notExist(funcName)
-
     def print(self):
         print("printing data from DirFunc:")
         print(json.dumps(self.table, indent=2))
