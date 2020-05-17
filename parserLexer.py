@@ -442,8 +442,6 @@ class CalcParser(Parser):
         self.pilaOper.push(self.currentId)
         self.pilaType.push('int')
         self.pilaOp.push('=')
-
-        
     
     #embeded action
     @_('')
@@ -638,7 +636,7 @@ class CalcParser(Parser):
 
     @_('termino exp2')
     def exp(self, p):
-        return p.termino
+        pass
 
     @_('PLUS exp_op_insert exp',
         'MINUS exp_op_insert exp')

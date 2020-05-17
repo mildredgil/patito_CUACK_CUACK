@@ -24,3 +24,6 @@ def paramMissMatch(func, paramType):
 
 def cantAssign(op1, op2):
     raise Exception("Cant assign {} to {}".format(op1, op2))
+
+def notEnoughMem():
+    raise Exception("Program has exceed memory limits")

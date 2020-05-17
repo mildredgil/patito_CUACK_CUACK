@@ -1,25 +1,28 @@
+from memoryConstants import *
+from err import *
+
 class memoryManager():
     def __init__(self):
-        self.globalInt=0
-        self.globalFloat=1000
-        self.globalChar=2000
-        self.globalTempInt=3000
-        self.globalTempFloat=4000
-        self.globalTempChar=5000
-        self.globalTempBool=6000
-        self.localInt=7000
-        self.localFloat=8000
-        self.localChar=9000
-        self.localTempInt=10000
-        self.localTempFloat=11000
-        self.localTempChar=12000
-        self.localTempBool=13000
-        self.constInt=14000
-        self.constFloat=15000
-        self.constChar=16000
-        self.constString=17000
+        self.globalInt       = GLOBAL_INT
+        self.globalFloat     = GLOBAL_FLOAT
+        self.globalChar      = GLOBAL_CHAR
+        self.globalTempInt   = GLOBAL_TEMPINT
+        self.globalTempFloat = GLOBAL_TEMPFLOAT
+        self.globalTempChar  = GLOBAL_TEMPCHAR
+        self.globalTempBool  = GLOBAL_TEMPBOOL
+        self.localInt        = LOCAL_INT
+        self.localFloat      = LOCAL_FLOAT
+        self.localChar       = LOCAL_CHAR
+        self.localTempInt    = LOCAL_TEMPINT
+        self.localTempFloat  = LOCAL_TEMPFLOAT
+        self.localTempChar   = LOCAL_TEMPCHAR
+        self.localTempBool   = LOCAL_TEMPBOOL
+        self.constInt        = CONST_INT
+        self.constFloat      = CONST_FLOAT
+        self.constChar       = CONST_CHAR
+        self.constString     = CONST_STRING
     
-##########################################################
+##########################################################        
 
     def getGlobalInt(self):
         self.globalInt = self.globalInt + 1
@@ -52,14 +55,14 @@ class memoryManager():
 ##########################################################
 
     def resetTemp(self):
-        self.localInt=7000
-        self.localFloat=8000
-        self.localChar=9000
-        self.localTempInt=10000
-        self.localTempFloat=11000
-        self.localTempChar=12000
-        self.localTempBool=13000
-
+        self.localInt        = LOCAL_INT
+        self.localFloat      = LOCAL_FLOAT
+        self.localChar       = LOCAL_CHAR
+        self.localTempInt    = LOCAL_TEMPINT
+        self.localTempFloat  = LOCAL_TEMPFLOAT
+        self.localTempChar   = LOCAL_TEMPCHAR
+        self.localTempBool   = LOCAL_TEMPBOOL
+        
     def getLocalInt(self):
         self.localInt = self.localInt + 1
         return self.localInt - 1
@@ -105,3 +108,57 @@ class memoryManager():
     def getConstString(self):
         self.constString = self.constString + 1
         return self.constString - 1
+
+##########################################################      
+
+    def get(self, memType):
+        funcSwitcher={
+                'GLOBAL_INT'       : self.getGlobalInt,
+                'GLOBAL_FLOAT'     : self.getGlobalFloat,
+                'GLOBAL_CHAR'      : self.getGlobalChar,
+                'GLOBAL_TEMPINT'   : self.getGlobalTempInt,
+                'GLOBAL_TEMPFLOAT' : self.getGlobalTempFloat,
+                'GLOBAL_TEMPCHAR'  : self.getGlobalTempChar,
+                'GLOBAL_TEMPBOOL'  : self.getGlobalTempBool,
+                'LOCAL_INT'        : self.getLocalInt,
+                'LOCAL_FLOAT'      : self.getLocalFloat,
+                'LOCAL_CHAR'       : self.getLocalChar,
+                'LOCAL_TEMPINT'    : self.getLocalTempInt,
+                'LOCAL_TEMPFLOAT'  : self.getLocalTempFloat,
+                'LOCAL_TEMPCHAR'   : self.getLocalTempChar,
+                'LOCAL_TEMPBOOL'   : self.getLocalTempBool,
+                'CONST_INT'        : self.getConstInt,
+                'CONST_FLOAT'      : self.getConstFloat,
+                'CONST_CHAR'       : self.getConstChar,
+                'CONST_STRING'     : self.getConstString,
+            }
+        func = funcSwitcher.get(memType, "Invalid Memory Type")
+
+        constSwitcher={
+                'GLOBAL_INT'       : GLOBAL_INT,
+                'GLOBAL_FLOAT'     : GLOBAL_FLOAT,
+                'GLOBAL_CHAR'      : GLOBAL_CHAR,
+                'GLOBAL_TEMPINT'   : GLOBAL_TEMPINT,
+                'GLOBAL_TEMPFLOAT' : GLOBAL_TEMPFLOAT,
+                'GLOBAL_TEMPCHAR'  : GLOBAL_TEMPCHAR,      
+                'GLOBAL_TEMPBOOL'  : GLOBAL_TEMPBOOL,       
+                'LOCAL_INT'        : LOCAL_INT,
+                'LOCAL_FLOAT'      : LOCAL_FLOAT,    
+                'LOCAL_CHAR'       : LOCAL_CHAR,  
+                'LOCAL_TEMPINT'    : LOCAL_TEMPINT,
+                'LOCAL_TEMPFLOAT'  : LOCAL_TEMPFLOAT,
+                'LOCAL_TEMPCHAR'   : LOCAL_TEMPCHAR,      
+                'LOCAL_TEMPBOOL'   : LOCAL_TEMPBOOL,       
+                'CONST_INT'        : CONST_INT,
+                'CONST_FLOAT'      : CONST_FLOAT,
+                'CONST_CHAR'       : CONST_CHAR,  
+                'CONST_STRING'     : CONST_STRING
+            }
+        
+        const = constSwitcher.get(memType, "Invalid Memory Type")
+        mem = func()
+
+        if mem - const >= 1000:
+            notEnoughMem()
+        else:
+            return mem

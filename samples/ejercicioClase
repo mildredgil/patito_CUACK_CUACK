@@ -1,0 +1,35 @@
+programa patito;
+var ent i,j,k;
+    deci f;
+
+  funcion nada uno(ent a, ent b) {
+      si(a>0){
+          i = a + b* j + i;
+          escribe(i+j);
+          uno(a-i,i);
+      } sino {
+          escribe(a+b);
+      }
+  }
+  
+  funcion ent dos(ent a, deci g)
+  var ent i;
+  {
+    i = a;
+    mientras(a>0) haz {
+        a=a-k*j;
+        uno(a*2, a+k);
+        g=g*j-k;
+    }
+    regresa(i+k*j);
+  }
+
+  principal () {
+    i=2;
+    k=i+1;
+    mientras (i>0) haz{
+        escribe(i);
+        escribe(i, j*2,f*2+1,5);
+        i = i - k;
+    }
+  }

@@ -18,7 +18,7 @@ class VarTable():
         if(self.exist(self.table, varName)):
             multipleDeclaration(varName)
         else:
-            self.table[varName] = {'type': varType, 'value': None}
+            self.table[varName] = {'type': varType, 'address': None, 'value': None}
 
     def getType(self, varName):
         if(self.exist(self.table, varName)):
