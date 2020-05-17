@@ -200,15 +200,22 @@ class CalcParser(Parser):
         pass
 
     # FUNCION
-    @_('FUNCTION funcion2 ID save_id parametros vars bloque')
+    @_('FUNCTION funcion2 ID save_id parametros funcion2 bloque')
     def funcion(self, p):
         self.quad.add("ENDPROC", None, None, None)
         self.dataTable.deleteTable(self.currentFunc)
+
+    @_('vars')
+    def funcion2(self, p):
+        pass
+
+    @_('empty')
+    def funcion2(self, p):
+        pass
         
     #embedded action
     @_('')
     def save_id(self, p):
-        #guardar funcion y tipo
         self.dataTable.insert(p[-1], self.currentType)
         self.dataTable.insertStartCounter(p[-1], self.quad.getCount())
         self.currentFunc = p[-1]

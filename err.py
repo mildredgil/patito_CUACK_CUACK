@@ -21,3 +21,6 @@ def paramMissMatch(func, paramType):
                 'b': 'bool'
              }
     raise Exception("Function {} expecting param of type: {}".format(func, switcher.get(paramType,"Invalid type")))
+
+def cantAssign(op1, op2):
+    raise Exception("Cant assign {} to {}".format(op1, op2))

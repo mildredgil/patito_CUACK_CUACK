@@ -26,6 +26,9 @@ def assignQuad(opSt, operSt, typeSt, quad):
     r = operSt.pop()
     l = operSt.pop()
 
+    if not r or not l:
+        cantAssign(r, l)
+
     rType = typeSt.pop()
     lType = typeSt.pop()
 

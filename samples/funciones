@@ -11,6 +11,13 @@ var ent b;
     regresa(j);
   }
 
+
+  funcion nada mifun(deci m) 
+  {
+      m = 3.14;
+  }
+  
+
   funcion letra leta(letra a)
   var letra d;
   {
@@ -21,4 +28,5 @@ var ent b;
   principal () {
     b = suma(1,2) + suma(4,5);
     z = leta('a');
+    mifun(3.14);
   }
