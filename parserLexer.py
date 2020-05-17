@@ -9,6 +9,8 @@ from dataStructure import stack
 from typeMatching import *
 from quad import *
 from stackHelpers import *
+from memoryManager import *
+from memoryConstants import *
 
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
@@ -128,6 +130,10 @@ class CalcParser(Parser):
         self.currentCallId = None
         self.currentFunc = None
         self.globalFunc = None
+
+        self.memScope = "GLOBAL"
+        self.currentMemory = -1
+        self.memoryManager = MemoryManager()
     
     # PROGRAMA
     @_('PROGRAM ID set_global ";" programa2 programa3 PRINCIPAL set_principal_quad "(" ")" bloque')
@@ -188,7 +194,8 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def set_id(self, p):
-        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType)
+        mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
+        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
         self.dataTable.addNumLocals(self.currentFunc)
         
     @_('"," ids')
@@ -219,6 +226,7 @@ class CalcParser(Parser):
         self.dataTable.insert(p[-1], self.currentType)
         self.dataTable.insertStartCounter(p[-1], self.quad.getCount())
         self.currentFunc = p[-1]
+        self.memScope = "LOCAL"
 
     @_('tipo')
     def funcion2(self, p):
@@ -237,7 +245,8 @@ class CalcParser(Parser):
     @_('tipo ID parametros3')
     def parametros2(self, p):
         self.currentId = p.ID
-        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType)
+        mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
+        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType,mem)
         self.dataTable.insertParam(self.currentFunc, self.currentType[0])
         
     @_('"," parametros2')
@@ -357,7 +366,7 @@ class CalcParser(Parser):
 
     @_('')
     def print_quad2(self, p):
-        printQuad(p[-1], self.quad)
+        printQuad(self.memoryManager.get(MEM["CONST"]["STRING"]), self.quad)
         pass
 
     @_('')
@@ -844,6 +853,7 @@ class CalcParser(Parser):
         )
         self.currentId = pastId
         self.currentType = "int"
+        self.currentMemory = self.memoryManager.get(MEM["CONST"]["INT"])
         
     @_('CHARACTER')
     def varcte(self, p):
@@ -865,6 +875,7 @@ class CalcParser(Parser):
         )
         self.currentId = p[0]
         self.currentType = "char"
+        self.currentMemory = self.memoryManager.get(MEM["CONST"]["CHAR"])
         
     @_('FLOATNUMBER')
     def varcte(self, p):
@@ -887,7 +898,8 @@ class CalcParser(Parser):
         )
         self.currentId = pastId
         self.currentType = "float"
-
+        self.currentMemory = self.memoryManager.get(MEM["CONST"]["FLOAT"])
+        
     @_('llamada')
     def varcte(self, p):
         return p[0]

@@ -15,5 +15,8 @@ class Quad():
 
     def print(self):
         for index, value in enumerate(self.list):
-            print(index, value)
-
+            switcher = {
+                'None': '_'
+            }
+            
+            print(index, str(value[0]) + "," + switcher.get(str(value[1]), str(value[1])) + "," + switcher.get(str(value[2]), str(value[2])) + "," + switcher.get(str(value[3]), str(value[3])))

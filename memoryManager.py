@@ -1,7 +1,7 @@
 from memoryConstants import *
 from err import *
 
-class memoryManager():
+class MemoryManager():
     def __init__(self):
         self.globalInt       = GLOBAL_INT
         self.globalFloat     = GLOBAL_FLOAT
