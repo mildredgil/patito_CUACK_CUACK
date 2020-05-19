@@ -1,8 +1,11 @@
-programa patito;
-var ent a,b;
+programa global;
+var ent a,b,j,i;
 
 principal () {
-    a = 3.1;
-    escribe (a, "lol", "funciona", b);
-
+    a=-a;
+    b=2;
+    j=5;
+    i=435;
+    i = a + b* j + i;
+    escribe(i+j);
 }
