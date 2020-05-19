@@ -1,7 +1,7 @@
 from err import *
 from typeMatching import *
 
-test= True
+test= False
 
 def pushOperandType(operSt, typeSt, memSt, oper, type, mem):
     # print("estoy metiendo ",operSt.top(), " como si fuera ", typeSt.top())
@@ -146,11 +146,11 @@ def validParamLen(paramCounter, funcParamLen, func):
     if paramCounter != funcParamLen:
         paramCountDif(func, funcParamLen)
 
-def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, mem, memScope, quad):
+def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, mem, memScope, memoryManager, quad):
     newVar = "t" + str(temp)
     quad.add("=", funcName, None, newVar)
     typeSt.push(funcType)
     operSt.push(newVar)
-    mem = memoryManager.get(MEM[memScope]['TEMP'][funcType.upper()])
+    mem = memoryManager.get(mem[memScope]['TEMP'][funcType.upper()])
     memSt.push(mem)
 
