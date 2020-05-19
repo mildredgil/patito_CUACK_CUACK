@@ -20,12 +20,21 @@ class VarTable():
         else:
             self.table[varName] = {'type': varType, 'address': address, 'value': None}
 
+    def insertTemp(self, varName, varType, varValue, varAddress):
+            self.table[varName] = {'type': varType, 'address': varAddress, 'value': varValue}
+
     def getType(self, varName):
         if(self.exist(self.table, varName)):
             return self.table[varName]['type']
         else:
             notExist(varName)
-            
+
+    def getAdress(self, varName):
+        if(self.exist(self.table, varName)):
+            return self.table[varName]['address']
+        else:
+            notExist(varName)
+
     def look(self, varName):
         if(self.exist(self.table, varName)):
             return self.table[varName]['value']
@@ -106,11 +115,27 @@ class DirFunc():
             except:
                 notExist(varName)
 
+    def getAdressVar(self, varName, funcName):
+        try:
+            return self.getTable(funcName).getAdress(varName)
+        except:
+            try: 
+                return self.getTable("global").getAdress(varName)
+            except:
+                notExist(varName)
+
     def existVar(self, varName, funcName):
         if self.getTable(funcName).exist(self.getTable(funcName).table, varName) or self.getTable("global").exist(self.getTable("global").table, varName):
             return True
         else:
             notExist(varName)
+
+
+    def existVarNoErr(self, varName, funcName):
+        if self.getTable(funcName).exist(self.getTable(funcName).table, varName) or self.getTable("global").exist(self.getTable("global").table, varName):
+            return True
+        else:
+            return False
 
     def deleteTable(self, funcName): 
         if self.existFunc(funcName):
