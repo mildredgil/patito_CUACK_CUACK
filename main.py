@@ -1,6 +1,5 @@
 from parserLexer import CalcLexer, CalcParser
-from dataTable import *
-from dicFunc import *
+from writer import Writer
 
 if __name__ == '__main__':
     lexer = CalcLexer()
@@ -18,5 +17,7 @@ if __name__ == '__main__':
     parser.dataTable.print()
     print("quadruple:")
     parser.quad.print()
+
+    Writer.prepareOBJ(filename, parser)
     #parser.printTokens()
     

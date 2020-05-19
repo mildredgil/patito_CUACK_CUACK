@@ -29,7 +29,7 @@ var ent i,j,k;
     k=i+1;
     mientras (i>0) haz{
         escribe(i);
-        escribe(i, j*2,f*2+1,5);
-        i = i - k;
-    }
+        escribe(i, j*2,f*2+1.5);
+        i = i - k /2;
+    } 
   }

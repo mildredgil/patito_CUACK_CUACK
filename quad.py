@@ -6,6 +6,9 @@ class Quad():
     def getCount(self):
         return self.count
 
+    def get(self, counter):
+        return self.list[counter]
+
     def add(self, op, operRight=None, operLeft=None, result=None):
         self.list.append([op, operRight, operLeft, result])
         self.count = self.count + 1
