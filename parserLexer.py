@@ -198,7 +198,6 @@ class CalcParser(Parser):
     @_('')
     def set_id(self, p):
         mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
-        print("var: ", self.currentId," type: ", self.currentType)
         self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
         self.dataTable.addNumLocals(self.currentFunc)
         
@@ -227,7 +226,6 @@ class CalcParser(Parser):
     #embedded action sav6
     @_('')
     def save_id(self, p):
-        print("var: ", p[-1]," type: ", self.currentType)
         self.dataTable.insert(p[-1], self.currentType)
         self.dataTable.insertStartCounter(p[-1], self.quad.getCount())
         self.currentFunc = p[-1]
@@ -250,10 +248,8 @@ class CalcParser(Parser):
     @_('tipo ID parametros3')
     def parametros2(self, p):
         self.currentId = p.ID
-        print("var: ", self.currentId," type: ", p.tipo)
         mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
         self.dataTable.getTable(self.currentFunc).insert(self.currentId,p.tipo,mem)
-        print("var: ", self.currentFunc," type: ", self.currentType[0])
         self.dataTable.insertParam(self.currentFunc, self.currentType[0])
         
     @_('"," parametros2')
@@ -384,7 +380,7 @@ class CalcParser(Parser):
 
     @_('')
     def print_quad1(self, p):
-        printQuad(self.pilaOper.top(), self.quad)
+        printQuad(self.pilaMemoria.top(), self.quad)
         pass
 
     @_('')
