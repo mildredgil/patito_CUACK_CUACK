@@ -9,3 +9,4 @@ principal () {
     i = a + b* j + i;
     escribe(i+j);
 }
+samples/ejercicioClase

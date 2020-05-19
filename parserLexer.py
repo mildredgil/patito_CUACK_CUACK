@@ -900,7 +900,7 @@ class CalcParser(Parser):
         self.quad.add("GOSUB", p.ID, None, None)
         funcType = self.dataTable.getType(self.currentCallId)
         if funcType != 'void':
-            callAssignQuad(p.ID, funcType, self.tempVar, self.pilaType, self.pilaOper, self.pilaMemoria, MEM, self.memScope, self.quad)
+            callAssignQuad(p.ID, funcType, self.tempVar, self.pilaType, self.pilaOper, self.pilaMemoria, MEM, self.memScope, self.memoryManager, self.quad)
             self.tempVar = self.tempVar + 1
             
 
@@ -997,6 +997,14 @@ class CalcParser(Parser):
         
     @_('CHARACTER')
     def varcte(self, p):
+        pastId = p[0]
+        mem = None
+        if(self.dataTable.existVarNoErr(p[0],'const')):
+            mem = self.dataTable.getAdressVar(p[0],'const')
+        else:
+            mem = self.memoryManager.get(MEM['CONST']['INT'])
+            self.dataTable.getTable('const').insert(p[0],'int', mem)
+        self.isConst = True
         if not self.badAid.isdigit():
             self.quad.add(
                         self.badAid,
@@ -1005,21 +1013,30 @@ class CalcParser(Parser):
                         't' + str(self.tempVar)
                     )
             self.badAid= '0'
+            mem = self.memoryManager.get(MEM[self.memScope]['INT'])
             self.currentId= 't' + str(self.tempVar)
             self.tempVar = self.tempVar + 1
+            self.isConst = False
         pushOperandType(
             self.pilaOper,
             self.pilaType,
-            p[0],
-            "char"
+            self.pilaMemoria,
+            pastId,
+            "char",
+            mem
         )
-        self.currentId = p[0]
+        self.currentId = pastId
         self.currentType = "char"
-        self.currentMemory = self.memoryManager.get(MEM["CONST"]["CHAR"])
         
     @_('FLOATNUMBER')
     def varcte(self, p):
         pastId = p[0]
+        mem = None
+        if(self.dataTable.existVarNoErr(p[0],'const')):
+            mem = self.dataTable.getAdressVar(p[0],'const')
+        else:
+            mem = self.memoryManager.get(MEM['CONST']['INT'])
+            self.dataTable.getTable('const').insert(p[0],'int', mem)
         if not self.badAid.isdigit():
             self.quad.add(
                         self.badAid,
@@ -1028,17 +1045,20 @@ class CalcParser(Parser):
                         't' + str(self.tempVar)
                     )
             self.badAid= '0'
+            mem = self.memoryManager.get(MEM[self.memScope]['INT'])
             pastId= 't' + str(self.tempVar)
             self.tempVar = self.tempVar + 1
+            self.isConst = False
         pushOperandType(
             self.pilaOper,
             self.pilaType,
+            self.pilaMemoria,
             pastId,
-            "float"
+            "float",
+            mem
         )
         self.currentId = pastId
         self.currentType = "float"
-        self.currentMemory = self.memoryManager.get(MEM["CONST"]["FLOAT"])
         
     @_('llamada')
     def varcte(self, p):
