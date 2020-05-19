@@ -4,6 +4,7 @@ from typeMatching import *
 test= True
 
 def pushOperandType(operSt, typeSt, memSt, oper, type, mem):
+    # print("estoy metiendo ",operSt.top(), " como si fuera ", typeSt.top())
     operSt.push(oper)
     typeSt.push(type)
     memSt.push(mem)
@@ -26,7 +27,10 @@ def normalQuad(opSt, operSt, typeSt, memSt, quad, temp, dataTable, currentFunc, 
         quad.add(op, l, r, mem)
     else:
         quad.add(op, lm, rm, mem)
-    operSt.push(mem)
+    
+    # print("estoy metiendo ",operSt.top(), " como si fuera ", typeSt.top())
+    
+    operSt.push(newVar)
     typeSt.push(newType)
     memSt.push(mem)
 
@@ -122,8 +126,9 @@ def returnQuad(typeSt, operSt, memSt, dataTable, func, quad):
 def paramQuad(typeSt, operSt, memSt, dataTable, func, quad, paramCounter):
     params = dataTable.getParams(func)
     operType = typeSt.pop()
-    print("Estamos "+ params)
+    # print("Estamos "+ params)
     # quad.print()
+    dataTable.print()
     if paramCounter > len(params):
         paramCountDif(func, len(params))
     elif params[paramCounter - 1] != operType[0]:
@@ -147,5 +152,5 @@ def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, mem, memScop
     typeSt.push(funcType)
     operSt.push(newVar)
     mem = memoryManager.get(MEM[memScope]['TEMP'][funcType.upper()])
-    memSt.push()
+    memSt.push(mem)
 

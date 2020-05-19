@@ -198,6 +198,7 @@ class CalcParser(Parser):
     @_('')
     def set_id(self, p):
         mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
+        print("var: ", self.currentId," type: ", self.currentType)
         self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
         self.dataTable.addNumLocals(self.currentFunc)
         
@@ -223,9 +224,10 @@ class CalcParser(Parser):
     def funcion2(self, p):
         pass
         
-    #embedded action
+    #embedded action sav6
     @_('')
     def save_id(self, p):
+        print("var: ", p[-1]," type: ", self.currentType)
         self.dataTable.insert(p[-1], self.currentType)
         self.dataTable.insertStartCounter(p[-1], self.quad.getCount())
         self.currentFunc = p[-1]
@@ -248,8 +250,10 @@ class CalcParser(Parser):
     @_('tipo ID parametros3')
     def parametros2(self, p):
         self.currentId = p.ID
+        print("var: ", self.currentId," type: ", p.tipo)
         mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
-        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType,mem)
+        self.dataTable.getTable(self.currentFunc).insert(self.currentId,p.tipo,mem)
+        print("var: ", self.currentFunc," type: ", self.currentType[0])
         self.dataTable.insertParam(self.currentFunc, self.currentType[0])
         
     @_('"," parametros2')
@@ -576,14 +580,17 @@ class CalcParser(Parser):
     @_('INT')
     def tipo(self, p):
         self.currentType = 'int'
+        return 'int'
 
     @_('CHAR')
     def tipo(self, p):
         self.currentType = 'char'
+        return 'char'
 
     @_('FLOAT')
     def tipo(self, p):
         self.currentType = 'float'
+        return 'float'
 
     # OR
     @_('expAND expOR2')
@@ -713,6 +720,10 @@ class CalcParser(Parser):
     @_('termino exp2')
     def exp(self, p):
         if self.pilaOper.length()>1 and self.pilaOp.top() == "+" or self.pilaOp.top() == "-" or self.pilaOp.top() == "/" or self.pilaOp.top() == "*" :
+            # print("estamos aqui porque alguine no quiere morir")
+            # self.pilaOper.print()
+            # self.pilaOp.print()
+            # self.pilaType.print()
             normalQuad(
                 self.pilaOp,
                 self.pilaOper, 
@@ -725,7 +736,11 @@ class CalcParser(Parser):
                 self.memoryManager,
                 self.memScope,
                 MEM)
-            self.tempVar = self.tempVar + 1
+            # print("despues")
+            # self.pilaOper.print()
+            # self.pilaOp.print()
+            # self.pilaType.print()
+            # self.tempVar = self.tempVar + 1
 
 
     @_('PLUS exp_op_insert exp',
@@ -934,6 +949,10 @@ class CalcParser(Parser):
             mem = self.memoryManager.get(MEM[self.memScope]['INT'])
             self.currentId= 't' + str(self.tempVar)
             self.tempVar = self.tempVar + 1
+        # self.dataTable.print()
+        # print(" -> estoy metiendo ",pastId, " como si fuera ", self.dataTable.getTypeVar(pastId, self.currentFunc))
+
+
         pushOperandType(
             self.pilaOper, 
             self.pilaType,
