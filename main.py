@@ -17,6 +17,7 @@ if __name__ == '__main__':
     parser.dataTable.print()
     print("quadruple:")
     parser.quad.print()
+    print(parser.constTable.table)
 
     Writer.prepareOBJ(filename, parser)
     #parser.printTokens()

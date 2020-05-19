@@ -1,0 +1,9 @@
+1,2,3,4,5
+#QUAD
+GOTO,_,_,1
+lee,_,_,a
+lee,_,_,b
+lee,_,_,c
+END,_,_,_
+#DIRFUNC
+global,void,,-1,3

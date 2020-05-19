@@ -11,6 +11,9 @@ class VarTable():
     def exist(self, a, b):
         return b in a
 
+    def existVar(self, var):
+        return var in self.table
+
     def typeMatch(self, var, value):
         return type(value).__name__ == var['type']
     
@@ -19,9 +22,6 @@ class VarTable():
             multipleDeclaration(varName)
         else:
             self.table[varName] = {'type': varType, 'address': address, 'value': None}
-
-    def insertTemp(self, varName, varType, varValue, varAddress):
-            self.table[varName] = {'type': varType, 'address': varAddress, 'value': varValue}
 
     def getType(self, varName):
         if(self.exist(self.table, varName)):
@@ -67,10 +67,13 @@ class DirFunc():
     def exist(self, a, b):
         return b in a
 
-    def insert(self, funcName, funcType, params='', startCounter=-1, numLocals=0):
+    def insert(self, funcName, funcType, funcAddress=None, params='', startCounter=-1, numLocals=0):
         if(self.exist(self.table, funcName)):
             multipleDeclaration(funcName)
         else:
+            if funcAddress:
+                self.getTable("global").insert(funcName, funcType, funcAddress)
+
             self.table[funcName] = {'type': funcType, 'table': VarTable(), 'params': params, 'startCounter': startCounter, 'numLocals': numLocals}
 
     def insertParam(self, funcName, param):

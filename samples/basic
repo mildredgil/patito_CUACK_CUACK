@@ -1,7 +1,8 @@
-programa x;
+programa patito;
 var ent a;
+
   principal ()
   {
-    a = 1+ 2;
-    print(a);
+    a = 1+ 2.5;
+    escribe(a);
   }

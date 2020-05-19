@@ -7,6 +7,6 @@ principal () {
     j=5;
     i=435;
     i = a + b* j + i;
-    escribe(i+j);
+    escribe(i+j-1,2);
+    escribe("hola");
 }
-samples/ejercicioClase
