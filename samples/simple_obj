@@ -4,10 +4,10 @@ GOTO,_,_,1
 +,14000,14001,3000
 =,3000,_,0
 PRINT,0,_,_
+PRINT,\n,_,_
 END,_,_,_
 #DIRFUNC
 global,void,,-1,1
 #CONST
 1,14000
 2,14001
-

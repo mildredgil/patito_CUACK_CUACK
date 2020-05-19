@@ -11,6 +11,8 @@ class Writer():
         self.writeQuad(self, f, parser)
         f.write("#DIRFUNC\n")
         self.writeDirFunc(self,f,parser)
+        f.write("#CONST\n")
+        self.writeDirConst(self,f,parser)
         f.close()
 
     def writeQuad(self, f, parser):
@@ -26,5 +28,6 @@ class Writer():
             f.write(fun + "," + parser.dataTable.table[fun]["type"] + "," + parser.dataTable.table[fun]["params"] + "," + str(parser.dataTable.table[fun]["startCounter"])+ ','+ str(parser.dataTable.table[fun]["numLocals"])+"\n")
             
     def writeDirConst(self, f, parser):
-        pass
+        for const in parser.constTable.table:
+            f.write(str(const) + "," + str(parser.constTable.table[const]["address"]) + "\n")
     

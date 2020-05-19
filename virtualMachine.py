@@ -27,13 +27,11 @@ class Memory():
 
     def insert(self, memory, val):
         memType = memory // 1000
-        memPos = memory % 1000
-        self.memory[memType][memPos] = val
+        self.memory[memType][memory] = val
 
     def value(self, memory):
         memType = memory // 1000
-        memPos = memory % 1000
-        return self.memory[memType][memPos]
+        return self.memory[memType][memory]
 
 class VirtualMachine():
     def __init__(self, filename):
@@ -112,7 +110,7 @@ class VirtualMachine():
         self.setCounter(self.currentCounter + 1)
 
     def printAction(self, quad):
-        if quad[1] == '\n':
+        if quad[1] == '\\n':
             print(' ')
         elif quad[1] == ' ':
             print(' ', end="")
@@ -132,5 +130,3 @@ class VirtualMachine():
             self.setCounter(self.currentCounter + 1)
         else:
             self.setCounter(int(quad[3]))
-
-a = VirtualMachine("samples/simple_obj")
