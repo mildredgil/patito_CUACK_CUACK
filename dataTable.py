@@ -132,10 +132,8 @@ class DirFunc():
 
 
     def existVarNoErr(self, varName, funcName):
-        if self.getTable(funcName).exist(self.getTable(funcName).table, varName) or self.getTable("global").exist(self.getTable("global").table, varName):
-            return True
-        else:
-            return False
+        return self.getTable(funcName).exist(self.getTable(funcName).table, varName) or self.getTable("global").exist(self.getTable("global").table, varName)
+            
 
     def deleteTable(self, funcName): 
         if self.existFunc(funcName):

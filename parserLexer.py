@@ -140,7 +140,7 @@ class CalcParser(Parser):
     # PROGRAMA
     @_('PROGRAM ID set_global ";" programa2 programa3 PRINCIPAL set_principal_quad "(" ")" bloque')
     def programa(self, p):
-        pass
+        self.quad.add("END",None,None, None)
     
     #embedded action
     @_('')
