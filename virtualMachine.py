@@ -1,37 +1,17 @@
 import csv
 from quad import Quad
 from dataTable import DirFunc, VarTable
+from decimal import Decimal as D
 
 class Memory():
-    def __init__(self):
-        self.memory =  {
-            0: {},
-            1: {}, 
-            2: {}, 
-            3: {}, 
-            4: {}, 
-            5: {}, 
-            6: {}, 
-            7: {}, 
-            8: {}, 
-            9: {}, 
-            10: {}, 
-            11: {}, 
-            12: {}, 
-            13: {}, 
-            14: {}, 
-            15: {}, 
-            16: {}, 
-            17: {}
-        }
-
+    def __init__(self ):
+        self.memory = {}
+        
     def insert(self, memory, val):
-        memType = memory // 1000
-        self.memory[memType][memory] = val
+        self.memory[memory] = val
 
     def value(self, memory):
-        memType = memory // 1000
-        return self.memory[memType][memory]
+        return self.memory[memory]
 
 class VirtualMachine():
     def __init__(self, filename):
@@ -69,12 +49,13 @@ class VirtualMachine():
                         self.dirFunc.insert(row['1'],row['2'],row['3'],row['4'],row['5'])
                     else:
                         if int(row['2']) < 16000:
-                            self.memory.insert(int(row['2']),int(row['1']))
+                            self.memory.insert(int(row['2']),D(row['1']))
                         else:
                             self.memory.insert(int(row['2']),row['1'])
                         
         #self.quad.print()
         #self.dirFunc.print()
+        print(self.memory.memory)
         
     def execute(self):
         instruction = self.quad.get(self.currentCounter)
@@ -86,6 +67,7 @@ class VirtualMachine():
                 "/": self.divideAction,
                 "=": self.asignAction,
                 "PRINT": self.printAction,
+                "READ": self.readAction,
                 "GOTO": self.gotoAction,
                 "GOTOF": self.gotoFAction,
             }
@@ -116,6 +98,11 @@ class VirtualMachine():
             print(' ', end="")
         else:
             print(self.memory.value(int(quad[1])), end ="")
+        self.setCounter(self.currentCounter + 1)
+
+    def readAction(self, quad):
+        valor = input("")
+        self.memory.insert(int(quad[3]), valor)
         self.setCounter(self.currentCounter + 1)
 
     def asignAction(self, quad):

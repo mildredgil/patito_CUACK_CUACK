@@ -27,3 +27,9 @@ def cantAssign(op1, op2):
 
 def notEnoughMem():
     raise Exception("Program has exceed memory limits")
+
+def outOfRange():
+    raise Exception("array index out of range")
+
+def dimLimError(lim):
+    raise Exception("array dimension must be greated than 0. {} received.".format(lim))

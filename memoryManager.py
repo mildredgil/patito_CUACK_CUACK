@@ -6,17 +6,23 @@ class MemoryManager():
         self.globalInt       = GLOBAL_INT
         self.globalFloat     = GLOBAL_FLOAT
         self.globalChar      = GLOBAL_CHAR
-        self.globalTempInt   = GLOBAL_TEMPINT
-        self.globalTempFloat = GLOBAL_TEMPFLOAT
-        self.globalTempChar  = GLOBAL_TEMPCHAR
-        self.globalTempBool  = GLOBAL_TEMPBOOL
+        self.globalTempInt   = GLOBAL_TEMP_INT
+        self.globalTempFloat = GLOBAL_TEMP_FLOAT
+        self.globalTempChar  = GLOBAL_TEMP_CHAR
+        self.globalTempBool  = GLOBAL_TEMP_BOOL
+        self.globalTempIntP  = GLOBAL_TEMP_POINTER_INT
+        self.globalTempFloatP= GLOBAL_TEMP_POINTER_FLOAT
+        self.globalTempCharP = GLOBAL_TEMP_POINTER_CHAR
         self.localInt        = LOCAL_INT
         self.localFloat      = LOCAL_FLOAT
         self.localChar       = LOCAL_CHAR
-        self.localTempInt    = LOCAL_TEMPINT
-        self.localTempFloat  = LOCAL_TEMPFLOAT
-        self.localTempChar   = LOCAL_TEMPCHAR
-        self.localTempBool   = LOCAL_TEMPBOOL
+        self.localTempInt    = LOCAL_TEMP_INT
+        self.localTempFloat  = LOCAL_TEMP_FLOAT
+        self.localTempChar   = LOCAL_TEMP_CHAR
+        self.localTempBool   = LOCAL_TEMP_BOOL
+        self.localTempIntP   = LOCAL_TEMP_POINTER_INT
+        self.localTempFloatP = LOCAL_TEMP_POINTER_FLOAT
+        self.localTempCharP  = LOCAL_TEMP_POINTER_CHAR
         self.constInt        = CONST_INT
         self.constFloat      = CONST_FLOAT
         self.constChar       = CONST_CHAR
@@ -24,140 +30,178 @@ class MemoryManager():
     
 ##########################################################        
 
-    def getGlobalInt(self):
-        self.globalInt = self.globalInt + 1
-        return self.globalInt - 1
+    def getGlobalInt(self, size):
+        self.globalInt = self.globalInt + size
+        return self.globalInt - size
     
-    def getGlobalFloat(self):
-        self.globalFloat = self.globalFloat + 1
-        return self.globalFloat - 1
+    def getGlobalFloat(self, size):
+        self.globalFloat = self.globalFloat + size
+        return self.globalFloat - size
 
-    def getGlobalChar(self):
-        self.globalChar = self.globalChar + 1
-        return self.globalChar - 1
+    def getGlobalChar(self, size):
+        self.globalChar = self.globalChar + size
+        return self.globalChar - size
 
-    def getGlobalTempInt(self):
-        self.globalTempInt = self.globalTempInt + 1
-        return self.globalTempInt - 1
+    def getGlobalTempInt(self, size):
+        self.globalTempInt = self.globalTempInt + size
+        return self.globalTempInt - size
     
-    def getGlobalTempFloat(self):
-        self.globalFloat = self.globalFloat + 1
-        return self.globalFloat - 1
+    def getGlobalTempFloat(self, size):
+        self.globalFloat = self.globalFloat + size
+        return self.globalFloat - size
 
-    def getGlobalTempChar(self):
-        self.globalTempChar = self.globalTempChar + 1
-        return self.globalTempChar - 1
+    def getGlobalTempChar(self, size):
+        self.globalTempChar = self.globalTempChar + size
+        return self.globalTempChar - size
 
-    def getGlobalTempBool(self):
-        self.globalTempBool = self.globalTempBool + 1
-        return self.globalTempBool - 1
+    def getGlobalTempBool(self, size):
+        self.globalTempBool = self.globalTempBool + size
+        return self.globalTempBool - size
     
+    def getGlobalTempIntP(self, size):
+        self.globalTempIntP = self.globalTempIntP + size
+        return self.globalTempIntP - size
+
+    def getGlobalTempFloatP(self, size):
+        self.globalTempTempFloatP = self.globalTempTempFloatP + size
+        return self.globalTempTempFloatP - size
+
+    def getGlobalTempCharP(self, size):
+        self.globalTempCharP = self.globalTempCharP + size
+        return self.globalTempCharP - size
 ##########################################################
 
     def resetTemp(self):
         self.localInt        = LOCAL_INT
         self.localFloat      = LOCAL_FLOAT
         self.localChar       = LOCAL_CHAR
-        self.localTempInt    = LOCAL_TEMPINT
-        self.localTempFloat  = LOCAL_TEMPFLOAT
-        self.localTempChar   = LOCAL_TEMPCHAR
-        self.localTempBool   = LOCAL_TEMPBOOL
+        self.localTempInt    = LOCAL_TEMP_INT
+        self.localTempFloat  = LOCAL_TEMP_FLOAT
+        self.localTempChar   = LOCAL_TEMP_CHAR
+        self.localTempBool   = LOCAL_TEMP_BOOL
+        self.localTempIntP   = LOCAL_TEMP_POINTER_INT
+        self.localTempFloatP = LOCAL_TEMP_POINTER_FLOAT
+        self.localTempCharP  = LOCAL_TEMP_POINTER_CHAR
         
-    def getLocalInt(self):
-        self.localInt = self.localInt + 1
-        return self.localInt - 1
+    def getLocalInt(self, size):
+        self.localInt = self.localInt + size
+        return self.localInt - size
     
-    def getLocalFloat(self):
-        self.localFloat = self.localFloat + 1
-        return self.localFloat - 1
+    def getLocalFloat(self, size):
+        self.localFloat = self.localFloat + size
+        return self.localFloat - size
 
-    def getLocalChar(self):
-        self.localChar = self.localChar + 1
-        return self.localChar - 1
+    def getLocalChar(self, size):
+        self.localChar = self.localChar + size
+        return self.localChar - size
 
-    def getLocalTempInt(self):
-        self.localTempInt = self.localTempInt + 1
-        return self.localTempInt - 1
+    def getLocalTempInt(self, size):
+        self.localTempInt = self.localTempInt + size
+        return self.localTempInt - size
     
-    def getLocalTempFloat(self):
-        self.localFloat = self.localFloat + 1
-        return self.localFloat - 1
+    def getLocalTempFloat(self, size):
+        self.localTempFloat = self.localTempFloat + size
+        return self.localTempFloat - size
 
-    def getLocalTempChar(self):
-        self.localTempChar = self.localTempChar + 1
-        return self.localTempChar - 1
+    def getLocalTempChar(self, size):
+        self.localTempChar = self.localTempChar + size
+        return self.localTempChar - size
 
-    def getLocalTempBool(self):
-        self.localTempBool = self.localTempBool + 1
-        return self.localTempBool - 1
+    def getLocalTempBool(self, size):
+        self.localTempBool = self.localTempBool + size
+        return self.localTempBool - size
 
-##########################################################
-
-    def getConstInt(self):
-        self.constInt = self.constInt + 1
-        return self.constInt - 1
+    def getLocalTempIntP(self, size):
+        self.localTempIntP = self.localTempIntP + size
+        return self.localTempIntP - size
     
-    def getConstFloat(self):
-        self.constFloat = self.constFloat + 1
-        return self.constFloat - 1
+    def getLocalTempFloatP(self, size):
+        self.localTempFloatP = self.localTempFloatP + size
+        return self.localTempFloatP - size
 
-    def getConstChar(self):
-        self.constChar = self.constChar + 1
-        return self.constChar - 1
+    def getLocalTempCharP(self, size):
+        self.localTempCharP = self.localTempCharP + size
+        return self.localTempCharP - size
 
-    def getConstString(self):
-        self.constString = self.constString + 1
-        return self.constString - 1
+########################################################## 
+
+    def getConstInt(self, size):
+        self.constInt = self.constInt + size
+        return self.constInt - size
+    
+    def getConstFloat(self, size):
+        self.constFloat = self.constFloat + size
+        return self.constFloat - size
+
+    def getConstChar(self, size):
+        self.constChar = self.constChar + size
+        return self.constChar - size
+
+    def getConstString(self, size):
+        self.constString = self.constString + size
+        return self.constString - size
 
 ##########################################################      
 
-    def get(self, memType):
+    def get(self, memType, size):
         funcSwitcher={
-                'GLOBAL_INT'       : self.getGlobalInt,
-                'GLOBAL_FLOAT'     : self.getGlobalFloat,
-                'GLOBAL_CHAR'      : self.getGlobalChar,
-                'GLOBAL_TEMPINT'   : self.getGlobalTempInt,
-                'GLOBAL_TEMPFLOAT' : self.getGlobalTempFloat,
-                'GLOBAL_TEMPCHAR'  : self.getGlobalTempChar,
-                'GLOBAL_TEMPBOOL'  : self.getGlobalTempBool,
-                'LOCAL_INT'        : self.getLocalInt,
-                'LOCAL_FLOAT'      : self.getLocalFloat,
-                'LOCAL_CHAR'       : self.getLocalChar,
-                'LOCAL_TEMPINT'    : self.getLocalTempInt,
-                'LOCAL_TEMPFLOAT'  : self.getLocalTempFloat,
-                'LOCAL_TEMPCHAR'   : self.getLocalTempChar,
-                'LOCAL_TEMPBOOL'   : self.getLocalTempBool,
-                'CONST_INT'        : self.getConstInt,
-                'CONST_FLOAT'      : self.getConstFloat,
-                'CONST_CHAR'       : self.getConstChar,
-                'CONST_STRING'     : self.getConstString,
+                'GLOBAL_INT'        : self.getGlobalInt,
+                'GLOBAL_FLOAT'      : self.getGlobalFloat,
+                'GLOBAL_CHAR'       : self.getGlobalChar,
+                'GLOBAL_TEMP_INT'   : self.getGlobalTempInt,
+                'GLOBAL_TEMP_FLOAT' : self.getGlobalTempFloat,
+                'GLOBAL_TEMP_CHAR'  : self.getGlobalTempChar,
+                'GLOBAL_TEMP_BOOL'  : self.getGlobalTempBool,
+                'GLOBAL_TEMP_POINTER_INT'   : self.getGlobalTempIntP,
+                'GLOBAL_TEMP_POINTER_FLOAT' : self.getGlobalTempFloatP,
+                'GLOBAL_TEMP_POINTER_CHAR'  : self.getGlobalTempCharP,
+                'LOCAL_INT'         : self.getLocalInt,
+                'LOCAL_FLOAT'       : self.getLocalFloat,
+                'LOCAL_CHAR'        : self.getLocalChar,
+                'LOCAL_TEMP_INT'    : self.getLocalTempInt,
+                'LOCAL_TEMP_FLOAT'  : self.getLocalTempFloat,
+                'LOCAL_TEMP_CHAR'   : self.getLocalTempChar,
+                'LOCAL_TEMP_BOOL'   : self.getLocalTempBool,
+                'LOCAL_TEMP_POINTER_INT'    : self.getLocalTempIntP,
+                'LOCAL_TEMP_POINTER_FLOAT'  : self.getLocalTempFloatP,
+                'LOCAL_TEMP_POINTER_CHAR'   : self.getLocalTempCharP,
+                'CONST_INT'         : self.getConstInt,
+                'CONST_FLOAT'       : self.getConstFloat,
+                'CONST_CHAR'        : self.getConstChar,
+                'CONST_STRING'      : self.getConstString,
             }
         func = funcSwitcher.get(memType, "Invalid Memory Type")
 
         constSwitcher={
-                'GLOBAL_INT'       : GLOBAL_INT,
-                'GLOBAL_FLOAT'     : GLOBAL_FLOAT,
-                'GLOBAL_CHAR'      : GLOBAL_CHAR,
-                'GLOBAL_TEMPINT'   : GLOBAL_TEMPINT,
-                'GLOBAL_TEMPFLOAT' : GLOBAL_TEMPFLOAT,
-                'GLOBAL_TEMPCHAR'  : GLOBAL_TEMPCHAR,      
-                'GLOBAL_TEMPBOOL'  : GLOBAL_TEMPBOOL,       
-                'LOCAL_INT'        : LOCAL_INT,
-                'LOCAL_FLOAT'      : LOCAL_FLOAT,    
-                'LOCAL_CHAR'       : LOCAL_CHAR,  
-                'LOCAL_TEMPINT'    : LOCAL_TEMPINT,
-                'LOCAL_TEMPFLOAT'  : LOCAL_TEMPFLOAT,
-                'LOCAL_TEMPCHAR'   : LOCAL_TEMPCHAR,      
-                'LOCAL_TEMPBOOL'   : LOCAL_TEMPBOOL,       
-                'CONST_INT'        : CONST_INT,
-                'CONST_FLOAT'      : CONST_FLOAT,
-                'CONST_CHAR'       : CONST_CHAR,  
-                'CONST_STRING'     : CONST_STRING
+                'GLOBAL_INT'        : GLOBAL_INT,
+                'GLOBAL_FLOAT'      : GLOBAL_FLOAT,
+                'GLOBAL_CHAR'       : GLOBAL_CHAR,
+                'GLOBAL_TEMP_INT'   : GLOBAL_TEMP_INT,
+                'GLOBAL_TEMP_FLOAT' : GLOBAL_TEMP_FLOAT,
+                'GLOBAL_TEMP_CHAR'  : GLOBAL_TEMP_CHAR,
+                'GLOBAL_TEMP_BOOL'  : GLOBAL_TEMP_BOOL,       
+                'GLOBAL_TEMP_POINTER_INT'   : GLOBAL_TEMP_POINTER_INT,
+                'GLOBAL_TEMP_POINTER_FLOAT' : GLOBAL_TEMP_POINTER_FLOAT,
+                'GLOBAL_TEMP_POINTER_CHAR'  : GLOBAL_TEMP_POINTER_CHAR,
+                'LOCAL_INT'         : LOCAL_INT,
+                'LOCAL_FLOAT'       : LOCAL_FLOAT,    
+                'LOCAL_CHAR'        : LOCAL_CHAR,  
+                'LOCAL_TEMP_INT'    : LOCAL_TEMP_INT,
+                'LOCAL_TEMP_FLOAT'  : LOCAL_TEMP_FLOAT,
+                'LOCAL_TEMP_CHAR'   : LOCAL_TEMP_CHAR,      
+                'LOCAL_TEMP_BOOL'   : LOCAL_TEMP_BOOL,
+                'LOCAL_TEMP_POINTER_INT'    : LOCAL_TEMP_POINTER_INT,
+                'LOCAL_TEMP_POINTER_FLOAT'  : LOCAL_TEMP_POINTER_FLOAT,
+                'LOCAL_TEMP_POINTER_CHAR'   : LOCAL_TEMP_POINTER_CHAR, 
+                'CONST_INT'         : CONST_INT,
+                'CONST_FLOAT'       : CONST_FLOAT,
+                'CONST_CHAR'        : CONST_CHAR,  
+                'CONST_STRING'      : CONST_STRING
             }
         
         const = constSwitcher.get(memType, "Invalid Memory Type")
-        mem = func()
-
+        mem = func(size)
+        
         if mem - const >= 1000:
             notEnoughMem()
         else:

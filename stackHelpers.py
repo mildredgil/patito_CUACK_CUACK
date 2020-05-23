@@ -2,7 +2,7 @@ from err import *
 from typeMatching import *
 from memoryConstants import *
 
-test= False
+test= True
 
 def pushOperandType(operSt, typeSt, memSt, oper, type, mem):
     operSt.push(oper)
@@ -23,7 +23,7 @@ def normalQuad(opSt, operSt, typeSt, memSt, quad, temp, dataTable, currentFunc, 
     
     newVar = "t" + str(temp)
     
-    mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()])
+    mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()],1)
     if test:
         quad.add(op, l, r, mem)
     else:
@@ -150,7 +150,7 @@ def validParamLen(paramCounter, funcParamLen, func):
 
 def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, address, memoryManager, memScope, quad):
     newVar = "t" + str(temp)
-    mem = memoryManager.get(MEM[memScope]['TEMP'][funcType.upper()])
+    mem = memoryManager.get(MEM[memScope]['TEMP'][funcType.upper()],1)
     
     if test:
         quad.add("=", funcName, None, newVar)

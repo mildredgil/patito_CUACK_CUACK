@@ -22,7 +22,6 @@ if __name__ == '__main__':
 
     parser.parse(lexer.tokenize(data))
 
-    
     #printParser(parser)
     #printTokens(lexer)
         
@@ -30,6 +29,6 @@ if __name__ == '__main__':
     Writer.prepareOBJ(filename, parser)
 
     #RUN OBJ
-    VirtualMachine(filename + "_obj")
+    #VirtualMachine(filename + "_obj")
     #parser.printTokens()
     

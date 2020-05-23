@@ -12,6 +12,8 @@ from stackHelpers import *
 from memoryManager import *
 from memoryConstants import *
 
+test = True
+
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
     tokens = { 
@@ -137,8 +139,12 @@ class CalcParser(Parser):
         self.memScope = "GLOBAL"
         self.currentMemory = -1
         self.memoryManager = MemoryManager()
-    
-    # PROGRAMA
+
+        self.dim = 0
+        self.dimR = 1
+        self.isArray = False
+        
+    #PROGRAMA
     @_('PROGRAM ID set_global ";" programa2 programa3 PRINCIPAL set_principal_quad "(" ")" bloque')
     def programa(self, p):
         self.quad.add("END",None,None, None)
@@ -190,16 +196,9 @@ class CalcParser(Parser):
     def var2(self, p):
         pass
 
-    @_('identificadores set_id ids2')
+    @_('identificadoresDec ids2')
     def ids(self, p):
         pass
-    
-    #embeded action
-    @_('')
-    def set_id(self, p):
-        mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
-        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
-        self.dataTable.addNumLocals(self.currentFunc)
         
     @_('"," ids')
     def ids2(self, p):
@@ -229,7 +228,7 @@ class CalcParser(Parser):
     def save_id(self, p):
         mem = None
         if self.currentType != "void":
-            mem = self.memoryManager.get(MEM["GLOBAL"][self.currentType.upper()])
+            mem = self.memoryManager.get(MEM["GLOBAL"][self.currentType.upper()],1)
         self.dataTable.insert(p[-1], self.currentType, mem)
         self.dataTable.insertStartCounter(p[-1], self.quad.getCount())
         self.currentFunc = p[-1]
@@ -256,7 +255,7 @@ class CalcParser(Parser):
     @_('')
     def param(self, p):
         self.currentId = p[-1]
-        mem = self.memoryManager.get(MEM[self.memScope][p[-2].upper()])
+        mem = self.memoryManager.get(MEM[self.memScope][p[-2].upper()],1)
         self.dataTable.getTable(self.currentFunc).insert(p[-1],p[-2],mem)
         self.dataTable.insertParam(self.currentFunc, p[-2][0])
         print(self.dataTable.getParams(self.currentFunc))
@@ -349,7 +348,8 @@ class CalcParser(Parser):
     def lee_quad(self, p):
         print(self.currentId, self.currentFunc)
         if self.dataTable.existVar(self.currentId, self.currentFunc):
-            self.quad.add("lee", None, None, self.currentId)
+            mem = self.dataTable.getAdressVar(self.currentId, self.currentFunc)
+            self.quad.add("READ", None, None, mem)
 
     @_('"," lee2')
     def lee3(self, p):
@@ -383,7 +383,6 @@ class CalcParser(Parser):
 
     @_('')
     def print_quad1(self, p):
-        test = False
         oper = self.pilaOper.pop()
         m = self.pilaMemoria.pop()
         if test:
@@ -393,8 +392,8 @@ class CalcParser(Parser):
         
     @_('')
     def print_quad2(self, p):
-        self.constTable.insert(p[-1],"string",self.memoryManager.get(MEM["CONST"]["STRING"]))
-        printQuad(self.memoryManager.get(MEM["CONST"]["STRING"]), self.quad)
+        self.constTable.insert(p[-1],"string",self.memoryManager.get(MEM["CONST"]["STRING"],1))
+        printQuad(self.memoryManager.get(MEM["CONST"]["STRING"],1), self.quad)
         
     @_('')
     def print_next(self, p):
@@ -559,15 +558,53 @@ class CalcParser(Parser):
         
         self.tempVar=self.tempVar+1
     
-    # identificadores
+    # identificadores Declaracion
+    @_('ID save_id_table identificadoresDec2')
+    def identificadoresDec(self, p):
+        pass
+
+    @_('')
+    def save_id_table(self, p):
+        self.currentId = p[-1]
+        mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()],1)
+        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
+        self.dataTable.addNumLocals(self.currentFunc)
+
+    
+    @_('"[" INTNUMBER "]" arraySetArray identificadoresDec2')
+    def identificadoresDec2(self, p):
+        self.isArray = False
+        self.dim = 0
+        self.dimR = 1
+
+    # embedded action
+    @_('')
+    def arraySetArray(self, p):
+        self.isArray = True
+        self.dim += 1
+        lim = p[-2]
+
+        self.dataTable.getTable(self.currentFunc).dimStoreLim(self.currentId, 1, lim)
+        self.dimR = (lim + 1 ) * self.dimR
+
+    @_('empty')
+    def identificadoresDec2(self, p):
+        if self.isArray:
+            size = self.dimR
+            for i in range(0, self.dim):
+                self.dimR = self.dataTable.getTable(self.currentFunc).dimStoreMi(self.currentId, i, self.dimR)
+            self.dataTable.print()
+        
+
+    # identificadores Indexacion (para dimensionados)
     @_('ID identificadores2')
     def identificadores(self, p):
         self.currentId = p.ID
         
     @_('"[" exp "]" identificadores3')
     def identificadores2(self, p):
-        pass
-
+        self.dataTable.print()
+    
     @_('empty')
     def identificadores2(self, p):
         pass
@@ -867,7 +904,7 @@ class CalcParser(Parser):
         pass
 
     # LLAMADA    
-    @_('ID era_call "(" llamada2 ")"')
+    @_('ID era_call exp_par_start "(" llamada2 ")" exp_par_end')
     def llamada(self, p):
         validParamLen(self.parameterCount - 1, len(self.dataTable.getParams(self.currentCallId)), self.currentCallId)
         self.parameterCount = 1
@@ -920,7 +957,7 @@ class CalcParser(Parser):
                         't' + str(self.tempVar)
                     )
             self.badAid= '0'
-            mem = self.memoryManager.get(MEM[self.memScope]['INT'])
+            mem = self.memoryManager.get(MEM[self.memScope]['INT'],1)
             self.currentId= 't' + str(self.tempVar)
             self.tempVar = self.tempVar + 1
         
@@ -937,17 +974,11 @@ class CalcParser(Parser):
     def varcte(self, p):
         pastId = p[0]
         mem = None
-        '''
-        if(self.dataTable.existVarNoErr(p[0],'const')):
-            mem = self.dataTable.getAdressVar(p[0],'const')
-        else:
-            mem = self.memoryManager.get(MEM['CONST']['INT'])
-            self.dataTable.getTable('const').insert(p[0],'int', mem)
-        '''
+        
         if self.constTable.existVar(p[0]):
             mem = self.constTable.getAdress(p[0])
         else:
-            mem = self.memoryManager.get(MEM['CONST']['INT'])
+            mem = self.memoryManager.get(MEM['CONST']['INT'],1)
             self.constTable.insert(p[0],'int', mem)
 
         self.isConst = True
@@ -959,7 +990,7 @@ class CalcParser(Parser):
                         't' + str(self.tempVar)
                     )
             self.badAid= '0'
-            mem = self.memoryManager.get(MEM[self.memScope]['INT'])
+            mem = self.memoryManager.get(MEM[self.memScope]['INT'],1)
             pastId= 't' + str(self.tempVar)
             self.tempVar = self.tempVar + 1
             self.isConst = False
@@ -978,17 +1009,11 @@ class CalcParser(Parser):
     def varcte(self, p):
         pastId = p[0]
         mem = None
-        '''
-        if(self.dataTable.existVarNoErr(p[0],'const')):
-            mem = self.dataTable.getAdressVar(p[0],'const')
-        else:
-            mem = self.memoryManager.get(MEM['CONST']['CHAR'])
-            self.dataTable.getTable('const').insert(p[0],'int', mem)
-        '''
+       
         if self.constTable.existVar(p[0]):
             mem = self.constTable.getAdress(p[0])
         else:
-            mem = self.memoryManager.get(MEM['CONST']['CHAR'])
+            mem = self.memoryManager.get(MEM['CONST']['CHAR'],1)
             self.constTable.insert(p[0],'char', mem)
 
         self.isConst = True
@@ -1000,7 +1025,7 @@ class CalcParser(Parser):
                         't' + str(self.tempVar)
                     )
             self.badAid= '0'
-            mem = self.memoryManager.get(MEM[self.memScope]['CHAR'])
+            mem = self.memoryManager.get(MEM[self.memScope]['CHAR'],1)
             self.currentId= 't' + str(self.tempVar)
             self.tempVar = self.tempVar + 1
             self.isConst = False
@@ -1019,17 +1044,11 @@ class CalcParser(Parser):
     def varcte(self, p):
         pastId = p[0]
         mem = None
-        '''
-        if(self.dataTable.existVarNoErr(p[0],'const')):
-            mem = self.dataTable.getAdressVar(p[0],'const')
-        else:
-            mem = self.memoryManager.get(MEM['CONST']['FLOAT'])
-            self.dataTable.getTable('const').insert(p[0],'int', mem)
-        '''
+        
         if self.constTable.existVar(p[0]):
             mem = self.constTable.getAdress(p[0])
         else:
-            mem = self.memoryManager.get(MEM['CONST']['FLOAT'])
+            mem = self.memoryManager.get(MEM['CONST']['FLOAT'],1)
             self.constTable.insert(p[0],'float', mem)
 
         if not self.badAid.isdigit():
@@ -1040,7 +1059,7 @@ class CalcParser(Parser):
                         't' + str(self.tempVar)
                     )
             self.badAid= '0'
-            mem = self.memoryManager.get(MEM[self.memScope]['FLOAT'])
+            mem = self.memoryManager.get(MEM[self.memScope]['FLOAT'],1)
             pastId= 't' + str(self.tempVar)
             self.tempVar = self.tempVar + 1
             self.isConst = False

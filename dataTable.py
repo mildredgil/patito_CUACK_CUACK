@@ -21,7 +21,28 @@ class VarTable():
         if(self.exist(self.table, varName)):
             multipleDeclaration(varName)
         else:
-            self.table[varName] = {'type': varType, 'address': address, 'value': None}
+            self.table[varName] = {'type': varType, 'address': address, 'dim': [], 'value': None}
+        
+    def dimStoreLim(self, varName, dim, lim):
+        if lim > 0:
+            print(self.table[varName])
+            self.table[varName]["dim"].append({'lim': lim, 'mi': None})
+        else:
+            dimLimError(lim)
+
+    def dimStoreMi(self, varName, dim, r):
+        if dim < len(self.table[varName]["dim"]):
+            mi = r/(self.table[varName]["dim"][dim - 1]['lim'] + 1)
+            self.table[varName]["dim"][dim - 1]['mi'] = mi
+            return mi
+        else:
+            outOfRange()
+
+    def dimGetMi(self, varName, dim):
+        if dim < len(self.table[varName]["dim"]):
+            return self.table[varName]["dim"][dim - 1]['mi']
+        else:
+            outOfRange()
 
     def getType(self, varName):
         if(self.exist(self.table, varName)):
