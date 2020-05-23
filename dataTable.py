@@ -17,7 +17,7 @@ class VarTable():
     def typeMatch(self, var, value):
         return type(value).__name__ == var['type']
     
-    def insert(self, varName, varType, address):
+    def insert(self, varName, varType, address=None):
         if(self.exist(self.table, varName)):
             multipleDeclaration(varName)
         else:

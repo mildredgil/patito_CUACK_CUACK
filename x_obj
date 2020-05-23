@@ -12,9 +12,9 @@ GOTO,_,_,1
 =,t3,_,i
 +,i,j,3003
 -,t3,1,3004
-PRINT,t4,_,_
+PRINT,3004,_,_
 PRINT, ,_,_
-PRINT,2,_,_
+PRINT,14000,_,_
 PRINT,\n,_,_
 PRINT,17001,_,_
 PRINT,\n,_,_

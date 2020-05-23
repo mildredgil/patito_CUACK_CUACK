@@ -2,7 +2,7 @@ from err import *
 from typeMatching import *
 from memoryConstants import *
 
-test= True
+test= False
 
 def pushOperandType(operSt, typeSt, memSt, oper, type, mem):
     operSt.push(oper)

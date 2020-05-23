@@ -33,3 +33,6 @@ def outOfRange():
 
 def dimLimError(lim):
     raise Exception("array dimension must be greated than 0. {} received.".format(lim))
+
+def invalidMemType(m):
+    raise Exception("{} is an invalid memory type".format(m))

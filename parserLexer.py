@@ -12,7 +12,7 @@ from stackHelpers import *
 from memoryManager import *
 from memoryConstants import *
 
-test = True
+test = False
 
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
@@ -566,11 +566,11 @@ class CalcParser(Parser):
     @_('')
     def save_id_table(self, p):
         self.currentId = p[-1]
-        mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()],1)
-        self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
-        self.dataTable.addNumLocals(self.currentFunc)
 
-    
+        #mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()],1)
+        #self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
+        #self.dataTable.addNumLocals(self.currentFunc)
+        
     @_('"[" INTNUMBER "]" arraySetArray identificadoresDec2')
     def identificadoresDec2(self, p):
         self.isArray = False
@@ -580,6 +580,11 @@ class CalcParser(Parser):
     # embedded action
     @_('')
     def arraySetArray(self, p):
+        if not self.dataTable.getTable(self.currentFunc).existVar(self.currentId):
+            mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
+            self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
+            self.dataTable.addNumLocals(self.currentFunc)
+        
         self.isArray = True
         self.dim += 1
         lim = p[-2]
@@ -593,7 +598,13 @@ class CalcParser(Parser):
             size = self.dimR
             for i in range(0, self.dim):
                 self.dimR = self.dataTable.getTable(self.currentFunc).dimStoreMi(self.currentId, i, self.dimR)
+            
+            self.memoryManager.setNext(MEM[self.memScope][self.currentType.upper()],size)
             self.dataTable.print()
+        else:
+            mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()],1)
+            self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
+            self.dataTable.addNumLocals(self.currentFunc)
         
 
     # identificadores Indexacion (para dimensionados)
