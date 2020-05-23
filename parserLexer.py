@@ -124,15 +124,15 @@ class CalcParser(Parser):
         self.pilaJump = stack.Stack()
         self.pilaForOp = stack.Stack()
         self.pilaForGo = stack.Stack()
+        self.pilaCallId = stack.Stack()
+        self.pilaparamCount = stack.Stack()
         self.quad = Quad()
-        self.parameterCount = 1
         self.tempVar = 0
         self.badAid = '0'
         self.isConst = False
 
         self.currentId = None
         self.currentType = None
-        self.currentCallId = None
         self.currentFunc = None
         self.globalFunc = None
 
@@ -566,10 +566,6 @@ class CalcParser(Parser):
     @_('')
     def save_id_table(self, p):
         self.currentId = p[-1]
-
-        #mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()],1)
-        #self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
-        #self.dataTable.addNumLocals(self.currentFunc)
         
     @_('"[" INTNUMBER "]" arraySetArray identificadoresDec2')
     def identificadoresDec2(self, p):
@@ -606,26 +602,17 @@ class CalcParser(Parser):
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
             self.dataTable.addNumLocals(self.currentFunc)
         
-
-    # identificadores Indexacion (para dimensionados)
+    # identificadores con dimension
     @_('ID identificadores2')
     def identificadores(self, p):
         self.currentId = p.ID
         
-    @_('"[" exp "]" identificadores3')
+    @_('"[" exp "]" identificadores2')
     def identificadores2(self, p):
         self.dataTable.print()
     
     @_('empty')
     def identificadores2(self, p):
-        pass
-
-    @_('"[" exp "]"')
-    def identificadores3(self, p):
-        pass
-
-    @_('empty')
-    def identificadores3(self, p):
         pass
 
     # TIPO
@@ -823,6 +810,7 @@ class CalcParser(Parser):
 
     @_('')
     def exp_par_end(self, p):
+        self.pilaOper.print()
         while self.pilaOp.top() != '(':
             normalQuad(
                 self.pilaOp,
@@ -838,6 +826,7 @@ class CalcParser(Parser):
             )
             self.tempVar = self.tempVar + 1
         self.pilaOp.pop()
+        self.pilaOper.print()
 
     @_('PLUS plus_varcte varcte')
     def factor(self, p):
@@ -915,22 +904,48 @@ class CalcParser(Parser):
         pass
 
     # LLAMADA    
-    @_('ID era_call exp_par_start "(" llamada2 ")" exp_par_end')
+    @_('ID era_call "(" call_par_start llamada2 ")" exp_par_end')
     def llamada(self, p):
-        validParamLen(self.parameterCount - 1, len(self.dataTable.getParams(self.currentCallId)), self.currentCallId)
-        self.parameterCount = 1
+        param = self.pilaparamCount.pop()
+        validParamLen(param - 1, len(self.dataTable.getParams(self.pilaCallId.top())), self.pilaCallId.top())
         self.quad.add("GOSUB", p.ID, None, None)
-        funcType = self.dataTable.getType(self.currentCallId)
+        funcType = self.dataTable.getType(self.pilaCallId.top())
         if funcType != 'void':
             m = self.dataTable.getAdressVar(p.ID, "global")
             callAssignQuad(p.ID, funcType, self.tempVar, self.pilaType, self.pilaOper, self.pilaMemoria, m, self.memoryManager, self.memScope, self.quad)
             self.tempVar = self.tempVar + 1
+        self.pilaCallId.pop()
             
     #embedded action
     @_('')
     def era_call(self, p):
-        self.currentCallId = p[-1]
-        eraQuad(self.dataTable, self.currentCallId, self.quad)
+        self.pilaCallId.push(p[-1])
+        self.pilaparamCount.push(1)
+        eraQuad(self.dataTable, self.pilaCallId.top(), self.quad)
+
+    @_('')
+    def call_par_start(self, p):
+        self.pilaOp.push("(")
+
+    @_('')
+    def call_par_end(self, p):
+        self.pilaOper.print()
+        while self.pilaOp.top() != '(':
+            normalQuad(
+                self.pilaOp,
+                self.pilaOper, 
+                self.pilaType,
+                self.pilaMemoria,
+                self.quad, 
+                self.tempVar,
+                self.dataTable,
+                self.currentFunc,
+                self.memoryManager,
+                self.memScope
+            )
+            self.tempVar = self.tempVar + 1
+        self.pilaOp.pop()
+        self.pilaOper.print()
 
     @_('exp param_call llamada3')
     def llamada2(self, p):
@@ -943,10 +958,11 @@ class CalcParser(Parser):
     #embedded action
     @_('')
     def param_call(self, p):
-        paramQuad(self.pilaType, self.pilaOper, self.pilaMemoria, self.dataTable, self.currentCallId, self.quad, self.parameterCount)
-        self.parameterCount = self.parameterCount + 1
+        param = self.pilaparamCount.pop()
+        paramQuad(self.pilaType, self.pilaOper, self.pilaMemoria, self.dataTable, self.pilaCallId.top(), self.quad, param)
+        self.pilaparamCount.push(param + 1)
 
-    @_('"," llamada2')
+    @_('"," call_par_end call_par_start llamada2')
     def llamada3(self, p):
         pass
 

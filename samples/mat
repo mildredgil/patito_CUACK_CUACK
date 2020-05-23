@@ -1,0 +1,10 @@
+programa patito;
+var ent arr[11][8], a, arr2[2], c, c2[11][1];
+  deci arrd[4][2], b;
+  letra q1, q[1][2][2][3][4];
+
+  principal ()
+  {
+    b = 1+ 2 * (-b);
+    escribe(arr);
+  }

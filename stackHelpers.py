@@ -131,6 +131,7 @@ def paramQuad(typeSt, operSt, memSt, dataTable, func, quad, paramCounter):
     params = dataTable.getParams(func)
     operType = typeSt.pop()
 
+    print(func, params, operType, paramCounter)
     if paramCounter > len(params):
         paramCountDif(func, len(params))
     elif params[paramCounter - 1] != operType[0]:
