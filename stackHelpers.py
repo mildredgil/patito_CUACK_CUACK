@@ -1,15 +1,15 @@
 from err import *
 from typeMatching import *
+from memoryConstants import *
 
 test= False
 
 def pushOperandType(operSt, typeSt, memSt, oper, type, mem):
-    # print("estoy metiendo ",operSt.top(), " como si fuera ", typeSt.top())
     operSt.push(oper)
     typeSt.push(type)
     memSt.push(mem)
 
-def normalQuad(opSt, operSt, typeSt, memSt, quad, temp, dataTable, currentFunc, memoryManager, memScope,MEM):
+def normalQuad(opSt, operSt, typeSt, memSt, quad, temp, dataTable, currentFunc, memoryManager, memScope):
     op = opSt.pop()
     r = operSt.pop()
     l = operSt.pop()
@@ -22,13 +22,12 @@ def normalQuad(opSt, operSt, typeSt, memSt, quad, temp, dataTable, currentFunc, 
     newType = TypeMatching.sem(0, rType, op, lType)
     
     newVar = "t" + str(temp)
-    mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()])
+    
+    mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()],1)
     if test:
         quad.add(op, l, r, mem)
     else:
         quad.add(op, lm, rm, mem)
-    
-    # print("estoy metiendo ",operSt.top(), " como si fuera ", typeSt.top())
     
     operSt.push(newVar)
     typeSt.push(newType)
@@ -42,14 +41,14 @@ def assignQuad(opSt, operSt, typeSt, memSt, quad):
     rm = memSt.pop()
     lm = memSt.pop()
 
-
-    if not r or not l:
-        cantAssign(r, l)
+    # print("R es:" + str(r) + " y L es:"+str(l))
+    # if not r or not l:
+    #     cantAssign(r, l)
 
     rType = typeSt.pop()
     lType = typeSt.pop()
 
-    _ = TypeMatching.sem(0, rType, op, lType)
+    _ = TypeMatching.sem(0,rType , op, lType)
     
     if test:
         quad.add(op, r, None, l)
@@ -64,15 +63,23 @@ def singeOpQuad(opSt, operSt, memSt, quad, temp):
     
     quad.add(op, rm, None, temp)
 
-def gotoFQuad(operSt, typeSt, jumpSt, quad):
+def gotoFQuad(operSt, typeSt, jumpSt, memSt, quad):
     boolType = typeSt.pop()
+
+    print("estamos en ", boolType)
 
     if boolType != "bool":
         missMatchTypeBool()
 
+    m = memSt.pop()
     result = operSt.pop()
     jumpSt.push(quad.getCount())
-    quad.add("GOTOF", result, None, None)
+
+    if test:
+        quad.add("GOTOF", result, None, None)
+    else:
+        quad.add("GOTOF", m, None, None)
+    
     
 def fillGotoFQuad(quad, jumpSt):
     index = jumpSt.pop()
@@ -126,9 +133,8 @@ def returnQuad(typeSt, operSt, memSt, dataTable, func, quad):
 def paramQuad(typeSt, operSt, memSt, dataTable, func, quad, paramCounter):
     params = dataTable.getParams(func)
     operType = typeSt.pop()
-    # print("Estamos "+ params)
-    # quad.print()
-    dataTable.print()
+
+    print(func, params, operType, paramCounter)
     if paramCounter > len(params):
         paramCountDif(func, len(params))
     elif params[paramCounter - 1] != operType[0]:
@@ -146,11 +152,15 @@ def validParamLen(paramCounter, funcParamLen, func):
     if paramCounter != funcParamLen:
         paramCountDif(func, funcParamLen)
 
-def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, mem, memScope, memoryManager, quad):
+def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, address, memoryManager, memScope, quad):
     newVar = "t" + str(temp)
-    quad.add("=", funcName, None, newVar)
+    mem = memoryManager.get(MEM[memScope]['TEMP'][funcType.upper()],1)
+    
+    if test:
+        quad.add("=", funcName, None, newVar)
+    else:
+        quad.add("=", address, None, mem)
     typeSt.push(funcType)
     operSt.push(newVar)
-    mem = memoryManager.get(mem[memScope]['TEMP'][funcType.upper()])
+    
     memSt.push(mem)
-

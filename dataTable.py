@@ -11,17 +11,38 @@ class VarTable():
     def exist(self, a, b):
         return b in a
 
+    def existVar(self, var):
+        return var in self.table
+
     def typeMatch(self, var, value):
         return type(value).__name__ == var['type']
     
-    def insert(self, varName, varType, address):
+    def insert(self, varName, varType, address=None):
         if(self.exist(self.table, varName)):
             multipleDeclaration(varName)
         else:
-            self.table[varName] = {'type': varType, 'address': address, 'value': None}
+            self.table[varName] = {'type': varType, 'address': address, 'dim': [], 'value': None}
+        
+    def dimStoreLim(self, varName, dim, lim):
+        if lim > 0:
+            print(self.table[varName])
+            self.table[varName]["dim"].append({'lim': lim, 'mi': None})
+        else:
+            dimLimError(lim)
 
-    def insertTemp(self, varName, varType, varValue, varAddress):
-            self.table[varName] = {'type': varType, 'address': varAddress, 'value': varValue}
+    def dimStoreMi(self, varName, dim, r):
+        if dim < len(self.table[varName]["dim"]):
+            mi = r/(self.table[varName]["dim"][dim - 1]['lim'] + 1)
+            self.table[varName]["dim"][dim - 1]['mi'] = mi
+            return mi
+        else:
+            outOfRange()
+
+    def dimGetMi(self, varName, dim):
+        if dim < len(self.table[varName]["dim"]):
+            return self.table[varName]["dim"][dim - 1]['mi']
+        else:
+            outOfRange()
 
     def getType(self, varName):
         if(self.exist(self.table, varName)):
@@ -67,10 +88,13 @@ class DirFunc():
     def exist(self, a, b):
         return b in a
 
-    def insert(self, funcName, funcType, params='', startCounter=-1, numLocals=0):
+    def insert(self, funcName, funcType, funcAddress=None, params='', startCounter=-1, numLocals=0):
         if(self.exist(self.table, funcName)):
             multipleDeclaration(funcName)
         else:
+            if funcAddress:
+                self.getTable("global").insert(funcName, funcType, funcAddress)
+
             self.table[funcName] = {'type': funcType, 'table': VarTable(), 'params': params, 'startCounter': startCounter, 'numLocals': numLocals}
 
     def insertParam(self, funcName, param):
@@ -132,10 +156,8 @@ class DirFunc():
 
 
     def existVarNoErr(self, varName, funcName):
-        if self.getTable(funcName).exist(self.getTable(funcName).table, varName) or self.getTable("global").exist(self.getTable("global").table, varName):
-            return True
-        else:
-            return False
+        return self.getTable(funcName).exist(self.getTable(funcName).table, varName) or self.getTable("global").exist(self.getTable("global").table, varName)
+            
 
     def deleteTable(self, funcName): 
         if self.existFunc(funcName):

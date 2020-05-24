@@ -1,7 +1,11 @@
 programa x;
 var ent a;
+deci b;
   principal ()
   {
     a = 1+ 2;
-    print(a);
+    b = 2 * 3 / 6;
+    escribe(a,b);
+    escribe(a);
+    escribe(b);
   }

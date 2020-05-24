@@ -1,33 +1,23 @@
-from queue import Queue 
-  
+from collections import deque
+
+
 # set the size of the queue
-q = Queue(maxsize = 5) 
+q = deque() 
   
 # qsize() give the maxsize of the Queue  
-print(q.qsize())
+
 
 # Adding elements
-q.put('a') 
-q.put('b') 
-q.put('c')
-print(q.qsize())  
-q.put('d') 
-q.put('e') 
+q.append('a') 
+q.append('b') 
+q.append('c')
+q.append('d') 
+q.append('e') 
   
-# Return Boolean for Full  
-# Queue  
-print("\nFull: ", q.full())  
+# Removing element from Queue 
+print("\nElements deQueued from the Queue") 
+print(q.pop()) 
+print(q.pop()) 
+print(q.pop()) 
   
-# Removing element from queue 
-print("\nElements dequeued from the queue") 
-print(q.get()) 
-print(q.get()) 
-print(q.get()) 
-  
-# Return Boolean for Empty  
-# Queue  
-print("\nEmpty: ", q.empty()) 
-  
-q.put(1)
-print("\nEmpty: ", q.empty())  
-print("Full: ", q.full())
+#https://docs.python.org/2/library/collections.html

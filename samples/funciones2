@@ -1,0 +1,33 @@
+programa patito;
+var ent b;
+    deci k;
+    letra z;
+
+  funcion ent f1(ent i, ent k, ent v)
+  var ent j, l, m;
+      letra a;
+  {
+    j = i + k / i * l * m - m;
+    regresa(j);
+  }
+
+  funcion ent f2(ent i, ent k, ent v)
+  var ent j, l, m;
+      letra a;
+  {
+    j = i + k / i * l * m - m;
+    regresa(j);
+  }
+
+  funcion ent f3(ent i, ent k, ent v)
+  var ent j, l, m;
+      letra a;
+  {
+    j = i + k / i * l * m - m;
+    regresa(j);
+  }
+
+  principal () {
+    b = f1(1,2,4+5) - f2(4,5*4,2) / f3(b*b-1+2/10,1,2);
+    b = f1(1,f2(5,5,5),2);
+  }

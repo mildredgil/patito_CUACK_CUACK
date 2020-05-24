@@ -1,0 +1,6 @@
+programa x;
+var int a;
+  principal ()
+  {
+    a = 1+ 2;
+  }

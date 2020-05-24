@@ -1,12 +1,16 @@
-programa global;
-var ent a,b,j,i;
+programa patito;
+    var ent a,b;
+    deci c,d;
+
+funcion ent nose(ent x, ent y) {
+    si(x>y) {
+        regresa(10);
+    }
+    sino{
+        regresa(-15);
+    }
+}
 
 principal () {
-    a=-a;
-    b=2;
-    j=5;
-    i=435;
-    i = a + b* j + i;
-    escribe(i+j);
+    nose(a,c)
 }
-samples/ejercicioClase

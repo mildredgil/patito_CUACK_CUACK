@@ -27,8 +27,9 @@ var ent i,j,k;
   principal () {
     i=2;
     k=i+1;
+    f=3.14;
     mientras (i>0) haz{
-        escribe(i);
+        escribe(dos ( i+k, f*3) +3);
         escribe(i, j*2,f*2+1.5);
         i = i - k /2;
     } 

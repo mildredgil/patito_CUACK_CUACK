@@ -1,0 +1,6 @@
+programa x;
+var ent a
+  principal ()
+  {
+    a = 1+ 2;
+  }
