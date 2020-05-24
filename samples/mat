@@ -1,10 +1,13 @@
 programa patito;
-var ent arr[11][8], a, arr2[2], c, c2[11][1];
-  deci arrd[4][2], b;
-  letra q1, q[1][2][2][3][4];
-
+var ent arr[11][8], a;
+  deci b;
+  
   principal ()
   {
-    b = 1+ 2 * (-b);
-    escribe(arr);
+    b = arr[3][a];
   }
+
+  #add error:
+  # escribe(arr); -> No dimensions found
+  # arr[b] -> b is not of type ENT
+  # arr[1][1][1] -> Number of dimensions miss match

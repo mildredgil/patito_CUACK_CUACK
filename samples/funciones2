@@ -3,7 +3,7 @@ var ent b;
     deci k;
     letra z;
 
-  funcion ent f1(ent i, ent k, ent v)
+  funcion ent f1(ent i)
   var ent j, l, m;
       letra a;
   {
@@ -11,7 +11,7 @@ var ent b;
     regresa(j);
   }
 
-  funcion ent f2(ent i, ent k, ent v)
+  funcion ent f2(ent i, ent k)
   var ent j, l, m;
       letra a;
   {
@@ -28,6 +28,6 @@ var ent b;
   }
 
   principal () {
-    b = f1(1,2,4+5) - f2(4,5*4,2) / f3(b*b-1+2/10,1,2);
-    b = f1(1,f2(5,5,5),2);
+    b = f3(1,2,4+5) - f3(4,5*4,2) / f3(b*b-1+2/10,1,2);
+    b = f3(4,f2(5,f1(2)),2);
   }

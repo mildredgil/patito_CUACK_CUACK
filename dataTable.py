@@ -25,7 +25,6 @@ class VarTable():
         
     def dimStoreLim(self, varName, dim, lim):
         if lim > 0:
-            print(self.table[varName])
             self.table[varName]["dim"].append({'lim': lim, 'mi': None})
         else:
             dimLimError(lim)
@@ -43,6 +42,22 @@ class VarTable():
             return self.table[varName]["dim"][dim - 1]['mi']
         else:
             outOfRange()
+
+    def dimGetLim(self, varName, dim):
+        if dim > 0 and dim <= len(self.table[varName]["dim"]):
+            return self.table[varName]["dim"][dim - 1]["lim"]
+        else:
+            dimLimError(dim)
+
+    def hasDim(self, varName):
+        if len(self.table[varName]["dim"]) == 0:
+            varNoDim(varName)
+        
+    def hasDimNoErr(self, varName):
+        return len(self.table[varName]["dim"]) > 0
+
+    def isNextDim(self, varName, currDim):
+        return len(self.table[varName]["dim"]) > currDim
 
     def getType(self, varName):
         if(self.exist(self.table, varName)):
@@ -171,10 +186,3 @@ class DirFunc():
             print("function: ", a," type: ", self.table[a]["type"], "   params: ", self.table[a]["params"], ' startCounter: ', self.table[a]["startCounter"], ' numLocals: ', self.table[a]["numLocals"])
             if self.table[a]["table"]:
                 self.getTable(a).print(a)
-
-'''
-    def print(self):
-        print("printing data from DirFunc:")
-        print(json.dumps(self.table, indent=2))
-        
-'''
