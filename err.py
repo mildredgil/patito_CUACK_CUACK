@@ -36,3 +36,15 @@ def dimLimError(lim):
 
 def invalidMemType(m):
     raise Exception("{} is an invalid memory type".format(m))
+
+def varNoDim(varName):
+    raise Exception("{} does not has dimensions set.".format(varName))
+
+def dimNoInt():
+    raise Exception("Array dimension must be of type ENT")
+
+def idWithoutDim(var):
+    raise Exception("{} is a dimensional variable. No dimension found.".format(var))
+
+def dimErr(var):
+    raise Exception("{} is missing array dimensions".format(var))

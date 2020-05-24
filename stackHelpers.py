@@ -134,7 +134,6 @@ def paramQuad(typeSt, operSt, memSt, dataTable, func, quad, paramCounter):
     params = dataTable.getParams(func)
     operType = typeSt.pop()
 
-    print(func, params, operType, paramCounter)
     if paramCounter > len(params):
         paramCountDif(func, len(params))
     elif params[paramCounter - 1] != operType[0]:
@@ -164,3 +163,80 @@ def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, address, mem
     operSt.push(newVar)
     
     memSt.push(mem)
+
+def expQuads(stopOp, pilaOp, pilaOper,  pilaType, pilaMemoria, quad,  tempVar, dataTable, currentFunc, memoryManager, memScope):
+    while pilaOp.top() != stopOp:
+        normalQuad(pilaOp, pilaOper,  pilaType, pilaMemoria, quad,  tempVar, dataTable, currentFunc, memoryManager, memScope)
+        tempVar = tempVar + 1
+    pilaOp.pop()
+
+def verQuad(operSt, typeSt, memSt, lim, quad):
+    tp = typeSt.top()
+    
+    if tp != "int":
+        dimNoInt()
+
+    operV = operSt.top()
+    m = memSt.top()
+
+    if test:    
+        quad.add("VER",operV,lim,None)
+    else:
+        quad.add("VER",m,lim,None)
+
+def miDimQuad(mi, temp, operSt, typeSt, memSt, mem, scope, quad):
+    oper = operSt.pop()
+    t = typeSt.pop()
+    memO = memSt.pop()
+    
+    newVar = "t" + str(temp)
+    tempMem = mem.get(MEM[scope]['TEMP'][t.upper()],1)
+    
+    if test:
+        quad.add("*", oper, mi, newVar)
+    else:
+        quad.add("*", memO, mi, tempMem)
+
+    operSt.push(newVar)
+    typeSt.push(t)
+    memSt.push(tempMem)
+
+def miAddQuad(operSt, typeSt, memSt, temp, mem, scope, quad):
+    typeSt.pop()
+    typeSt.pop()
+
+    r = operSt.pop()
+    l = operSt.pop()
+
+    mr = memSt.pop()
+    ml = memSt.pop()
+
+    newVar = "t" + str(temp)
+    tempMem = mem.get(MEM[scope]['TEMP']["INT"],1)
+
+    if test:
+        quad.add("+", l, r, newVar)
+    else:
+        quad.add("+", ml, mr, tempMem)
+
+    operSt.push(newVar)
+    typeSt.push("int")
+    memSt.push(tempMem)
+
+def dimAddressQuad(address, varType, operSt, typeSt, memSt, temp, mem, scope, quad):
+    l = operSt.pop()
+    ml = memSt.pop()
+    t = typeSt.pop()
+
+    newVar = "t" + str(temp)
+    tempMem = mem.get(MEM[scope]['TEMP']['POINTER'][varType.upper()],1)
+
+    if test:
+        quad.add("+", l, address, newVar)
+    else:
+        quad.add("+", ml, address, tempMem)
+
+    operSt.push("(" + newVar + ")")
+    typeSt.push(varType)
+    memSt.push(tempMem)
+

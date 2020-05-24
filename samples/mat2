@@ -1,0 +1,7 @@
+programa patito;
+var ent arr[10], b;
+  
+  principal ()
+  {
+    b = arr[12];
+  }

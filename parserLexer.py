@@ -124,8 +124,14 @@ class CalcParser(Parser):
         self.pilaJump = stack.Stack()
         self.pilaForOp = stack.Stack()
         self.pilaForGo = stack.Stack()
+        
         self.pilaCallId = stack.Stack()
         self.pilaparamCount = stack.Stack()
+        
+        self.pilaDim = stack.Stack()
+        self.pilaDimCount = stack.Stack()
+        self.pilaIsArray = stack.Stack()
+
         self.quad = Quad()
         self.tempVar = 0
         self.badAid = '0'
@@ -346,7 +352,6 @@ class CalcParser(Parser):
 
     @_('')
     def lee_quad(self, p):
-        print(self.currentId, self.currentFunc)
         if self.dataTable.existVar(self.currentId, self.currentFunc):
             mem = self.dataTable.getAdressVar(self.currentId, self.currentFunc)
             self.quad.add("READ", None, None, mem)
@@ -557,7 +562,7 @@ class CalcParser(Parser):
         self.pilaOp.push('=')
         assignQuad(
             self.pilaOp,
-            self.pilaOper, 
+            self.pilaOper,
             self.pilaType,
             self.pilaMemoria,
             self.quad)
@@ -602,24 +607,177 @@ class CalcParser(Parser):
                 self.dimR = self.dataTable.getTable(self.currentFunc).dimStoreMi(self.currentId, i, self.dimR)
             
             self.memoryManager.setNext(MEM[self.memScope][self.currentType.upper()],size)
-            self.dataTable.print()
         else:
             mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()],1)
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
             self.dataTable.addNumLocals(self.currentFunc)
         
     # identificadores con dimension
-    @_('ID identificadores2')
+    @_('ID dim_push identificadores2')
     def identificadores(self, p):
         self.currentId = p.ID
         
-    @_('"[" exp "]" identificadores2')
+        if self.dataTable.getTable(self.currentFunc).hasDimNoErr(p.ID) and not self.pilaIsArray.top():
+            idWithoutDim(p.ID)
+
+        pastId = self.currentId
+        mem = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
+        type = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
+        
+        #badAid is + or -
+        if not self.badAid.isdigit():
+            memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"][type.upper()],1)
+            temp = 't' + str(self.tempVar)
+            
+            if test:
+                self.quad.add(self.badAid,self.currentId,None,temp)
+            else:
+                self.quad.add(self.badAid,mem,None,memTemp)
+
+            self.badAid= '0'
+            self.currentId= temp
+            self.tempVar = self.tempVar + 1
+            mem = memTemp
+        
+        isArray = self.pilaIsArray.pop()
+        if not isArray:
+            pushOperandType(
+                self.pilaOper, 
+                self.pilaType,
+                self.pilaMemoria,
+                self.currentId, 
+                self.dataTable.getTypeVar(pastId, self.currentFunc),
+                mem)
+
+    @_('"[" dim_cor_start exp "]" dim_cor_end dimGenQuad identificadores2')
     def identificadores2(self, p):
-        self.dataTable.print()
+        pass
+
+    # embedded actions
+    
+    #add dim to stack and dim Count
+    @_('')
+    def dim_push(self, p):
+        self.pilaDim.push(p[-1])
+        self.pilaDimCount.push(0)
+        self.pilaIsArray.push(False)
+
+    #update dim 
+    @_('')
+    def dim_cor_start(self, p):
+        #verify id has dim
+        var = self.pilaDim.top()
+        self.dataTable.getTable(self.currentFunc).hasDim(var)
+
+        if not self.pilaIsArray.top():
+            self.pilaIsArray.pop()
+            self.pilaIsArray.push(True)
+
+        dimCount = self.pilaDimCount.top()
+        self.pilaDimCount.push(dimCount + 1)
+        self.pilaOp.push(p[-1])
+
+    #resolve exp
+    @_('')
+    def dim_cor_end(self, p):
+        expQuads(
+                "[",
+                self.pilaOp,
+                self.pilaOper, 
+                self.pilaType,
+                self.pilaMemoria,
+                self.quad, 
+                self.tempVar,
+                self.dataTable,
+                self.currentFunc,
+                self.memoryManager,
+                self.memScope
+            )
+        self.tempVar = self.tempVar + 1
+    
+    #create verify quad, and add mi quad
+    @_('')
+    def dimGenQuad(self, p):
+        var = self.pilaDim.top()
+        dim = self.pilaDimCount.top()
+        limCte = self.dataTable.getTable(self.currentFunc).dimGetLim(var,dim)
+
+        if self.constTable.existVar(limCte):
+            mem = self.constTable.getAdress(limCte)
+        else:
+            mem = self.memoryManager.get(MEM['CONST']['INT'],1)
+            self.constTable.insert(limCte,'int', mem)
+        
+        if test:
+            verQuad(self.pilaOper, self.pilaType, self.pilaMemoria, limCte, self.quad)
+        else:
+            verQuad(self.pilaOper, self.pilaType, self.pilaMemoria, mem, self.quad)
+
+        if self.dataTable.getTable(self.currentFunc).isNextDim(var, dim):
+            miCte = self.dataTable.getTable(self.currentFunc).dimGetMi(var, dim)
+
+            if self.constTable.existVar(miCte):
+                mi = self.constTable.getAdress(miCte)
+            else:
+                mi = self.memoryManager.get(MEM['CONST']['INT'],1)
+                self.constTable.insert(miCte,'int', mi)
+                
+            miDimQuad(
+                mi,
+                self.tempVar,
+                self.pilaOper,
+                self.pilaType, 
+                self.pilaMemoria, 
+                self.memoryManager, 
+                self.memScope,
+                self.quad
+                )
+            
+            self.tempVar += 1
+
+        if dim > 1:
+            miAddQuad(
+                self.pilaOper, 
+                self.pilaType,
+                self.pilaMemoria,
+                self.tempVar,
+                self.memoryManager,
+                self.memScope,
+                self.quad
+                )
+            self.tempVar += 1
     
     @_('empty')
     def identificadores2(self, p):
-        pass
+        if self.pilaIsArray.top():
+            var = self.pilaDim.top()
+            addBaseCte = self.dataTable.getTable(self.currentFunc).getAdress(var)
+            varType = self.dataTable.getTypeVar(var, self.currentFunc)
+
+            if self.constTable.existVar(addBaseCte):
+                address = self.constTable.getAdress(addBaseCte)
+            else:
+                address = self.memoryManager.get(MEM['CONST']['INT'],1)
+                self.constTable.insert(addBaseCte,'int', address)
+
+            dimAddressQuad(
+                address,
+                varType,
+                self.pilaOper,
+                self.pilaType,
+                self.pilaMemoria,
+                self.tempVar,
+                self.memoryManager,
+                self.memScope,
+                self.quad
+                )
+            
+            if self.dataTable.getTable(self.currentFunc).isNextDim(var, self.pilaDimCount.top()):
+                dimErr(var)
+
+        
+        self.pilaDim.pop()
+        self.pilaDimCount.pop()
 
     # TIPO
     @_('INT')
@@ -816,7 +974,6 @@ class CalcParser(Parser):
 
     @_('')
     def exp_par_end(self, p):
-        self.pilaOper.print()
         while self.pilaOp.top() != '(':
             normalQuad(
                 self.pilaOp,
@@ -832,7 +989,6 @@ class CalcParser(Parser):
             )
             self.tempVar = self.tempVar + 1
         self.pilaOp.pop()
-        self.pilaOper.print()
 
     @_('PLUS plus_varcte varcte')
     def factor(self, p):
@@ -935,23 +1091,8 @@ class CalcParser(Parser):
 
     @_('')
     def call_par_end(self, p):
-        self.pilaOper.print()
-        while self.pilaOp.top() != '(':
-            normalQuad(
-                self.pilaOp,
-                self.pilaOper, 
-                self.pilaType,
-                self.pilaMemoria,
-                self.quad, 
-                self.tempVar,
-                self.dataTable,
-                self.currentFunc,
-                self.memoryManager,
-                self.memScope
-            )
-            self.tempVar = self.tempVar + 1
-        self.pilaOp.pop()
-        self.pilaOper.print()
+        expQuads('(',self.pilaOp,self.pilaOper, self.pilaType,self.pilaMemoria,self.quad, self.tempVar,self.dataTable,self.currentFunc,self.memoryManager,self.memScope)
+        self.tempVar = self.tempVar + 1
 
     @_('exp param_call llamada3')
     def llamada2(self, p):
@@ -979,6 +1120,8 @@ class CalcParser(Parser):
     # VARCTE
     @_('identificadores')
     def varcte(self, p):
+        pass
+        '''
         pastId = self.currentId
         mem = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
         
@@ -1001,7 +1144,7 @@ class CalcParser(Parser):
             self.currentId, 
             self.dataTable.getTypeVar(pastId, self.currentFunc),
             mem)
-
+        '''
 #save4
     @_('INTNUMBER')
     def varcte(self, p):
