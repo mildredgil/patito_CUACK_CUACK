@@ -66,7 +66,6 @@ def singeOpQuad(opSt, operSt, memSt, quad, temp):
 def gotoFQuad(operSt, typeSt, jumpSt, memSt, quad):
     boolType = typeSt.pop()
 
-    print("estamos en ", boolType)
 
     if boolType != "bool":
         missMatchTypeBool()

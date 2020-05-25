@@ -1,16 +1,11 @@
 programa patito;
-    var ent a,b;
+    var ent a,b[1][1];
     deci c,d;
 
-funcion ent nose(ent x, ent y) {
-    si(x>y) {
-        regresa(10);
-    }
-    sino{
-        regresa(-15);
-    }
-}
+ funcion ent nose(ent x, ent y) {
+    regresa(x);
+ }
 
 principal () {
-    nose(a,c)
+    a = - nose(1,3);
 }
