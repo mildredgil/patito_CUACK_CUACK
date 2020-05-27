@@ -617,8 +617,9 @@ class CalcParser(Parser):
     def identificadores(self, p):
         self.currentId = p.ID
         
-        if self.dataTable.getTable(self.currentFunc).hasDimNoErr(p.ID) and not self.pilaIsArray.top():
-            idWithoutDim(p.ID)
+        # if self.dataTable.getTable(self.currentFunc).hasDimNoErr(p.ID) and not self.pilaIsArray.top():
+        print('var:' + str(p.ID) + ' has dimetions:' +str(self.dataTable.getTable(self.currentFunc).getDimentions(p.ID)))
+        #     idWithoutDim(p.ID)
 
         pastId = self.currentId
         mem = self.dataTable.getAdressVar(self.currentId,self.currentFunc)

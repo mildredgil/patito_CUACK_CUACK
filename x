@@ -1,11 +1,15 @@
 programa patito;
-    var ent a,b[1][1];
-    deci c,d;
-
- funcion ent nose(ent x, ent y) {
-    regresa(x);
- }
+    var ent a[1][1],b[1][1], c[1][1],d;
 
 principal () {
-    a = - nose(1,3);
+    d=1;
+    a[0][0] = 1;
+    a[1][0] = 2;
+    a[0][1] = 3;
+    a[1][1] = 4;
+    b[0][0] = 1;
+    b[1][0] = 2;
+    b[0][1] = 3;
+    b[1][1] = 4;
+    c=a+b;
 }

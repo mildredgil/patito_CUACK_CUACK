@@ -48,6 +48,9 @@ class VarTable():
             return self.table[varName]["dim"][dim - 1]["lim"]
         else:
             dimLimError(dim)
+    
+    def getDimentions(self, varName):
+        return len(self.table[varName]["dim"])
 
     def hasDim(self, varName):
         if len(self.table[varName]["dim"]) == 0:
