@@ -4,14 +4,39 @@ from dataTable import DirFunc, VarTable
 from decimal import Decimal as D
 
 class Memory():
-    def __init__(self ):
-        self.memory = {}
-        
+    
+    def __init__(self):
+        self.memory =  {
+            0: {},
+            1: {}, 
+            2: {}, 
+            3: {}, 
+            4: {}, 
+            5: {}, 
+            6: {}, 
+            7: {}, 
+            8: {}, 
+            9: {}, 
+            10: {}, 
+            11: {}, 
+            12: {}, 
+            13: {}, 
+            14: {}, 
+            15: {}, 
+            16: {}, 
+            17: {}
+        }
+
     def insert(self, memory, val):
-        self.memory[memory] = val
+        memType = memory // 1000
+        memPos = memory % 1000
+        self.memory[memType][memPos] = val
 
     def value(self, memory):
-        return self.memory[memory]
+        memType = memory // 1000
+        memPos = memory % 1000
+        return self.memory[memType][memPos]
+
 
 class VirtualMachine():
     def __init__(self, filename):

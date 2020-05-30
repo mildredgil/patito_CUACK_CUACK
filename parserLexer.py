@@ -264,7 +264,6 @@ class CalcParser(Parser):
         mem = self.memoryManager.get(MEM[self.memScope][p[-2].upper()],1)
         self.dataTable.getTable(self.currentFunc).insert(p[-1],p[-2],mem)
         self.dataTable.insertParam(self.currentFunc, p[-2][0])
-        # print(self.dataTable.getParams(self.currentFunc))
         
     @_('"," parametros2')
     def parametros3(self, p):
@@ -488,7 +487,6 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def from_assign(self, p):
-        self.quad.print()
         assignQuad(
                 self.pilaOp,
                 self.pilaOper, 
@@ -758,7 +756,6 @@ class CalcParser(Parser):
             else:
                 address = self.memoryManager.get(MEM['CONST']['INT'],1)
                 self.constTable.insert(addBaseCte,'int', address)
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>")
             
             dimAddressQuad(
                 address,
@@ -1184,8 +1181,7 @@ class CalcParser(Parser):
         else:
             mem = self.memoryManager.get(MEM['CONST']['INT'],1)
             self.constTable.insert(p[0],'int', mem)
-        print("printing op:")
-        self.pilaOp.print()
+
         self.isConst = True
         if not self.badAid.isdigit() and self.pilaOp.top() != '(' and not self.pilaIsArray.top():
             self.quad.add(
