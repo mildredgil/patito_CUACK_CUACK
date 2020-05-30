@@ -23,6 +23,12 @@ class VarTable():
         else:
             self.table[varName] = {'type': varType, 'address': address, 'dim': [], 'value': None}
         
+    def dimStoreDimR(self, varName, dimR):
+        self.table[varName]["dimR"]=dimR
+        
+    def getDimR(self, varName):
+        return self.table[varName]["dimR"]
+    
     def dimStoreLim(self, varName, dim, lim):
         if lim > 0:
             self.table[varName]["dim"].append({'lim': lim, 'mi': None})
