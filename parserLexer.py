@@ -140,6 +140,7 @@ class CalcParser(Parser):
         self.currentId = None
         self.currentType = None
         self.currentFunc = None
+        self.currentDim = None
         self.globalFunc = None
 
         self.memScope = "GLOBAL"
@@ -582,11 +583,12 @@ class CalcParser(Parser):
         self.dim = 0
         self.dimR = 1
 
-    # embedded action
+    # embedded action save22
     @_('')
     def arraySetArray(self, p):
         if not self.dataTable.getTable(self.currentFunc).existVar(self.currentId):
             mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
+            print("mem es: {}".format(mem))
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
             self.dataTable.addNumLocals(self.currentFunc)
         
@@ -596,6 +598,8 @@ class CalcParser(Parser):
 
         self.dataTable.getTable(self.currentFunc).dimStoreLim(self.currentId, 1, lim)
         self.dimR = (lim + 1 ) * self.dimR
+        self.dataTable.getTable(self.currentFunc).dimStoreDimR(self.currentId,self.dimR)
+
 
     @_('empty')
     def identificadoresDec2(self, p):
@@ -610,28 +614,36 @@ class CalcParser(Parser):
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
             self.dataTable.addNumLocals(self.currentFunc)
         
-    # identificadores con dimension
+    # identificadores con dimension save12
     @_('ID dim_push identificadores2')
     def identificadores(self, p):
         self.currentId = p.ID
         
-        if self.dataTable.getTable(self.currentFunc).hasDimNoErr(p.ID) and not self.pilaIsArray.top():
-            idWithoutDim(p.ID)
+        # if self.dataTable.getTable(self.currentFunc).hasDimNoErr(p.ID) and not self.pilaIsArray.top():
+        # print('var:' + str(p.ID) + ' has dimetions:' +str(self.dataTable.getTable(self.currentFunc).getDimentions(p.ID)))
+        #     idWithoutDim(p.ID)
 
         pastId = self.currentId
         mem = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
         type = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
+        dime = self.dataTable.getTable(self.currentFunc).getDimentions(p.ID)
         
-        #badAid is + or - save11
+        #badAid is + or - save111
         isArray = self.pilaIsArray.pop()
         if not self.badAid.isdigit() and self.pilaOper.top() != '(' and not isArray :
-            memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"][type.upper()],1)
+            if(dime==0):
+                memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"][type.upper()],1)
+                if test:
+                    self.quad.add(self.badAid,self.currentId,None,temp)
+                else:
+                    self.quad.add(self.badAid,mem,None,memTemp)
+
+            else:
+                memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"][type.upper()],1)
+                self.memoryManager.setNext(MEM[self.memScope]["TEMP"][self.currentType.upper()],self.dataTable.getTable(self.currentFunc).getDimR(self.pilaOper.top()))
+            
             temp = 't' + str(self.tempVar)
             
-            if test:
-                self.quad.add(self.badAid,self.currentId,None,temp)
-            else:
-                self.quad.add(self.badAid,mem,None,memTemp)
 
             self.badAid= '0'
             self.currentId= temp
@@ -639,6 +651,15 @@ class CalcParser(Parser):
             mem = memTemp
 
         if not isArray:
+            pushOperandType(
+                self.pilaOper, 
+                self.pilaType,
+                self.pilaMemoria,
+                self.currentId, 
+                self.dataTable.getTypeVar(pastId, self.currentFunc),
+                mem)
+        else:
+            #falta
             pushOperandType(
                 self.pilaOper, 
                 self.pilaType,
@@ -1009,7 +1030,7 @@ class CalcParser(Parser):
     @_('MINUS minus_varcte varcte')
     def factor(self, p):
         pass
-
+    
     @_('')
     def plus_varcte(self, p):
         self.badAid = '+'
@@ -1023,11 +1044,29 @@ class CalcParser(Parser):
         return p[0]
         pass
         
-    #OPMAT
+    #OPMAT save00
     @_('factor opmat2')
     def opmat(self, p):
         if p.opmat2:
-            print("opmat")
+            if(self.dataTable.getTable(self.currentFunc).getDimentions(self.currentId) == 0):
+                raise Exception("Variable {} is not an array.".format(self.currentId))
+            else:
+                print("entramos al else e insertamos :",p.opmat2)
+                mem = self.memoryManager.get(MEM[self.memScope]["TEMP"][self.pilaType.top().upper()],1)
+                self.memoryManager.setNext(MEM[self.memScope]["TEMP"][self.currentType.upper()],self.dataTable.getTable(self.currentFunc).getDimR(self.pilaOper.top()))
+                self.quad.add(
+                            p.opmat2,
+                            self.pilaMemoria.pop(),
+                            None,
+                            mem
+                        )
+                self.badAid= '0'
+                self.currentId= 't' + str(self.tempVar)
+                self.pilaMemoria.pop()
+                self.pilaMemoria.push(mem)
+                self.tempVar = self.tempVar + 1
+
+            
         else:
             return p.factor
         
@@ -1035,7 +1074,7 @@ class CalcParser(Parser):
     'INVERSE', 
     'DETERMINANT')
     def opmat2(self, p):
-        pass
+        return p[0]
 
     @_('empty')
     def opmat2(self, p):
@@ -1089,7 +1128,8 @@ class CalcParser(Parser):
             callAssignQuad(p.ID, funcType, self.tempVar, self.pilaType, self.pilaOper, self.pilaMemoria, m, self.memoryManager, self.memScope, self.quad)
             self.tempVar = self.tempVar + 1
             if not self.badAid.isdigit():
-                mem = self.memoryManager.get(MEM[self.memScope][self.pilaType.top().upper()],1)
+                #si algo esta fallando modifique esto porque segun yo le faltaba temp al mem
+                mem = self.memoryManager.get(MEM[self.memScope]["TEMP"][self.pilaType.top().upper()],1)
                 self.quad.add(
                             self.badAid,
                             self.pilaMemoria.pop(),

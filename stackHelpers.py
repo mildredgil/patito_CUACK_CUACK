@@ -238,4 +238,3 @@ def dimAddressQuad(address, varType, operSt, typeSt, memSt, temp, mem, scope, qu
     operSt.push("(" + newVar + ")")
     typeSt.push(varType)
     memSt.push(tempMem)
-
