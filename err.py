@@ -1,3 +1,4 @@
+#Semantic Errors
 def notExist(a):
     raise Exception("{} does not exist. Declare it before use it.".format(a))
 
@@ -48,3 +49,7 @@ def idWithoutDim(var):
 
 def dimErr(var):
     raise Exception("{} is missing array dimensions".format(var))
+
+#Runtime Errors
+def notDefined(scope):
+    raise Exception("A variable wasn't initialized in {}.".format(scope))

@@ -5,6 +5,7 @@ from decimal import Decimal as D
 from dataStructure import stack
 from memoryConstants import MEM_GLOBAL, MEM_LOCAL, MEM_CONST, CONST_CHAR
 from vmMemory import *
+from err import *
 
 class CurrentMemory():
     def __init__(self):
@@ -43,6 +44,10 @@ class Memory():
             value = int(val)
         elif MEM_INFO[memType][TYPE] == FLOAT:
             value = float(val)
+        elif MEM_INFO[memType][TYPE] == CHAR:
+            value = str(val)
+        elif MEM_INFO[memType][TYPE] == STRING:
+            value = str(val)
         else:
             value = val
         
@@ -51,7 +56,12 @@ class Memory():
     def value(self, memory):
         memType = memory // 10000
         memPos = memory % 10000
-        return self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ]
+        
+        if not memPos in self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ]:
+            notDefined("function")
+        
+        value = self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ]
+        return value
         
 class VirtualMachine():
     def __init__(self, filename):
@@ -99,8 +109,8 @@ class VirtualMachine():
                         
         self.quad.print()
         self.dirFunc.print()
-        #print(self.currentMem.memory[GLOBAL].memory)
-        #print(self.currentMem.memory[CONST].memory)
+        print(self.currentMem.memory[GLOBAL].memory)
+        print(self.currentMem.memory[CONST].memory)
         #print currentMem
         
     def execute(self):
@@ -111,22 +121,38 @@ class VirtualMachine():
                 "-": self.susbtractAction,
                 "*": self.timesAction,
                 "/": self.divideAction,
+                "==": self.equalAction,
                 "=": self.asignAction,
+                ">=": self.gteAction,
+                "<=": self.gteAction,
+                ">": self.gtAction,
+                "<": self.ltAction,
+                "!=": self.diffAction,
                 "PRINT": self.printAction,
                 "READ": self.readAction,
                 "GOTO": self.gotoAction,
                 "GOTOF": self.gotoFAction,
             }
             func = switch.get(instruction[0], "END")
+            
             func(instruction)
             instruction = self.quad.get(self.currentCounter)
+            '''
+            print("GLOBAL")
+            print(self.currentMem.memory[GLOBAL].memory)
+            print("CONST")
+            print(self.currentMem.memory[CONST].memory)
+            '''
             
     def addAction(self, quad):
         self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) + self.currentMem.value(int(quad[2])))
         self.setCounter(self.currentCounter + 1)
 
     def susbtractAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) - self.currentMem.value(int(quad[2])))
+        if quad[2]:
+            self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) - self.currentMem.value(int(quad[2])))
+        else:
+            self.currentMem.insert(int(quad[3]),  -1 * self.currentMem.value( int( quad[1])) )
         self.setCounter(self.currentCounter + 1)
 
     def timesAction(self, quad):
@@ -155,11 +181,37 @@ class VirtualMachine():
         self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])))
         self.setCounter(self.currentCounter + 1)
 
+    def equalAction(self, quad):
+        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) == self.currentMem.value(int(quad[2])))
+        self.setCounter(self.currentCounter + 1)
+
+    def lteAction(self, quad):
+        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) <= self.currentMem.value(int(quad[2])))
+        self.setCounter(self.currentCounter + 1)
+    
+    def gteAction(self, quad):
+        print(self.currentMem.value(int(quad[1])) >= self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) >= self.currentMem.value(int(quad[2])))
+        self.setCounter(self.currentCounter + 1)
+
+    def diffAction(self, quad):
+        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) != self.currentMem.value(int(quad[2])))
+        self.setCounter(self.currentCounter + 1)
+
+    def ltAction(self, quad):
+        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) < self.currentMem.value(int(quad[2])))
+        self.setCounter(self.currentCounter + 1)
+    
+    def gtAction(self, quad):
+        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) > self.currentMem.value(int(quad[2])))
+        self.setCounter(self.currentCounter + 1)
+
     def gotoAction(self, quad):
         self.setCounter(int(quad[3]))
 
     def gotoFAction(self, quad):
-        if self.currentMem.value(quad[1]):
+        #evaluate value
+        if self.currentMem.value(int(quad[1])) == "True":
             self.setCounter(self.currentCounter + 1)
         else:
             self.setCounter(int(quad[3]))

@@ -1,0 +1,105 @@
+programa patito;
+var ent a,b,c,d,e,f,g,h,i,j,k;
+
+principal () {
+    #asignacion
+    a = 10;
+    b = 12;
+    c = 14;
+    d = 20;
+    e = 30;
+    f = 40;
+    g =  50;
+    h = 60;
+    i = 70;
+    j = 80;
+    k = 90;
+
+    a = b;
+    # = b  _   a
+    escribe(a);
+    #asignacion
+    
+    a = -b;
+    # - b   _  t1
+    # = t1  _  a
+    escribe(a);
+
+    #suma
+    a = b + c + d;
+    # + b   c   t1
+    # + t1  d   t2
+    # = t2  _   a
+    escribe(a);
+
+    #resta
+    a = b - c - d;
+    # - b   c   t3
+    # - t3  d   t4
+    # = t4  _   a
+    escribe(a);
+
+    #suma y resta
+    a = b + c - d;
+    # + b   c   t5
+    # - t5  d   t6
+    # = t6  _   a
+    escribe(a);
+
+    #multiplicacion y division
+    a = b * c / d;
+    # * b   c   t7
+    # / t7  d   t8
+    # = t8  _   a
+    escribe(a);
+
+    #multiplicacion y suma
+    a = b + c * d + e;
+    # * c   d    t9
+    # + b   t9   t10
+    # + t10  e   t11 
+    # = t11  _   a
+    escribe(a);
+
+    #division multiplicacion suma y resta
+    f = g + h * i / j - b * - c;
+    # * h   i    t12
+    # / t12 j    t13
+    # + g   t13  t14
+    # - c   _    t15
+    # * b   t15  t16
+    # - t14 t16  t17
+    # = t17 _    f
+    escribe(f);
+
+    #parentesis
+    f = (a);
+    # = a  _   f
+    escribe(f);
+    
+    #parentesis y suma
+    f = (a) + b;
+    # + a   b  t18
+    # = t18 _  f 
+    escribe(f);
+
+    #parentesis suma y resta
+    h = b + (a - c);
+    # - a   c   t19
+    # + b   t19 t20
+    # = t20 _   h
+    escribe(h);
+
+    #parentesis suma resta multiplicacion y division
+    i = b + (a - c) * g - h + (a + - b / f);
+    # - a   c   t21
+    # * t22 g   t22
+    # + b   t17 t23
+    # - t23 h   t24
+    # - b   _   t25
+    # / t25 f   t26
+    # + a   t26 t27
+    # + t19 t27 t28
+    # = t28 _   i
+    escribe(i);
+}

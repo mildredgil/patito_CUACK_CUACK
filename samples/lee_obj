@@ -3,8 +3,20 @@
 GOTO,_,_,1
 READ,_,_,0
 READ,_,_,1
-READ,_,_,2000
+READ,_,_,20000
++,1,0,30000
+=,30000,_,0
+PRINT,230000,_,_
+PRINT, ,_,_
+PRINT,0,_,_
+PRINT,\n,_,_
+PRINT,230001,_,_
+PRINT, ,_,_
+PRINT,20000,_,_
+PRINT,\n,_,_
 END,_,_,_
 #DIRFUNC
 global,void,,-1,3
 #CONST
+a = ,230000
+c = ,230001
