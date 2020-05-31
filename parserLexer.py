@@ -397,8 +397,9 @@ class CalcParser(Parser):
         
     @_('')
     def print_quad2(self, p):
-        self.constTable.insert(p[-1],"string",self.memoryManager.get(MEM["CONST"]["STRING"],1))
-        printQuad(self.memoryManager.get(MEM["CONST"]["STRING"],1), self.quad)
+        memo = self.memoryManager.get(MEM["CONST"]["STRING"],1)
+        self.constTable.insert(p[-1],"string",memo)
+        printQuad(memo, self.quad)
         
     @_('')
     def print_next(self, p):

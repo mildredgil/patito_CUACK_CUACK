@@ -38,10 +38,13 @@ class Memory():
     def insert(self, memory, val):
         memType = memory // 10000
         memPos = memory % 10000
+
         if MEM_INFO[memType][TYPE] == INT:
             value = int(val)
         elif MEM_INFO[memType][TYPE] == FLOAT:
             value = float(val)
+        else:
+            value = val
         
         self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ] = value
  
@@ -91,12 +94,13 @@ class VirtualMachine():
                         if int(row['2']) < CONST_CHAR:
                             self.currentMem.insert(int(row['2']),D(row['1']))
                         else:
+                            print(int(row['2']),row['1'])
                             self.currentMem.insert(int(row['2']),row['1'])
                         
         self.quad.print()
         self.dirFunc.print()
-        print(self.currentMem.memory[GLOBAL].memory)
-        print(self.currentMem.memory[CONST].memory)
+        #print(self.currentMem.memory[GLOBAL].memory)
+        #print(self.currentMem.memory[CONST].memory)
         #print currentMem
         
     def execute(self):
