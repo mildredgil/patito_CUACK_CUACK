@@ -116,7 +116,7 @@ class CalcParser(Parser):
 
     def __init__(self):
         self.dataTable = DirFunc()
-        self.constTable = VarTable()
+        self.constTable = VarTable(None)
         self.pilaOp = stack.Stack()
         self.pilaOper = stack.Stack()
         self.pilaType = stack.Stack()
@@ -265,7 +265,6 @@ class CalcParser(Parser):
         mem = self.memoryManager.get(MEM[self.memScope][p[-2].upper()],1)
         self.dataTable.getTable(self.currentFunc).insert(p[-1],p[-2],mem)
         self.dataTable.insertParam(self.currentFunc, p[-2][0])
-        # print(self.dataTable.getParams(self.currentFunc))
         
     @_('"," parametros2')
     def parametros3(self, p):
@@ -400,8 +399,13 @@ class CalcParser(Parser):
         
     @_('')
     def print_quad2(self, p):
-        self.constTable.insert(p[-1],"string",self.memoryManager.get(MEM["CONST"]["STRING"],1))
-        printQuad(self.memoryManager.get(MEM["CONST"]["STRING"],1), self.quad)
+        if self.constTable.existVar(p[-1]):
+            memo = self.constTable.getAdress(p[-1])
+        else: 
+            memo = self.memoryManager.get(MEM["CONST"]["STRING"],1)
+            self.constTable.insert(p[-1],"string",memo)
+        
+        printQuad(memo, self.quad)
         
     @_('')
     def print_next(self, p):
@@ -491,7 +495,6 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def from_assign(self, p):
-        self.quad.print()
         assignQuad(
                 self.pilaOp,
                 self.pilaOper, 
@@ -785,7 +788,6 @@ class CalcParser(Parser):
             else:
                 address = self.memoryManager.get(MEM['CONST']['INT'],1)
                 self.constTable.insert(addBaseCte,'int', address)
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>")
             
             dimAddressQuad(
                 address,
@@ -1230,8 +1232,7 @@ class CalcParser(Parser):
         else:
             mem = self.memoryManager.get(MEM['CONST']['INT'],1)
             self.constTable.insert(p[0],'int', mem)
-        print("printing op:")
-        self.pilaOp.print()
+
         self.isConst = True
         if not self.badAid.isdigit() and self.pilaOp.top() != '(' and not self.pilaIsArray.top():
             self.quad.add(

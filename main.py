@@ -26,14 +26,19 @@ if __name__ == '__main__':
     #printTokens(lexer)
         
     #CREATE OBJ FILE
+<<<<<<< HEAD
     parser.quad.print()
     print("data table")
     parser.dataTable.print()
+=======
+    #parser.quad.print()
+    #parser.dataTable.print()
+>>>>>>> 364773715daea402212658356215e2acd6ff4727
     #print(parser.constTable.table)
     Writer.prepareOBJ(filename, parser)
     
 
     #RUN OBJ
-    #VirtualMachine(filename + "_obj")
+    VirtualMachine(filename + "_obj")
     #parser.printTokens()
     

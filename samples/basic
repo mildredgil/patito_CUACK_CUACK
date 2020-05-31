@@ -4,6 +4,7 @@ var ent a;
 
   principal ()
   {
+    b = 1.0;
     a = 1+ 2 * (-b);
     escribe(a);
   }
