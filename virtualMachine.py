@@ -3,7 +3,7 @@ from quad import Quad
 from dataTable import DirFunc, VarTable
 from decimal import Decimal as D
 from dataStructure import stack
-from memoryConstants import MEM_GLOBAL, MEM_LOCAL, MEM_CONST, CONST_CHAR
+from memoryConstants import MEM_GLOBAL, MEM_LOCAL, MEM_CONST, CONST_CHAR, LOCAL_INT, LOCAL_FLOAT, LOCAL_CHAR
 from vmMemory import *
 from err import *
 
@@ -11,9 +11,12 @@ class CurrentMemory():
     def __init__(self):
         self.memory =  [
             Memory(GLOBAL),
-            Memory(LOCAL),
+            None,
             Memory(CONST),
         ]
+
+    def setLocal(self, local):
+        self.memory[LOCAL] = local
         
     def insert(self, memory, val):
         if memory < MEM_LOCAL:
@@ -30,6 +33,17 @@ class CurrentMemory():
             return self.memory[LOCAL].value(memory)
         else:
             return self.memory[CONST].value(memory)
+    
+    def print(self, scope=None):
+        if scope:
+            print(scope, self.memory[scope].memory)
+        else:
+            print("GLOBAL", self.memory[GLOBAL].memory)
+
+            if self.memory[LOCAL]:
+                print("LOCAL", self.memory[LOCAL].memory)
+
+            print("CONST", self.memory[CONST].memory)
         
 class Memory(): 
     def __init__(self,scope):
@@ -62,6 +76,9 @@ class Memory():
         
         value = self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ]
         return value
+
+    def print(self):
+        print(self.memory)
         
 class VirtualMachine():
     def __init__(self, filename):
@@ -71,9 +88,11 @@ class VirtualMachine():
         self.constants = {}
         self.dirFunc = DirFunc()
         self.currentCounter = 0
+        self.pilaFunc = stack.Stack()
+        self.pilaParams = stack.Stack() 
         self.pilaMem = stack.Stack()
         self.currentMem = CurrentMemory()
-
+        self.prevCounter = 0
         #run methods
         self.readFile()
         self.execute()
@@ -99,7 +118,10 @@ class VirtualMachine():
                         }
                         self.quad.add(row['1'],switcher.get(row['2'],row['2']),switcher.get(row['3'],row['3']),switcher.get(row['4'],row['4']))
                     elif readingContext == 2:
-                        self.dirFunc.insert(row['1'],row['2'],row['3'],row['4'],row['5'])
+                        if row['1'] != 'global':
+                            self.dirFunc.insert(row['1'],row['2'],row['5'],row['3'],row['4'],row['6'])
+                        else:
+                            self.dirFunc.insert(row['1'],row['2'],None,row['3'],row['4'],row['6'])
                     else:
                         if int(row['2']) < CONST_CHAR:
                             self.currentMem.insert(int(row['2']),D(row['1']))
@@ -107,42 +129,45 @@ class VirtualMachine():
                             self.currentMem.insert(int(row['2']),row['1'])
                         
         self.quad.print()
+        print("-------------")
         self.dirFunc.print()
+        print("-------------")
         print(self.currentMem.memory[GLOBAL].memory)
         print(self.currentMem.memory[CONST].memory)
         #print currentMem
         
     def execute(self):
-        instruction = self.quad.get(self.currentCounter)
-        while instruction[0] != "END":
+        quadInstruction = self.quad.get(self.currentCounter)
+        while quadInstruction[0] != "END":
             switch = {
-                "+": self.addAction,
-                "-": self.susbtractAction,
-                "*": self.timesAction,
-                "/": self.divideAction,
-                "==": self.equalAction,
-                "=": self.asignAction,
-                ">=": self.gteAction,
-                "<=": self.gteAction,
-                ">": self.gtAction,
-                "<": self.ltAction,
-                "!=": self.diffAction,
-                "|": self.orAction,
-                "&": self.andAction,
-                "PRINT": self.printAction,
-                "READ": self.readAction,
-                "GOTO": self.gotoAction,
-                "GOTOF": self.gotoFAction,
+                "+":        self.addAction,
+                "-":        self.susbtractAction,
+                "*":        self.timesAction,
+                "/":        self.divideAction,
+                "==":       self.equalAction,
+                "=":        self.asignAction,
+                ">=":       self.gteAction,
+                "<=":       self.gteAction,
+                ">":        self.gtAction,
+                "<":        self.ltAction,
+                "!=":       self.diffAction,
+                "|":        self.orAction,
+                "&":        self.andAction,
+                "PRINT":    self.printAction,
+                "READ":     self.readAction,
+                "GOTO":     self.gotoAction,
+                "GOTOF":    self.gotoFAction,
+                "ERA":      self.eraAction,
+                "PARAM":    self.paramAction,
+                "GOSUB":    self.gosubAction,
+                "ENDPROC":  self.endPAction,
+                "RETURN":   self.returnAction
             }
-            func = switch.get(instruction[0], "END")
-            func(instruction)
-            instruction = self.quad.get(self.currentCounter)
-            '''
-            print("GLOBAL")
-            print(self.currentMem.memory[GLOBAL].memory)
-            print("CONST")
-            print(self.currentMem.memory[CONST].memory)
-            '''
+
+            func = switch.get(quadInstruction[0], "END")
+            func(quadInstruction)
+            quadInstruction = self.quad.get(self.currentCounter)
+            
 #   IO ACTIONS     ########################################################################
 
     def printAction(self, quad):
@@ -227,3 +252,65 @@ class VirtualMachine():
             self.setCounter(self.currentCounter + 1)
         else:
             self.setCounter(int(quad[3]))
+
+#   FUNCTION ACTIONS  ########################################################################
+    
+    def eraAction(self, quad):
+        self.pilaMem.push(Memory(LOCAL))
+        self.setCounter(self.currentCounter + 1)
+
+    def paramAction(self, quad):
+        self.pilaParams.push(quad[1])
+        self.setCounter(self.currentCounter + 1)
+        self.pilaParams.print()
+        
+    def gosubAction(self, quad):
+        nameFunc = quad[1]
+        #prepare params:
+        params = self.dirFunc.getParams(nameFunc)
+        
+        local = self.pilaMem.pop()
+
+        intCount = LOCAL_INT
+        flCount  = LOCAL_FLOAT
+        chCount  = LOCAL_CHAR
+
+        aux = stack.Stack()
+        for varType in params:
+            aux.push(self.pilaParams.pop())
+
+        for varType in params:
+            if varType == "i":
+                local.insert(intCount, self.currentMem.value(int(aux.pop())))
+                intCount += 1
+            elif varType == "f":
+                local.insert(flCount, self.currentMem.value(int(aux.pop())))
+                flCount += 1
+            elif varType == "c":
+                local.insert(chCount, self.currentMem.value(int(aux.pop())))
+                chCount += 1
+        
+        #set local memory to current Memory
+        self.currentMem.setLocal(local)
+        
+        #set previous counter
+        self.prevCounter = self.currentCounter
+
+        #add current function name
+        self.pilaFunc.push(nameFunc)
+
+        #move counter
+        counter = int(self.dirFunc.getStartCounter(nameFunc))
+        self.setCounter(counter)
+        
+    def endPAction(self, quad):
+        self.setCounter(self.prevCounter + 1)
+
+    def returnAction(self, quad):
+        nameFunc = self.pilaFunc.pop()
+        mem = self.dirFunc.getAdressVar(nameFunc,"global")
+
+        self.currentMem.insert(int(mem), self.currentMem.value(int(quad[3])))
+        self.setCounter(self.currentCounter + 1)
+        self.currentMem.print(LOCAL)
+    

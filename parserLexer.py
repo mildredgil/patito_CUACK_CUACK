@@ -168,6 +168,7 @@ class CalcParser(Parser):
     #embedded action
     @_('')
     def set_principal_quad(self, p):
+        self.memScope = "GLOBAL"
         self.currentFunc = self.globalFunc
         fillGotoFQuad(self.quad, self.pilaJump)
 

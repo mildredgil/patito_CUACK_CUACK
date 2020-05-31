@@ -137,6 +137,9 @@ class DirFunc():
     def insertStartCounter(self, funcName, counter):
         self.table[funcName]['startCounter'] = counter
 
+    def getStartCounter(self, funcName):
+        return self.table[funcName]['startCounter']
+
     def addNumLocals(self, funcName):
         self.table[funcName]['numLocals'] += 1
     

@@ -6,7 +6,7 @@ class Writer():
             raise Exception("Quad is empty")
 
         f = open(filename + "_obj", "w")
-        f.write("1,2,3,4,5\n")
+        f.write("1,2,3,4,5,6\n")
         f.write("#QUAD\n")
         self.writeQuad(self, f, parser)
         f.write("#DIRFUNC\n")
@@ -25,7 +25,10 @@ class Writer():
 
     def writeDirFunc(self, f, parser):
         for fun in parser.dataTable.table:
-            f.write(fun + "," + parser.dataTable.table[fun]["type"] + "," + parser.dataTable.table[fun]["params"] + "," + str(parser.dataTable.table[fun]["startCounter"])+ ','+ str(parser.dataTable.table[fun]["numLocals"])+"\n")
+            if fun != "global":
+                f.write(fun + "," + parser.dataTable.table[fun]["type"] + "," + parser.dataTable.table[fun]["params"] + "," + str(parser.dataTable.table[fun]["startCounter"])+ ',' + str(parser.dataTable.getTable("global").getAdress(fun)) + ','+ str(parser.dataTable.table[fun]["numLocals"])+"\n")
+            else:
+                f.write(fun + "," + parser.dataTable.table[fun]["type"] + "," + parser.dataTable.table[fun]["params"] + "," + str(parser.dataTable.table[fun]["startCounter"])+ ',' + "-1" + ','+ str(parser.dataTable.table[fun]["numLocals"])+"\n")
             
     def writeDirConst(self, f, parser):
         for const in parser.constTable.table:
