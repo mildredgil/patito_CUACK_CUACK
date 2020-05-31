@@ -121,6 +121,7 @@ class CalcParser(Parser):
         self.pilaOper = stack.Stack()
         self.pilaType = stack.Stack()
         self.pilaMemoria = stack.Stack()
+        self.pilaDim = stack.Stack()
         self.pilaJump = stack.Stack()
         self.pilaForOp = stack.Stack()
         self.pilaForGo = stack.Stack()
@@ -305,12 +306,13 @@ class CalcParser(Parser):
     def asignacion(self, p):
         pass
 
-    #embedded action save4
+    #embedded action save01
     @_('')
     def asignacion_insert_var(self, p):
         t = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
         m = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
-        pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.currentId, t, m)
+        d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.currentId)
+        pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDim, self.currentId, t, m,d)
         self.pilaOp.push("=")
         
     #embedded action
@@ -324,6 +326,7 @@ class CalcParser(Parser):
                     self.pilaOper, 
                     self.pilaType,
                     self.pilaMemoria,
+                    self.pilaDim,
                     self.quad, 
                     self.tempVar,
                     self.dataTable,
@@ -339,6 +342,7 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.pilaDim,
                 self.dataTable,
                 self.currentFunc,
                 self.quad)
@@ -392,6 +396,7 @@ class CalcParser(Parser):
     def print_quad1(self, p):
         oper = self.pilaOper.pop()
         m = self.pilaMemoria.pop()
+        d = self.pilaDim.pop()
         if test:
             printQuad(oper, self.quad)
         else:
@@ -414,7 +419,7 @@ class CalcParser(Parser):
     #regresa
     @_('RETURN "(" exp ")" ";"')
     def regresa(self, p):
-        returnQuad(self.pilaType, self.pilaOper, self.pilaMemoria , self.dataTable, self.currentFunc, self.quad)
+        returnQuad(self.pilaType, self.pilaOper, self.pilaMemoria , self.pilaDim , self.dataTable, self.currentFunc, self.quad)
 
     #estatuto de decision
     @_('IF "(" expOR ")" if_gotF bloque estDesicion2 if_fill_gotF')
@@ -429,6 +434,7 @@ class CalcParser(Parser):
             self.pilaType,
             self.pilaJump,
             self.pilaMemoria,
+            self.pilaDim,
             self.quad
         )
 
@@ -489,6 +495,7 @@ class CalcParser(Parser):
         self.pilaForOp.push(self.currentId)
         self.pilaOper.push(self.currentId)
         self.pilaMemoria.push(m)
+        self.pilaDim.push([])
         self.pilaType.push('int')
         self.pilaOp.push('=')
     
@@ -500,6 +507,7 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.pilaDim,
                 self.dataTable,
                 self.currentFunc,
                 self.quad)
@@ -508,16 +516,20 @@ class CalcParser(Parser):
     @_('')
     def from_gotF(self, p):
         m = self.dataTable.getAdressVar(self.pilaForOp.top(),self.currentFunc)
+        d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.pilaForOp.top())
         self.pilaOper.push(self.pilaForOp.top())
         self.pilaOp.push('>')
         self.pilaType.push('int')
         self.pilaMemoria.push(m)
+        self.pilaDim.push(d)
+        
         
         normalQuad(
             self.pilaOp,
             self.pilaOper, 
             self.pilaType,
             self.pilaMemoria,
+            self.pilaDim,
             self.quad,
             self.tempVar,
             self.dataTable,
@@ -545,16 +557,22 @@ class CalcParser(Parser):
 
     @_('')
     def from_suma(self, p):
+        m = self.dataTable.getAdressVar(self.pilaForOp.top(),self.currentFunc)
         self.pilaOper.push(self.pilaForOp.top())
         self.pilaType.push('int')
+        self.pilaMemoria.push(m)
+        self.pilaDim.push([])
         self.pilaOper.push(1)
         self.pilaType.push('int')
         self.pilaOp.push('+')
+        self.pilaMemoria.push(self.memoryManager.get(MEM[self.memScope]["TEMP"]["INT"]))
+        self.pilaDim.push([])
         normalQuad(
             self.pilaOp,
             self.pilaOper, 
             self.pilaType,
             self.pilaMemoria,
+            self.pilaDim,
             self.quad,
             self.tempVar,
             self.dataTable,
@@ -562,17 +580,25 @@ class CalcParser(Parser):
             self.memoryManager,
             self.memScope
         )
-        
+        #aqui esta el error creo
+        print("que esta en el tope", self.pilaForOp.top())
+        m = self.dataTable.getAdressVar(self.pilaForOp.top(),self.currentFunc)
+        print("que esta en el tope adress", m)
         self.pilaOper.push(self.pilaForOp.pop())
         self.pilaType.push('int')
+        self.pilaMemoria.push(m)
+        self.pilaDim.push([])
         self.pilaOper.push('t'+str(self.tempVar))
         self.pilaType.push('int')
         self.pilaOp.push('=')
+        self.pilaMemoria.push(self.memoryManager.get(MEM[self.memScope]["TEMP"]["INT"]))
+        self.pilaDim.push([])
         assignQuad(
             self.pilaOp,
             self.pilaOper,
             self.pilaType,
             self.pilaMemoria,
+            self.pilaDim,
             self.dataTable,
             self.currentFunc,
             self.quad)
@@ -638,6 +664,7 @@ class CalcParser(Parser):
         mem = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
         type = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
         dime = self.dataTable.getTable(self.currentFunc).getDimentions(p.ID)
+        d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.currentId)
         
         #badAid is + or - save111
         isArray = self.pilaIsArray.pop()
@@ -666,18 +693,22 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.pilaDim,
                 self.currentId, 
                 self.dataTable.getTypeVar(pastId, self.currentFunc),
-                mem)
+                mem,
+                d)
         else:
             #falta
             pushOperandType(
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.pilaDim,
                 self.currentId, 
                 self.dataTable.getTypeVar(pastId, self.currentFunc),
-                mem)
+                mem,
+                d)
 
     @_('"[" dim_cor_start exp "]" dim_cor_end dimGenQuad identificadores2')
     def identificadores2(self, p):
@@ -716,6 +747,7 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.pilaDim,
                 self.quad, 
                 self.tempVar,
                 self.dataTable,
@@ -757,7 +789,8 @@ class CalcParser(Parser):
                 self.tempVar,
                 self.pilaOper,
                 self.pilaType, 
-                self.pilaMemoria, 
+                self.pilaMemoria,
+                self.pilaDim,
                 self.memoryManager, 
                 self.memScope,
                 self.quad
@@ -769,6 +802,7 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.pilaDim,
                 self.tempVar,
                 self.memoryManager,
                 self.memScope,
@@ -795,6 +829,7 @@ class CalcParser(Parser):
                 self.pilaOper,
                 self.pilaType,
                 self.pilaMemoria,
+                self.pilaDim,
                 self.tempVar,
                 self.memoryManager,
                 self.memScope,
@@ -807,6 +842,7 @@ class CalcParser(Parser):
             #save13
             if not self.badAid.isdigit():
                 mem = self.memoryManager.get(MEM[self.memScope]['TEMP'][self.pilaType.top().upper()],1)
+                d = self.dataTable.getTable(currentFunc).geCompletetDimentions(var)
                 self.quad.add(
                             self.badAid,
                             self.pilaMemoria.top(),
@@ -818,6 +854,7 @@ class CalcParser(Parser):
                 self.tempVar = self.tempVar + 1
                 self.pilaMemoria.pop()
                 self.pilaMemoria.push(mem)
+                self.pilaDim.push(d)
 
         
         self.pilaDim.pop()
@@ -863,6 +900,7 @@ class CalcParser(Parser):
             self.pilaOper, 
             self.pilaType,
             self.pilaMemoria,
+            self.pilaDim,
             self.quad, 
             self.tempVar,
             self.dataTable,
@@ -895,6 +933,7 @@ class CalcParser(Parser):
             self.pilaOper, 
             self.pilaType,
             self.pilaMemoria,
+            self.pilaDim,
             self.quad, 
             self.tempVar,
             self.dataTable,
@@ -919,6 +958,7 @@ class CalcParser(Parser):
             self.pilaOper, 
             self.pilaType,
             self.pilaMemoria,
+            self.pilaDim,
             self.quad, 
             self.tempVar,
             self.dataTable,
@@ -954,6 +994,7 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.pilaDim,
                 self.quad, 
                 self.tempVar,
                 self.dataTable,
@@ -976,6 +1017,7 @@ class CalcParser(Parser):
                         self.pilaOper, 
                         self.pilaType,
                         self.pilaMemoria,
+                        self.pilaDim,
                         self.quad,
                         self.tempVar,
                         self.dataTable,
@@ -991,6 +1033,7 @@ class CalcParser(Parser):
                         self.pilaOper, 
                         self.pilaType,
                         self.pilaMemoria,
+                        self.pilaDim,
                         self.quad,
                         self.tempVar,
                         self.dataTable,
@@ -1024,6 +1067,7 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.pilaDim,
                 self.quad, 
                 self.tempVar,
                 self.dataTable,
@@ -1113,6 +1157,7 @@ class CalcParser(Parser):
                     self.pilaOper, 
                     self.pilaType,
                     self.pilaMemoria,
+                    self.pilaDim,
                     self.quad, 
                     self.tempVar,
                     self.dataTable,
@@ -1136,11 +1181,13 @@ class CalcParser(Parser):
         funcType = self.dataTable.getType(self.pilaCallId.top())
         if funcType != 'void':
             m = self.dataTable.getAdressVar(p.ID, "global")
+            #dosent need dimention change
             callAssignQuad(p.ID, funcType, self.tempVar, self.pilaType, self.pilaOper, self.pilaMemoria, m, self.memoryManager, self.memScope, self.quad)
             self.tempVar = self.tempVar + 1
             if not self.badAid.isdigit():
                 #si algo esta fallando modifique esto porque segun yo le faltaba temp al mem
                 mem = self.memoryManager.get(MEM[self.memScope]["TEMP"][self.pilaType.top().upper()],1)
+                #dosent need a dimention change
                 self.quad.add(
                             self.badAid,
                             self.pilaMemoria.pop(),
@@ -1167,7 +1214,8 @@ class CalcParser(Parser):
 
     @_('')
     def call_par_end(self, p):
-        expQuads('(',self.pilaOp,self.pilaOper, self.pilaType,self.pilaMemoria,self.quad, self.tempVar,self.dataTable,self.currentFunc,self.memoryManager,self.memScope)
+        
+        expQuads('(',self.pilaOp,self.pilaOper, self.pilaType,self.pilaMemoria, self.pilaDim ,self.quad, self.tempVar,self.dataTable,self.currentFunc,self.memoryManager,self.memScope)
         self.tempVar = self.tempVar + 1
 
     @_('exp param_call llamada3')
@@ -1182,7 +1230,7 @@ class CalcParser(Parser):
     @_('')
     def param_call(self, p):
         param = self.pilaparamCount.pop()
-        paramQuad(self.pilaType, self.pilaOper, self.pilaMemoria, self.dataTable, self.pilaCallId.top(), self.quad, param)
+        paramQuad(self.pilaType, self.pilaOper, self.pilaMemoria, self.pilaDim, self.dataTable, self.pilaCallId.top(), self.quad, param)
         self.pilaparamCount.push(param + 1)
 
     @_('"," call_par_end call_par_start llamada2')
@@ -1250,9 +1298,11 @@ class CalcParser(Parser):
             self.pilaOper,
             self.pilaType,
             self.pilaMemoria,
+            self.pilaDim,
             pastId,
             "int",
-            mem
+            mem,
+            []
         )
         self.currentId = pastId
         self.currentType = "int"
@@ -1285,9 +1335,11 @@ class CalcParser(Parser):
             self.pilaOper,
             self.pilaType,
             self.pilaMemoria,
+            self.pilaDim,
             pastId,
             "char",
-            mem
+            mem,
+            []
         )
         self.currentId = pastId
         self.currentType = "char"
@@ -1319,9 +1371,11 @@ class CalcParser(Parser):
             self.pilaOper,
             self.pilaType,
             self.pilaMemoria,
+            self.pilaDim,
             pastId,
             "float",
-            mem
+            mem,
+            []
         )
         self.currentId = pastId
         self.currentType = "float"

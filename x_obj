@@ -1,8 +1,9 @@
 1,2,3,4,5
 #QUAD
 GOTO,_,_,1
-=,23,_,23
+-,1,_,30000
+=,30000,_,0
 END,_,_,_
 #DIRFUNC
-global,void,,-1,4
+global,void,,-1,2
 #CONST
