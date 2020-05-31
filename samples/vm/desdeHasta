@@ -1,0 +1,9 @@
+programa patito;
+var ent a,b;
+    
+principal () {
+    b = 5;
+    desde a = 0 hasta 2 hacer {
+        b = 5;
+    }
+}

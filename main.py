@@ -31,7 +31,6 @@ if __name__ == '__main__':
     #print(parser.constTable.table)
     Writer.prepareOBJ(filename, parser)
     
-
     #RUN OBJ
     VirtualMachine(filename + "_obj")
     #parser.printTokens()
