@@ -523,7 +523,7 @@ class CalcParser(Parser):
         self.pilaMemoria.push(m)
         self.pilaDim.push(d)
         
-        
+        self.pilaJump.push(self.quad.getCount())
         normalQuad(
             self.pilaOp,
             self.pilaOper, 
@@ -538,7 +538,7 @@ class CalcParser(Parser):
             self.memScope
         )
         self.tempVar= self.tempVar +1
-        self.pilaJump.push(self.quad.getCount())
+        
         self.pilaJump.push(self.quad.getCount())
         self.quad.add("GOTOF", self.pilaMemoria.top(), None, None)
         
