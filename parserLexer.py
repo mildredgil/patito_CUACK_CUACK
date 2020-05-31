@@ -116,7 +116,7 @@ class CalcParser(Parser):
 
     def __init__(self):
         self.dataTable = DirFunc()
-        self.constTable = VarTable()
+        self.constTable = VarTable(None)
         self.pilaOp = stack.Stack()
         self.pilaOper = stack.Stack()
         self.pilaType = stack.Stack()
@@ -397,8 +397,12 @@ class CalcParser(Parser):
         
     @_('')
     def print_quad2(self, p):
-        memo = self.memoryManager.get(MEM["CONST"]["STRING"],1)
-        self.constTable.insert(p[-1],"string",memo)
+        if self.constTable.existVar(p[-1]):
+            memo = self.constTable.getAdress(p[-1])
+        else: 
+            memo = self.memoryManager.get(MEM["CONST"]["STRING"],1)
+            self.constTable.insert(p[-1],"string",memo)
+        
         printQuad(memo, self.quad)
         
     @_('')
