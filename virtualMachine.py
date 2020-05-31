@@ -128,6 +128,8 @@ class VirtualMachine():
                 ">": self.gtAction,
                 "<": self.ltAction,
                 "!=": self.diffAction,
+                "|": self.orAction,
+                "&": self.andAction,
                 "PRINT": self.printAction,
                 "READ": self.readAction,
                 "GOTO": self.gotoAction,
@@ -143,7 +145,24 @@ class VirtualMachine():
             print("CONST")
             print(self.currentMem.memory[CONST].memory)
             '''
-            
+#   IO ACTIONS     ########################################################################
+
+    def printAction(self, quad):
+        if quad[1] == '\\n':
+            print(' ')
+        elif quad[1] == ' ':
+            print(' ', end="")
+        else:
+            print(self.currentMem.value(int(quad[1])), end ="")
+        self.setCounter(self.currentCounter + 1)
+
+    def readAction(self, quad):
+        valor = input("")
+        self.currentMem.insert(int(quad[3]), valor)
+        self.setCounter(self.currentCounter + 1)
+
+#   EXPRESION ACTIONS     ########################################################################
+                
     def addAction(self, quad):
         self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) + self.currentMem.value(int(quad[2])))
         self.setCounter(self.currentCounter + 1)
@@ -161,20 +180,6 @@ class VirtualMachine():
 
     def divideAction(self, quad):
         self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) / self.currentMem.value(int(quad[2])))
-        self.setCounter(self.currentCounter + 1)
-
-    def printAction(self, quad):
-        if quad[1] == '\\n':
-            print(' ')
-        elif quad[1] == ' ':
-            print(' ', end="")
-        else:
-            print(self.currentMem.value(int(quad[1])), end ="")
-        self.setCounter(self.currentCounter + 1)
-
-    def readAction(self, quad):
-        valor = input("")
-        self.currentMem.insert(int(quad[3]), valor)
         self.setCounter(self.currentCounter + 1)
 
     def asignAction(self, quad):
@@ -205,6 +210,16 @@ class VirtualMachine():
     def gtAction(self, quad):
         self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) > self.currentMem.value(int(quad[2])))
         self.setCounter(self.currentCounter + 1)
+
+    def andAction(self, quad):
+        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) and self.currentMem.value(int(quad[2])))
+        self.setCounter(self.currentCounter + 1)
+
+    def orAction(self, quad):
+        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) or self.currentMem.value(int(quad[2])))
+        self.setCounter(self.currentCounter + 1)
+
+#   JUMP ACTIONS     ########################################################################
 
     def gotoAction(self, quad):
         self.setCounter(int(quad[3]))
