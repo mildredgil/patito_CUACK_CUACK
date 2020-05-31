@@ -22,6 +22,19 @@ def normalQuad(opSt, operSt, typeSt, memSt, quad, temp, dataTable, currentFunc, 
     newType = TypeMatching.sem(0, rType, op, lType)
     
     newVar = "t" + str(temp)
+    ldim = []
+    rdim = []
+
+    if(not isinstance(r,int)):
+        if dataTable.getTable(currentFunc).getDimentions(r)>0:
+            rdim= dataTable.getTable(currentFunc).geCompletetDimentions(r)
+    if(not isinstance(l,int)):
+        if dataTable.getTable(currentFunc).getDimentions(l)>0:
+            ldim= dataTable.getTable(currentFunc).geCompletetDimentions(l)
+    
+    if ldim != rdim:
+        raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
+
     
     mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()],1)
     if test:
@@ -33,7 +46,7 @@ def normalQuad(opSt, operSt, typeSt, memSt, quad, temp, dataTable, currentFunc, 
     typeSt.push(newType)
     memSt.push(mem)
 
-def assignQuad(opSt, operSt, typeSt, memSt, quad):
+def assignQuad(opSt, operSt, typeSt, memSt, dataTable, currentFunc, quad):
     op = opSt.pop()
     r = operSt.pop()
     l = operSt.pop()
@@ -47,6 +60,19 @@ def assignQuad(opSt, operSt, typeSt, memSt, quad):
 
     rType = typeSt.pop()
     lType = typeSt.pop()
+
+    ldim = []
+    rdim = []
+
+    if(not isinstance(r,int)):
+        if dataTable.getTable(currentFunc).getDimentions(r)>0:
+            rdim= dataTable.getTable(currentFunc).geCompletetDimentions(r)
+    if(not isinstance(l,int)):
+        if dataTable.getTable(currentFunc).getDimentions(l)>0:
+            ldim= dataTable.getTable(currentFunc).geCompletetDimentions(l)
+            
+    if ldim != rdim:
+        raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
 
     _ = TypeMatching.sem(0,rType , op, lType)
     

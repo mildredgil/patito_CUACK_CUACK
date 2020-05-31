@@ -58,6 +58,13 @@ class VarTable():
     def getDimentions(self, varName):
         return len(self.table[varName]["dim"])
 
+
+    def geCompletetDimentions(self, varName):
+        x = []
+        for d in self.table[varName]["dim"]:
+            x.append(d["lim"])
+        return x
+
     def hasDim(self, varName):
         if len(self.table[varName]["dim"]) == 0:
             varNoDim(varName)

@@ -340,6 +340,8 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.dataTable,
+                self.currentFunc,
                 self.quad)
             
     #lee
@@ -495,6 +497,8 @@ class CalcParser(Parser):
                 self.pilaOper, 
                 self.pilaType,
                 self.pilaMemoria,
+                self.dataTable,
+                self.currentFunc,
                 self.quad)
         
     #embeded action
@@ -566,6 +570,8 @@ class CalcParser(Parser):
             self.pilaOper,
             self.pilaType,
             self.pilaMemoria,
+            self.dataTable,
+            self.currentFunc,
             self.quad)
         
         self.tempVar=self.tempVar+1
