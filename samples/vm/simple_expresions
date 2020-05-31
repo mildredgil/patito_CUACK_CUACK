@@ -1,0 +1,12 @@
+programa x;
+var ent a;
+  principal () {
+    a = 1+ 2;
+    escribe(a);
+    a = 3 - 1;
+    escribe(a);
+    a = 5 * 3;
+    escribe(a);
+    a = 20 / 3;
+    escribe(a);
+  }
