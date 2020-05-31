@@ -136,7 +136,7 @@ class VirtualMachine():
                 "GOTOF": self.gotoFAction,
             }
             func = switch.get(instruction[0], "END")
-            
+            print(instruction)
             func(instruction)
             instruction = self.quad.get(self.currentCounter)
             '''
@@ -164,6 +164,7 @@ class VirtualMachine():
 #   EXPRESION ACTIONS     ########################################################################
                 
     def addAction(self, quad):
+        print(self.currentMem.value(int(quad[1])), self.currentMem.value(int(quad[2])))
         self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) + self.currentMem.value(int(quad[2])))
         self.setCounter(self.currentCounter + 1)
 

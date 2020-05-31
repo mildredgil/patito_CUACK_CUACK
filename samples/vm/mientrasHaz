@@ -1,0 +1,13 @@
+programa patito;
+var deci a,i, b, c;
+
+principal () {
+    a = 5.0;
+    b = 0.0;
+    mientras(a > 0) haz {
+        b = b + a * 2.0;
+        a = a - 1;
+        escribe("b = ", b);
+        escribe("a = ", a);
+    }
+}
