@@ -1,0 +1,18 @@
+programa fibonacci;
+
+funcion nada fibo(ent num) {
+    escribe("hola mundo!");
+    #si (num < 1) {
+    ##regresa(0);
+    #} sino {
+    ##si (num < 3) {
+    ###regresa(1);
+    ##} sino {
+    ###regresa(fibo(num - 1) + fibo(num - 2));
+    ##}
+    #}
+}
+
+principal (){
+    fibo(1);
+}

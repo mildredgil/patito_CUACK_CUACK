@@ -92,7 +92,8 @@ class VirtualMachine():
         self.pilaParams = stack.Stack() 
         self.pilaMem = stack.Stack()
         self.currentMem = CurrentMemory()
-        self.prevCounter = 0
+        self.pilaCounters = stack.Stack()
+        
         #run methods
         self.readFile()
         self.execute()
@@ -263,7 +264,6 @@ class VirtualMachine():
     def paramAction(self, quad):
         self.pilaParams.push(quad[1])
         self.setCounter(self.currentCounter + 1)
-        self.pilaParams.print()
         
     def gosubAction(self, quad):
         nameFunc = quad[1]
@@ -295,7 +295,7 @@ class VirtualMachine():
         self.currentMem.setLocal(local)
         
         #set previous counter
-        self.prevCounter = self.currentCounter
+        self.pilaCounters.push(self.currentCounter)
 
         #add current function name
         self.pilaFunc.push(nameFunc)
@@ -305,7 +305,7 @@ class VirtualMachine():
         self.setCounter(counter)
         
     def endPAction(self, quad):
-        self.setCounter(self.prevCounter + 1)
+        self.setCounter(self.pilaCounters.pop() + 1)
 
     def returnAction(self, quad):
         nameFunc = self.pilaFunc.pop()
@@ -313,7 +313,6 @@ class VirtualMachine():
 
         self.currentMem.insert(int(mem), self.currentMem.value(int(quad[3])))
         self.setCounter(self.currentCounter + 1)
-        self.currentMem.print(LOCAL)
     
 # DIMENSIONED VARIABLES ######################################################################
 
