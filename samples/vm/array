@@ -3,5 +3,8 @@ var ent arr[10], b;
   
   principal ()
   {
-    b = arr[12];
+    arr[1] = 1;
+    arr[2] = 2;
+    b = arr[1];
+    escribe(arr[1],arr[2]);
   }

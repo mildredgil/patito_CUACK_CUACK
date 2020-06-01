@@ -1,0 +1,16 @@
+1,2,3,4,5,6
+#QUAD
+GOTO,_,_,4
+PRINT,230000,_,_
+PRINT,\n,_,_
+ENDPROC,_,_,_
+ERA,fibo,_,_
+PARAM,200000,_,p1
+GOSUB,fibo,_,_
+END,_,_,_
+#DIRFUNC
+global,void,,-1,-1,0
+fibo,void,i,1,-1,0
+#CONST
+hola mundo!,230000
+1,200000

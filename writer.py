@@ -25,7 +25,7 @@ class Writer():
 
     def writeDirFunc(self, f, parser):
         for fun in parser.dataTable.table:
-            if fun != "global":
+            if fun != "global" and parser.dataTable.table[fun]["type"] != "void":
                 f.write(fun + "," + parser.dataTable.table[fun]["type"] + "," + parser.dataTable.table[fun]["params"] + "," + str(parser.dataTable.table[fun]["startCounter"])+ ',' + str(parser.dataTable.getTable("global").getAdress(fun)) + ','+ str(parser.dataTable.table[fun]["numLocals"])+"\n")
             else:
                 f.write(fun + "," + parser.dataTable.table[fun]["type"] + "," + parser.dataTable.table[fun]["params"] + "," + str(parser.dataTable.table[fun]["startCounter"])+ ',' + "-1" + ','+ str(parser.dataTable.table[fun]["numLocals"])+"\n")

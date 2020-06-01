@@ -1,6 +1,6 @@
 1,2,3,4,5,6
 #QUAD
-GOTO,_,_,10
+GOTO,_,_,17
 -,100000,100001,130000
 =,130000,_,100002
 RETURN,_,_,100002
@@ -9,6 +9,13 @@ ENDPROC,_,_,_
 =,130000,_,100002
 RETURN,_,_,100002
 ENDPROC,_,_,_
+ERA,suma,_,_
+PARAM,100000,_,p1
+PARAM,100001,_,p2
+GOSUB,suma,_,_
+=,5,_,130000
+=,130000,_,100002
+RETURN,_,_,100002
 ENDPROC,_,_,_
 ERA,resta,_,_
 PARAM,200000,_,p1
@@ -66,12 +73,27 @@ PRINT,230000,_,_
 PRINT, ,_,_
 PRINT,0,_,_
 PRINT,\n,_,_
+ERA,especial,_,_
+PARAM,200000,_,p1
+ERA,resta,_,_
+PARAM,200000,_,p1
+PARAM,200001,_,p2
+GOSUB,resta,_,_
+=,4,_,30009
+PARAM,30009,_,p2
+GOSUB,especial,_,_
+=,6,_,30010
+=,30010,_,0
+PRINT,230000,_,_
+PRINT, ,_,_
+PRINT,0,_,_
+PRINT,\n,_,_
 END,_,_,_
 #DIRFUNC
 global,void,,-1,-1,4
 resta,int,ii,1,4,1
 suma,int,ii,5,5,1
-especial,int,ii,9,6,0
+especial,int,ii,9,6,1
 #CONST
 20,200000
 10,200001
