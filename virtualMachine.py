@@ -49,7 +49,7 @@ class Memory():
     def __init__(self,scope):
         self.memory =  memory_struct[scope]
         self.scope = scope
-
+#haber corre el array :p
     def insert(self, memory, val):
         memType = memory // 10000
         memPos = memory % 10000

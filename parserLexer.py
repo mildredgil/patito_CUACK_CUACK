@@ -1276,21 +1276,8 @@ class CalcParser(Parser):
             pastId= temp
             self.tempVar = self.tempVar + 1
             self.isConst = False
-<<<<<<< HEAD
-        pushOperandType(
-            self.pilaOper,
-            self.pilaType,
-            self.pilaMemoria,
-            self.pilaDimGlob,
-            pastId,
-            "int",
-            mem,
-            []
-        )
-=======
             
-        pushOperandType(self.pilaOper,self.pilaType,self.pilaMemoria,self.pilaDim,pastId,"int",memConst,[])
->>>>>>> af696858b731b29d73ea19b77df118cf881cdc30
+        pushOperandType(self.pilaOper,self.pilaType,self.pilaMemoria,self.pilaDimGlob,pastId,"int",memConst,[])
         self.currentId = pastId
         self.currentType = "int"
         
@@ -1363,7 +1350,7 @@ class CalcParser(Parser):
             self.tempVar = self.tempVar + 1
             self.isConst = False
         
-        pushOperandType(self.pilaOper,self.pilaType,self.pilaMemoria,self.pilaDim,pastId,"float",memConst,[])
+        pushOperandType(self.pilaOper,self.pilaType,self.pilaMemoria,self.pilaDimGlob,pastId,"float",memConst,[])
         self.currentId = pastId
         self.currentType = "float"
         
