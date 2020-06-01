@@ -1246,65 +1246,38 @@ class CalcParser(Parser):
     @_('identificadores')
     def varcte(self, p):
         pass
-        '''
-        pastId = self.currentId
-        mem = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
-        
-        if not self.badAid.isdigit():
-            self.quad.add(
-                        self.badAid,
-                        self.currentId,
-                        None,
-                        't' + str(self.tempVar)
-                    )
-            self.badAid= '0'
-            mem = self.memoryManager.get(MEM[self.memScope]['INT'],1)
-            self.currentId= 't' + str(self.tempVar)
-            self.tempVar = self.tempVar + 1
-        
-        pushOperandType(
-            self.pilaOper, 
-            self.pilaType,
-            self.pilaMemoria,
-            self.currentId, 
-            self.dataTable.getTypeVar(pastId, self.currentFunc),
-            mem)
-        '''
+
 #save4
     @_('INTNUMBER')
     def varcte(self, p):
-        pastId = p[0]
-        mem = None
-        
-        if self.constTable.existVar(p[0]):
-            mem = self.constTable.getAdress(p[0])
-        else:
-            mem = self.memoryManager.get(MEM['CONST']['INT'],1)
-            self.constTable.insert(p[0],'int', mem)
-
         self.isConst = True
+        cte = p[0]
+        pastId = cte
+
+        memConst = None
+        
+        if self.constTable.existVar(cte):
+            memConst = self.constTable.getAdress(cte)
+        else:
+            memConst = self.memoryManager.get(MEM['CONST']['INT'],1)
+            self.constTable.insert(cte,'int', memConst)
+        
         if not self.badAid.isdigit() and self.pilaOp.top() != '(' and not self.pilaIsArray.top():
-            self.quad.add(
-                        self.badAid,
-                        p[0],
-                        None,
-                        't' + str(self.tempVar)
-                    )
+            temp = 't' + str(self.tempVar)
+            memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"]['INT'],1)
+
+            if test:
+                self.quad.add(self.badAid,cte,None,temp)
+            else:
+                self.quad.add(self.badAid,memConst,None,memTemp)
+                
+            memConst = memTemp
             self.badAid= '0'
-            mem = self.memoryManager.get(MEM[self.memScope]['INT'],1)
-            pastId= 't' + str(self.tempVar)
+            pastId= temp
             self.tempVar = self.tempVar + 1
             self.isConst = False
-        pushOperandType(
-            self.pilaOper,
-            self.pilaType,
-            self.pilaMemoria,
-            self.pilaDim,
-            pastId,
-            "int",
-            mem,
-            []
-        )
+            
+        pushOperandType(self.pilaOper,self.pilaType,self.pilaMemoria,self.pilaDim,pastId,"int",memConst,[])
         self.currentId = pastId
         self.currentType = "int"
         
@@ -1321,6 +1294,8 @@ class CalcParser(Parser):
 
         self.isConst = True
         if not self.badAid.isdigit():
+            cantAssign(self.badAid, "'" + pastId + "'")
+            '''
             self.quad.add(
                         self.badAid,
                         self.currentId,
@@ -1332,6 +1307,7 @@ class CalcParser(Parser):
             self.currentId= 't' + str(self.tempVar)
             self.tempVar = self.tempVar + 1
             self.isConst = False
+            '''
         pushOperandType(
             self.pilaOper,
             self.pilaType,
@@ -1347,37 +1323,34 @@ class CalcParser(Parser):
         
     @_('FLOATNUMBER')
     def varcte(self, p):
-        pastId = p[0]
-        mem = None
-        
-        if self.constTable.existVar(p[0]):
-            mem = self.constTable.getAdress(p[0])
-        else:
-            mem = self.memoryManager.get(MEM['CONST']['FLOAT'],1)
-            self.constTable.insert(p[0],'float', mem)
+        self.isConst = True
+        cte = p[0]
+        pastId = cte
 
-        if not self.badAid.isdigit():
-            self.quad.add(
-                        self.badAid,
-                        p[0],
-                        None,
-                        't' + str(self.tempVar)
-                    )
+        memConst = None
+
+        if self.constTable.existVar(cte):
+            memConst = self.constTable.getAdress(cte)
+        else:
+            memConst = self.memoryManager.get(MEM['CONST']['FLOAT'],1)
+            self.constTable.insert(cte,'float', memConst)
+
+        if not self.badAid.isdigit() and self.pilaOp.top() != '(' and not self.pilaIsArray.top():
+            temp = 't' + str(self.tempVar)
+            memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"]['FLOAT'],1)
+
+            if test:
+                self.quad.add(self.badAid,cte,None,temp)
+            else:
+                self.quad.add(self.badAid,memConst,None,memTemp)
+
+            memConst = memTemp
             self.badAid= '0'
-            mem = self.memoryManager.get(MEM[self.memScope]['FLOAT'],1)
-            pastId= 't' + str(self.tempVar)
+            pastId= temp
             self.tempVar = self.tempVar + 1
             self.isConst = False
-        pushOperandType(
-            self.pilaOper,
-            self.pilaType,
-            self.pilaMemoria,
-            self.pilaDim,
-            pastId,
-            "float",
-            mem,
-            []
-        )
+        
+        pushOperandType(self.pilaOper,self.pilaType,self.pilaMemoria,self.pilaDim,pastId,"float",memConst,[])
         self.currentId = pastId
         self.currentType = "float"
         

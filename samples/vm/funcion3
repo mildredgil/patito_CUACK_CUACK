@@ -15,8 +15,11 @@ var ent b, c, d, e;
     regresa(j);
   }
 
-  funcion ent especial(ent i, ent k) {
-    regresa( suma(i, k) );
+  funcion ent especial(ent i, ent k) 
+  var ent j;
+  {
+    j = suma(i, k);
+    regresa(j);
   }
 
 

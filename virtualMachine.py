@@ -314,3 +314,4 @@ class VirtualMachine():
         self.setCounter(self.currentCounter + 1)
         self.currentMem.print(LOCAL)
     
+# DIMENSIONED VARIABLES ######################################################################
