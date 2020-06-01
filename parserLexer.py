@@ -100,6 +100,10 @@ class CalcLexer(Lexer):
     def error(self, t):
         print('Line %d: Bad character %r' % (self.lineno, t.value[0]))
         self.index += 1
+    
+    def printTokens(self,data):
+        for tok in self.tokenize(data):
+            print(tok)
 
 class CalcParser(Parser):
     # Get the token list from the lexer (required)
@@ -315,8 +319,10 @@ class CalcParser(Parser):
     def asignacion_insert_var(self, p):
         t = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
         m = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
-        d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.currentId)
-        pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDimGlob, self.currentId, t, m,d)
+        #guess this works but not completly sure
+        # d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.currentId)
+
+        pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDimGlob, self.currentId, t, m,self.pilaDimGlob.top())
         self.pilaOp.push("=")
         
     #embedded action
@@ -324,6 +330,7 @@ class CalcParser(Parser):
     @_('')
     def asignacion_pop_all(self, p):
         while self.pilaOp.length() > 0:
+            print("pop all")
             self.pilaDimGlob.print()
             self.pilaOper.print()
             if self.pilaOp.top() != "=":
@@ -1058,7 +1065,6 @@ class CalcParser(Parser):
     # factor
     @_('"(" exp_par_start exp ")" exp_par_end ')
     def factor(self, p):
-        # self.pilaOper.push(p.exp)
         return p.exp
 
     @_('')
@@ -1112,7 +1118,6 @@ class CalcParser(Parser):
             if(self.dataTable.getTable(self.currentFunc).getDimentions(self.currentId) == 0):
                 raise Exception("Variable {} is not an array.".format(self.currentId))
             else:
-                print("entramos al else e insertamos :",p.opmat2)
                 mem = self.memoryManager.get(MEM[self.memScope]["TEMP"][self.pilaType.top().upper()],1)
                 self.memoryManager.setNext(MEM[self.memScope]["TEMP"][self.currentType.upper()],self.dataTable.getTable(self.currentFunc).getDimR(self.pilaOper.top()))
                 self.quad.add(
@@ -1126,11 +1131,11 @@ class CalcParser(Parser):
                 self.pilaMemoria.pop()
                 self.pilaMemoria.push(mem)
                 self.tempVar = self.tempVar + 1
-
             
         else:
             return p.factor
-        
+
+
     @_('TRANSPOSE', 
     'INVERSE', 
     'DETERMINANT')
@@ -1370,4 +1375,11 @@ class CalcParser(Parser):
 
     def error(self, p):
         raise Exception("Error on line {} on {}".format(p.lineno, p.value))
+
+    def printParser(self):
+        print("dataTable:")
+        self.dataTable.print()
+        print("quadruple:")
+        self.quad.print()
+        print(self.constTable.table)
 

@@ -57,7 +57,7 @@ def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad)
     op = opSt.pop()
     r = operSt.pop()
     l = operSt.pop()
-    
+    # dimSt.print()
     rm = memSt.pop()
     lm = memSt.pop()
     ldim = dimSt.pop()
@@ -240,6 +240,8 @@ def miDimQuad(mi, temp, operSt, typeSt, memSt, dimSt, mem, scope, quad):
     operSt.push(newVar)
     typeSt.push(t)
     memSt.push(tempMem)
+    #this might be wrong
+    dimSt.push([])
 
 def miAddQuad(operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
     typeSt.pop()
