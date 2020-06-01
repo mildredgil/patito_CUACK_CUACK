@@ -32,6 +32,6 @@ if __name__ == '__main__':
     Writer.prepareOBJ(filename, parser)
     
     #RUN OBJ
-    #VirtualMachine(filename + "_obj")
-    #parser.printTokens()
+    VirtualMachine(filename + "_obj")
+    parser.printTokens()
     

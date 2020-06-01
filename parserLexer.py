@@ -156,6 +156,9 @@ class CalcParser(Parser):
     @_('PROGRAM ID set_global ";" programa2 programa3 PRINCIPAL set_principal_quad "(" ")" bloque')
     def programa(self, p):
         self.quad.add("END",None,None, None)
+        # print("end:")
+        # self.pilaOper.print()
+        # self.pilaDimGlob.print()
     
     #embedded action
     @_('')
@@ -321,8 +324,8 @@ class CalcParser(Parser):
     @_('')
     def asignacion_pop_all(self, p):
         while self.pilaOp.length() > 0:
-            # self.pilaDimGlob.print()
-            # self.pilaOper.print()
+            self.pilaDimGlob.print()
+            self.pilaOper.print()
             if self.pilaOp.top() != "=":
                 normalQuad(
                     self.pilaOp,
@@ -1184,7 +1187,8 @@ class CalcParser(Parser):
         funcType = self.dataTable.getType(self.pilaCallId.top())
         if funcType != 'void':
             m = self.dataTable.getAdressVar(p.ID, "global")
-            #dosent need dimention change
+            #dosent need dimention change nvm it did idiot
+            self.pilaDimGlob.push([])
             callAssignQuad(p.ID, funcType, self.tempVar, self.pilaType, self.pilaOper, self.pilaMemoria, m, self.memoryManager, self.memScope, self.quad)
             self.tempVar = self.tempVar + 1
             if not self.badAid.isdigit():
