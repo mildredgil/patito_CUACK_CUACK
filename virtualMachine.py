@@ -161,7 +161,8 @@ class VirtualMachine():
                 "PARAM":    self.paramAction,
                 "GOSUB":    self.gosubAction,
                 "ENDPROC":  self.endPAction,
-                "RETURN":   self.returnAction
+                "RETURN":   self.returnAction,
+                "VER":      self.verAction
             }
 
             func = switch.get(quadInstruction[0], "END")
@@ -315,3 +316,9 @@ class VirtualMachine():
         self.currentMem.print(LOCAL)
     
 # DIMENSIONED VARIABLES ######################################################################
+
+    def verAction(self, quad):
+        if not self.currentMem.value(int(quad[1])) < self.currentMem.value(int(quad[2])):
+            outOfRange()
+        
+        self.setCounter(self.currentCounter + 1)
