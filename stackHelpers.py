@@ -9,6 +9,8 @@ def pushOperandType(operSt, typeSt, memSt, dimSt, oper, type, mem,d):
     typeSt.push(type)
     memSt.push(mem)
     dimSt.push(d)
+    # dimSt.print()
+    # print('oper:', oper)
 
 def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, currentFunc, memoryManager, memScope):
     op = opSt.pop()
@@ -25,6 +27,7 @@ def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, curren
     newType = TypeMatching.sem(0, rType, op, lType)
     
     newVar = "t" + str(temp)
+    print("estamos en t")
     # ldim = []
     # rdim = []
 
@@ -35,8 +38,8 @@ def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, curren
     #     if dataTable.getTable(currentFunc).getDimentions(l)>0:
     #         ldim= dataTable.getTable(currentFunc).geCompletetDimentions(l)
     
-    if ldim != rdim:
-        raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
+    # if ldim != rdim:
+    #     raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
 
     
     mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()],1)
@@ -58,7 +61,6 @@ def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad)
     
     rm = memSt.pop()
     lm = memSt.pop()
-
     ldim = dimSt.pop()
     rdim = dimSt.pop()
     # print("R es:" + str(r) + " y L es:"+str(l))
@@ -78,8 +80,10 @@ def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad)
     #     if dataTable.getTable(currentFunc).getDimentions(l)>0:
     #         ldim= dataTable.getTable(currentFunc).geCompletetDimentions(l)
             
-    if ldim != rdim:
-        raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
+    # if ldim != rdim:
+    #     print('ldim:')
+    #     quad.print()
+    #     raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
 
     _ = TypeMatching.sem(0,rType , op, lType)
     
@@ -206,6 +210,7 @@ def expQuads(stopOp, pilaOp, pilaOper,  pilaType, pilaMemoria, pilaDim, quad,  t
     pilaOp.pop()
 
 def verQuad(operSt, typeSt, memSt, lim, quad):
+    # print('>>>>>>>>>>.entro')
     tp = typeSt.top()
     
     if tp != "int":
