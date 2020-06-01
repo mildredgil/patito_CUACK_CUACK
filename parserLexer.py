@@ -330,7 +330,6 @@ class CalcParser(Parser):
     @_('')
     def asignacion_pop_all(self, p):
         while self.pilaOp.length() > 0:
-            print("pop all")
             self.pilaDimGlob.print()
             self.pilaOper.print()
             if self.pilaOp.top() != "=":
@@ -575,10 +574,16 @@ class CalcParser(Parser):
         self.pilaType.push('int')
         self.pilaMemoria.push(m)
         self.pilaDimGlob.push([])
+        memConst = 0
+        if self.constTable.existVar(1):
+            memConst = self.constTable.getAdress(1)
+        else:
+            memConst = self.memoryManager.get(MEM['CONST']['INT'],1)
+            self.constTable.insert(1,'int', memConst)
         self.pilaOper.push(1)
         self.pilaType.push('int')
         self.pilaOp.push('+')
-        self.pilaMemoria.push(self.memoryManager.get(MEM[self.memScope]["TEMP"]["INT"]))
+        self.pilaMemoria.push(memConst)
         self.pilaDimGlob.push([])
         normalQuad(
             self.pilaOp,
@@ -594,9 +599,7 @@ class CalcParser(Parser):
             self.memScope
         )
         #aqui esta el error creo
-        print("que esta en el tope", self.pilaForOp.top())
         m = self.dataTable.getAdressVar(self.pilaForOp.top(),self.currentFunc)
-        print("que esta en el tope adress", m)
         self.pilaOper.push(self.pilaForOp.pop())
         self.pilaType.push('int')
         self.pilaMemoria.push(m)
