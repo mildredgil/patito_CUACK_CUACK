@@ -1,0 +1,10 @@
+programa patito;
+var ent a, b;
+    
+
+principal () {
+    b = 1;
+    desde a = 0 hasta 2 hacer {
+        
+    }
+}

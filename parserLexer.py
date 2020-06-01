@@ -325,6 +325,8 @@ class CalcParser(Parser):
     @_('')
     def asignacion_pop_all(self, p):
         while self.pilaOp.length() > 0:
+            # self.pilaDimGlob.print()
+            # self.pilaOper.print()
             if self.pilaOp.top() != "=":
                 normalQuad(
                     self.pilaOp,
@@ -656,7 +658,7 @@ class CalcParser(Parser):
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
             self.dataTable.addNumLocals(self.currentFunc)
         
-    # identificadores con dimension save12
+    # identificadores con dimension save001
     @_('ID dim_push identificadores2')
     def identificadores(self, p):
         self.currentId = p.ID
@@ -670,7 +672,7 @@ class CalcParser(Parser):
         type = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
         dime = self.dataTable.getTable(self.currentFunc).getDimentions(p.ID)
         d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.currentId)
-        
+        # print("donde creo que consige el dato erroneo:" +str(d))
         #badAid is + or - save111
         isArray = self.pilaIsArray.pop()
         if not self.badAid.isdigit() and self.pilaOper.top() != '(' and not isArray :
@@ -713,7 +715,7 @@ class CalcParser(Parser):
                 self.currentId, 
                 self.dataTable.getTypeVar(pastId, self.currentFunc),
                 mem,
-                d)
+                [])
 
     @_('"[" dim_cor_start exp "]" dim_cor_end dimGenQuad identificadores2')
     def identificadores2(self, p):

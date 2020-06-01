@@ -27,7 +27,6 @@ def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, curren
     newType = TypeMatching.sem(0, rType, op, lType)
     
     newVar = "t" + str(temp)
-    print("estamos en t")
     # ldim = []
     # rdim = []
 
@@ -38,8 +37,8 @@ def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, curren
     #     if dataTable.getTable(currentFunc).getDimentions(l)>0:
     #         ldim= dataTable.getTable(currentFunc).geCompletetDimentions(l)
     
-    # if ldim != rdim:
-    #     raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
+    if ldim != rdim:
+        raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
 
     
     mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()],1)
@@ -80,10 +79,11 @@ def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad)
     #     if dataTable.getTable(currentFunc).getDimentions(l)>0:
     #         ldim= dataTable.getTable(currentFunc).geCompletetDimentions(l)
             
-    # if ldim != rdim:
-    #     print('ldim:')
-    #     quad.print()
-    #     raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
+    if ldim != rdim:
+        # print('ldim:')
+        # quad.print()
+        # dimSt.print()
+        raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
 
     _ = TypeMatching.sem(0,rType , op, lType)
     
@@ -240,7 +240,6 @@ def miDimQuad(mi, temp, operSt, typeSt, memSt, dimSt, mem, scope, quad):
     operSt.push(newVar)
     typeSt.push(t)
     memSt.push(tempMem)
-    dimSt.push([])
 
 def miAddQuad(operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
     typeSt.pop()
@@ -256,6 +255,7 @@ def miAddQuad(operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
     dimSt.pop()
 
     newVar = "t" + str(temp)
+
     tempMem = mem.get(MEM[scope]['TEMP']["INT"],1)
 
     if test:
