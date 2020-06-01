@@ -1,10 +1,9 @@
 programa patito;
-var ent a;
-  deci b;
+var ent a, b;
 
   principal ()
   {
-    b = 1.0;
+    b = -1;
     a = 1+ 2 * (-b);
     escribe(a);
   }
