@@ -100,6 +100,10 @@ class CalcLexer(Lexer):
     def error(self, t):
         print('Line %d: Bad character %r' % (self.lineno, t.value[0]))
         self.index += 1
+    
+    def printTokens(self,data):
+        for tok in self.tokenize(data):
+            print(tok)
 
 class CalcParser(Parser):
     # Get the token list from the lexer (required)
@@ -1364,4 +1368,11 @@ class CalcParser(Parser):
 
     def error(self, p):
         raise Exception("Error on line {} on {}".format(p.lineno, p.value))
+
+    def printParser(self):
+        print("dataTable:")
+        self.dataTable.print()
+        print("quadruple:")
+        self.quad.print()
+        print(self.constTable.table)
 
