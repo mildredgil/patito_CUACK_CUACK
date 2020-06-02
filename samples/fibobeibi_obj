@@ -1,0 +1,52 @@
+1,2,3,4,5,6
+#QUAD
+GOTO,_,_,33
+PRINT,230000,_,_
+PRINT, ,_,_
+PRINT,100000,_,_
+PRINT,\n,_,_
+PRINT,230001,_,_
+PRINT, ,_,_
+PRINT,100001,_,_
+PRINT,\n,_,_
+PRINT,230002,_,_
+PRINT, ,_,_
+PRINT,100002,_,_
+PRINT,\n,_,_
+>,100002,200000,160000
+GOTOF,160000,_,22
+ERA,fiboCiclo,_,_
+PARAM,100001,_,p1
++,100000,100001,130000
+PARAM,130000,_,p2
+-,100002,200001,130001
+PARAM,130001,_,p3
+GOSUB,fiboCiclo,_,_
+ENDPROC,_,_,_
+PRINT,230003,_,_
+PRINT, ,_,_
+PRINT,100000,_,_
+PRINT,\n,_,_
+ERA,fiboCiclo,_,_
+PARAM,200002,_,p1
+PARAM,200001,_,p2
+PARAM,100000,_,p3
+GOSUB,fiboCiclo,_,_
+ENDPROC,_,_,_
+ERA,fibo,_,_
+PARAM,200003,_,p1
+GOSUB,fibo,_,_
+END,_,_,_
+#DIRFUNC
+global,void,,-1,-1,0
+fiboCiclo,void,iii,1,-1,0
+fibo,void,i,23,-1,0
+#CONST
+ciclo a:,230000
+ciclo b:,230001
+ciclo c:,230002
+3,200000
+1,200001
+fibo a:,230003
+0,200002
+5,200003

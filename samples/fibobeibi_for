@@ -1,0 +1,17 @@
+programa patito;
+
+  funcion nada fibo(ent a) 
+  var ent b,c,d;
+  {
+    c=0;
+    d=1;
+    desde b = 0 hasta a hacer {
+        escribe(c);
+        c=c+d;
+        d=c-d;
+    }
+  }
+  principal ()
+  {
+    fibo(5);
+  }
