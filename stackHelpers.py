@@ -148,7 +148,7 @@ def gotoQuadFor(quad, jumpSt):
     quad.add("GOTO", None, None, None)
     #update gotoF
     index = jumpSt.pop()
-    quad.update(index, quad.getCount() + 1)
+    quad.update(index, quad.getCount())
 
     #push goto index
     jumpSt.push(indexGOTO)

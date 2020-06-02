@@ -3,8 +3,9 @@ var ent a, b;
     
 
 principal () {
-    b = 1;
-    desde a = 0 hasta 2 hacer {
-        
+    b = 33;
+    desde a = 1 hasta 10 hacer {
+
+        escribe("a = ", a, " b = ",b);
     }
 }

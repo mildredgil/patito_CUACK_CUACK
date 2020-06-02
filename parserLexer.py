@@ -503,17 +503,13 @@ class CalcParser(Parser):
     #embeded action save9
     @_('')
     def from_create(self, p):
-        m = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
         self.pilaForOp.push(self.currentId)
-        self.pilaOper.push(self.currentId)
-        self.pilaMemoria.push(m)
-        self.pilaDimGlob.push([])
-        self.pilaType.push('int')
         self.pilaOp.push('=')
-    
+        
     #embeded action
     @_('')
     def from_assign(self, p):
+        self.pilaOper.print()
         assignQuad(
                 self.pilaOp,
                 self.pilaOper, 
@@ -523,6 +519,7 @@ class CalcParser(Parser):
                 self.dataTable,
                 self.currentFunc,
                 self.quad)
+        self.pilaOper.print()
         
     #embeded action
     @_('')
@@ -530,7 +527,7 @@ class CalcParser(Parser):
         m = self.dataTable.getAdressVar(self.pilaForOp.top(),self.currentFunc)
         d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.pilaForOp.top())
         self.pilaOper.push(self.pilaForOp.top())
-        self.pilaOp.push('>')
+        self.pilaOp.push('>=')
         self.pilaType.push('int')
         self.pilaMemoria.push(m)
         self.pilaDimGlob.push(d)
@@ -556,12 +553,11 @@ class CalcParser(Parser):
         
     @_('')
     def from_goto(self, p):
-        gotoQuadFor(
+        gotoQuad(
             self.quad,
             self.pilaJump
         )
         
-        self.pilaJump.push(self.pilaJump.pop())
         fillGotoQuad(
             self.quad,
             self.pilaJump
@@ -569,22 +565,29 @@ class CalcParser(Parser):
 
     @_('')
     def from_suma(self, p):
-        m = self.dataTable.getAdressVar(self.pilaForOp.top(),self.currentFunc)
-        self.pilaOper.push(self.pilaForOp.top())
-        self.pilaType.push('int')
-        self.pilaMemoria.push(m)
-        self.pilaDimGlob.push([])
+        controlVar = self.pilaForOp.pop()
+        m = self.dataTable.getAdressVar(controlVar,self.currentFunc)
+        
+        #push controlVar for addition
+        pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDimGlob, controlVar, 'int', m,[])
+
+        #push controlVar for assigning result
+        pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDimGlob, controlVar, 'int', m,[])
+        
+        #push add
+        self.pilaOp.push('+')
+
+        #get +1, and push it
         memConst = 0
         if self.constTable.existVar(1):
             memConst = self.constTable.getAdress(1)
         else:
             memConst = self.memoryManager.get(MEM['CONST']['INT'],1)
             self.constTable.insert(1,'int', memConst)
-        self.pilaOper.push(1)
-        self.pilaType.push('int')
-        self.pilaOp.push('+')
-        self.pilaMemoria.push(memConst)
-        self.pilaDimGlob.push([])
+
+        pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDimGlob, 1, 'int', memConst,[])
+
+        #add controlVar + 1
         normalQuad(
             self.pilaOp,
             self.pilaOper, 
@@ -598,17 +601,9 @@ class CalcParser(Parser):
             self.memoryManager,
             self.memScope
         )
-        #aqui esta el error creo
-        m = self.dataTable.getAdressVar(self.pilaForOp.top(),self.currentFunc)
-        self.pilaOper.push(self.pilaForOp.pop())
-        self.pilaType.push('int')
-        self.pilaMemoria.push(m)
-        self.pilaDimGlob.push([])
-        self.pilaOper.push('t'+str(self.tempVar))
-        self.pilaType.push('int')
+        
         self.pilaOp.push('=')
-        self.pilaMemoria.push(self.memoryManager.get(MEM[self.memScope]["TEMP"]["INT"]))
-        self.pilaDimGlob.push([])
+
         assignQuad(
             self.pilaOp,
             self.pilaOper,

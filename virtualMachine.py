@@ -169,6 +169,8 @@ class VirtualMachine():
             func = switch.get(quadInstruction[0], "END")
             func(quadInstruction)
             quadInstruction = self.quad.get(self.currentCounter)
+            #print("MEMORIA")
+            #self.currentMem.print()
             
 #   IO ACTIONS     ########################################################################
 
