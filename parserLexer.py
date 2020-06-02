@@ -160,10 +160,7 @@ class CalcParser(Parser):
     @_('PROGRAM ID set_global ";" programa2 programa3 PRINCIPAL set_principal_quad "(" ")" bloque')
     def programa(self, p):
         self.quad.add("END",None,None, None)
-        # print("end:")
-        # self.pilaOper.print()
-        # self.pilaDimGlob.print()
-    
+        
     #embedded action
     @_('')
     def set_global(self, p):
@@ -319,9 +316,6 @@ class CalcParser(Parser):
     def asignacion_insert_var(self, p):
         t = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
         m = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
-        #guess this works but not completly sure
-        # d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.currentId)
-
         pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDimGlob, self.currentId, t, m,self.pilaDimGlob.top())
         self.pilaOp.push("=")
         
@@ -383,7 +377,6 @@ class CalcParser(Parser):
         pass
 
     #escritura
-    
     @_('PRINT "(" escritura2 ")" ";"')
     def escritura(self, p):
         printQuad('\\n', self.quad)
@@ -666,19 +659,13 @@ class CalcParser(Parser):
     @_('ID dim_push identificadores2')
     def identificadores(self, p):
         self.currentId = p.ID
-        
-        # if self.dataTable.getTable(self.currentFunc).hasDimNoErr(p.ID) and not self.pilaIsArray.top():
-        # print('var:' + str(p.ID) + ' has dimetions:' +str(self.dataTable.getTable(self.currentFunc).getDimentions(p.ID)))
-        #     idWithoutDim(p.ID)
-
         pastId = self.currentId
         mem = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
         type = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
         dime = self.dataTable.getTable(self.currentFunc).getDimentions(p.ID)
         d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.currentId)
-        # print("donde creo que consige el dato erroneo:" +str(d))
-        #badAid is + or - save111
         isArray = self.pilaIsArray.pop()
+        
         if not self.badAid.isdigit() and self.pilaOper.top() != '(' and not isArray :
             if(dime==0):
                 memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"][type.upper()],1)
@@ -726,7 +713,6 @@ class CalcParser(Parser):
         pass
 
     # embedded actions
-    
     #add dim to stack and dim Count
     @_('')
     def dim_push(self, p):
@@ -1304,19 +1290,7 @@ class CalcParser(Parser):
         self.isConst = True
         if not self.badAid.isdigit():
             cantAssign(self.badAid, "'" + pastId + "'")
-            '''
-            self.quad.add(
-                        self.badAid,
-                        self.currentId,
-                        None,
-                        't' + str(self.tempVar)
-                    )
-            self.badAid= '0'
-            mem = self.memoryManager.get(MEM[self.memScope]['CHAR'],1)
-            self.currentId= 't' + str(self.tempVar)
-            self.tempVar = self.tempVar + 1
-            self.isConst = False
-            '''
+            
         pushOperandType(
             self.pilaOper,
             self.pilaType,
