@@ -4,12 +4,14 @@ from memoryConstants import *
 
 test= False
 
+#Function that pushes information to difrent stacks
 def pushOperandType(operSt, typeSt, memSt, dimSt, oper, type, mem,d):
     operSt.push(oper)
     typeSt.push(type)
     memSt.push(mem)
     dimSt.push(d)
     
+#Function that pases info from stacks to quads "normal stands for normal mathematical operation into a temporal value"
 def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, currentFunc, memoryManager, memScope):
     op = opSt.pop()
     r = operSt.pop()
@@ -41,6 +43,8 @@ def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, curren
     memSt.push(mem)
     dimSt.push(ldim)
 
+#Function that pases info from stacks to quads
+#This function does it specificaly to assign "="
 def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad):
     op = opSt.pop()
     r = operSt.pop()
@@ -66,6 +70,8 @@ def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad)
         quad.add(op, rm, None, lm)
 
 
+#Function that pases info from stacks to quads
+#This function was never used
 def singeOpQuad(opSt, operSt, memSt, quad, temp):
     op = opSt.pop()
     r = operSt.pop()
@@ -73,6 +79,9 @@ def singeOpQuad(opSt, operSt, memSt, quad, temp):
     
     quad.add(op, rm, None, temp)
 
+
+#Function that pases info from stacks to quads
+#This insertes the gotof (goto on false) quad used in loops 
 def gotoFQuad(operSt, typeSt, jumpSt, memSt, dimSt, quad):
     boolType = typeSt.pop()
 
@@ -90,11 +99,14 @@ def gotoFQuad(operSt, typeSt, jumpSt, memSt, dimSt, quad):
     else:
         quad.add("GOTOF", m, None, None)
     
-    
+
+#This fills the gotof quads
 def fillGotoFQuad(quad, jumpSt):
     index = jumpSt.pop()
     quad.update(index, quad.getCount())
 
+#This inserts the GOTO quad 
+#used in while, for and while
 def gotoQuad(quad, jumpSt):
     #add goto
     indexGOTO = quad.getCount()
@@ -106,15 +118,21 @@ def gotoQuad(quad, jumpSt):
     #push goto index
     jumpSt.push(indexGOTO)
 
+#This inserts the GOTO quad 
+#used in the start of the stack
 def gotoSimpleQuad(quad, jumpSt):
     jumpSt.push(quad.getCount())
     quad.add("GOTO", None, None, None)
-    
+
+
+#Fills goto quad
 def fillGotoQuad(quad, jumpSt):
     index = jumpSt.pop()
     quad.update(index, jumpSt.pop())
 
 
+#This inserts the GOTO quad 
+#Unused
 def gotoQuadFor(quad, jumpSt):
     #add goto
     indexGOTO = quad.getCount()
@@ -126,9 +144,11 @@ def gotoQuadFor(quad, jumpSt):
     #push goto index
     jumpSt.push(indexGOTO)
 
+#Basic printing quad used in all prints
 def printQuad(toPrint, quad):
     quad.add('PRINT',toPrint,None,None)
 
+#Inserts the return into quad used only on the return function
 def returnQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad):
     operType = typeSt.pop()
     funcType = dataTable.getType(func)
@@ -141,6 +161,8 @@ def returnQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad):
     if not test:
         quad.add("RETURN", None, None, memSt.pop())
 
+#??????????
+#used in param_call
 def paramQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad, paramCounter):
     params = dataTable.getParams(func)
     operType = typeSt.pop()

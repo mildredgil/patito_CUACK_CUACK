@@ -417,6 +417,9 @@ class CalcParser(Parser):
     def print_quad1(self, p):
         oper = self.pilaOper.pop()
         m = self.pilaMemoria.pop()
+        if(self.pilaDimGlob.top()!=[]):
+            raise Exception("{} is an array.Cannot be printed.".format(oper))
+
         d = self.pilaDimGlob.pop()
         if test:
             printQuad(oper, self.quad)
@@ -671,7 +674,8 @@ class CalcParser(Parser):
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
             self.dataTable.addNumLocals(self.currentFunc)
         
-    # identificadores con dimension save001
+    #CODE ID1
+    # identificadores con dimension
     @_('ID dim_push identificadores2')
     def identificadores(self, p):
         self.currentId = p.ID
@@ -724,12 +728,14 @@ class CalcParser(Parser):
                 mem,
                 [])
 
+    #CODE: ID2
+    #This part of identifiers checks for dimentions and stores them
     @_('"[" dim_cor_start exp "]" dim_cor_end dimGenQuad identificadores2')
     def identificadores2(self, p):
         pass
 
-    # embedded actions
     #add dim to stack and dim Count
+    #used on ID1
     @_('')
     def dim_push(self, p):
         self.pilaDim.push(p[-1])
@@ -737,6 +743,7 @@ class CalcParser(Parser):
         self.pilaIsArray.push(False)
 
     #update dim 
+    #used on ID2
     @_('')
     def dim_cor_start(self, p):
         #verify id has dim
@@ -751,7 +758,8 @@ class CalcParser(Parser):
         self.pilaDimCount.push(dimCount + 1)
         self.pilaOp.push(p[-1])
 
-    #resolve exp
+    #resolve exp 
+    #used on ID2
     @_('')
     def dim_cor_end(self, p):
         expQuads(
@@ -770,7 +778,8 @@ class CalcParser(Parser):
             )
         self.tempVar = self.tempVar + 1
     
-    #create verify quad, and add mi quad
+    #create verify quad, and add mi quad 
+    #used on ID2
     @_('')
     def dimGenQuad(self, p):
         var = self.pilaDim.top()
