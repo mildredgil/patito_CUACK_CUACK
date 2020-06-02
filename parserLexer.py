@@ -14,6 +14,8 @@ from memoryConstants import *
 
 test = False
 
+#This class is part of SLY here we declare all of our token, literals, error handling on the lexer side. 
+#This is only used on main to run the lexer.
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
     tokens = { 
@@ -26,6 +28,7 @@ class CalcLexer(Lexer):
         PLUS, MINUS, TIMES, DIVIDE, ASSIGN,
         EQ, LT, GT, NE, ELT, EGT, AND, OR, TRANSPOSE, INVERSE, DETERMINANT }
 
+    #Literals are accepted as is by the lexer
     literals = { '[', ']','(', ')', '{', '}', ';', ':', ',', '.'}
 
     # String containing ignored characters
@@ -49,6 +52,8 @@ class CalcLexer(Lexer):
     INVERSE     = r'\$'
     DETERMINANT = r'\?'
     
+    #regex to represent spesific things
+
     @_(r'[0-9]+\.[0-9]+')
     def FLOATNUMBER(self, t):
         t.value = float(t.value)
@@ -97,6 +102,7 @@ class CalcLexer(Lexer):
     def ignore_newline(self, t):
         self.lineno += t.value.count('\n')
 
+    #lexer errors.
     def error(self, t):
         print('Line %d: Bad character %r' % (self.lineno, t.value[0]))
         self.index += 1
@@ -105,9 +111,13 @@ class CalcLexer(Lexer):
         for tok in self.tokenize(data):
             print(tok)
 
+#This class is also part of SLY this runs the configuration of the parser. 
+#We declare all of the structures, neural points of the parser and also error handling of the parser here. 
+#This is only used on main to run de parser.
 class CalcParser(Parser):
-    # Get the token list from the lexer (required)
+    #debug file for testing purposes
     debugfile = 'parser.out'
+    # Get the token list from the lexer (required)
     tokens = CalcLexer.tokens
     
     def printTokens(self):
@@ -118,6 +128,7 @@ class CalcParser(Parser):
         ('left', PLUS, MINUS),
     )
 
+    #initializes all of the global memories
     def __init__(self):
         self.dataTable = DirFunc()
         self.constTable = VarTable()
@@ -155,12 +166,16 @@ class CalcParser(Parser):
         self.dimR = 1
         self.isArray = False
         
+
+
+    #The descriptors on ALL of the following methods are used to tell the parser what to expect
+    #Tells the parser the structure of the program, also inserts the last quad.
     #PROGRAMA
     @_('PROGRAM ID set_global ";" programa2 programa3 PRINCIPAL set_principal_quad "(" ")" bloque')
     def programa(self, p):
         self.quad.add("END",None,None, None)
         
-    #embedded action
+    # Inserts global var table
     @_('')
     def set_global(self, p):
         self.dataTable.insert("global", "void")
@@ -168,7 +183,7 @@ class CalcParser(Parser):
         self.currentFunc = "global"
         gotoSimpleQuad(self.quad, self.pilaJump)
 
-    #embedded action
+
     @_('')
     def set_principal_quad(self, p):
         self.memScope = "GLOBAL"
@@ -221,6 +236,7 @@ class CalcParser(Parser):
         pass
 
     # FUNCION
+    #Detects the function at the end inserts the final quad of the funcitons
     @_('FUNCTION funcion2 ID save_id parametros funcion2 bloque')
     def funcion(self, p):
         self.quad.add("ENDPROC", None, None, None)
@@ -400,6 +416,9 @@ class CalcParser(Parser):
     def print_quad1(self, p):
         oper = self.pilaOper.pop()
         m = self.pilaMemoria.pop()
+        if(self.pilaDimGlob.top()!=[]):
+            raise Exception("{} is an array.Cannot be printed.".format(oper))
+
         d = self.pilaDimGlob.pop()
         if test:
             printQuad(oper, self.quad)
@@ -652,7 +671,8 @@ class CalcParser(Parser):
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
             self.dataTable.addNumLocals(self.currentFunc)
         
-    # identificadores con dimension save001
+    #CODE ID1
+    # identificadores con dimension
     @_('ID dim_push identificadores2')
     def identificadores(self, p):   
         self.currentId = p.ID
@@ -714,12 +734,15 @@ class CalcParser(Parser):
         self.pilaOper.print()
         print("PILASSSSSSSSSSSSSSSSSS 3")
         
+
+    #CODE: ID2
+    #This part of identifiers checks for dimentions and stores them
     @_('"[" dim_cor_start exp "]" dim_cor_end dimGenQuad identificadores2')
     def identificadores2(self, p):
         pass
 
-    # embedded actions
     #add dim to stack and dim Count
+    #used on ID1
     @_('')
     def dim_push(self, p):
         self.pilaDim.push(p[-1])
@@ -727,6 +750,7 @@ class CalcParser(Parser):
         self.pilaIsArray.push(False)
 
     #update dim 
+    #used on ID2
     @_('')
     def dim_cor_start(self, p):
         #verify id has dim
@@ -741,7 +765,8 @@ class CalcParser(Parser):
         self.pilaDimCount.push(dimCount + 1)
         self.pilaOp.push(p[-1])
 
-    #resolve exp
+    #resolve exp 
+    #used on ID2
     @_('')
     def dim_cor_end(self, p):
         expQuads(
@@ -760,7 +785,8 @@ class CalcParser(Parser):
             )
         self.tempVar = self.tempVar + 1
     
-    #create verify quad, and add mi quad
+    #create verify quad, and add mi quad 
+    #used on ID2
     @_('')
     def dimGenQuad(self, p):
         var = self.pilaDim.top()

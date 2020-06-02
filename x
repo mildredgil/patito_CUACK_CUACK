@@ -5,4 +5,5 @@ var ent arr[10], b;
   {
     arr[2] = arr[1]+arr[1];
     b = arr[1];
+    escribe("aver",arr[1]);
   }
