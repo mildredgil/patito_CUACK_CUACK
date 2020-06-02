@@ -1,0 +1,13 @@
+programa patito;
+var ent a, arr[11][8];
+  
+  principal () {
+    arr[3][4] =  -5;
+    a = arr[3][4];
+    escribe(arr[3][4]);
+  }
+
+  #add error:
+  # escribe(arr); -> No dimensions found
+  # arr[b] -> b is not of type ENT
+  # arr[1][1][1] -> Number of dimensions miss match

@@ -27,7 +27,7 @@ class DirFunc():
         else:
             notExist(funcName)
 
-    def getAdress(self, funcName='global'):
+    def getAddress(self, funcName='global'):
         if self.exist(self.table, funcName):
             return self.table[funcName]["adress"]
         else:

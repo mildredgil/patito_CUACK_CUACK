@@ -1,10 +1,25 @@
 programa patito;
-var ent arr[10], b;
+var ent v, arr[10], mat[4][4], cubo[3][3][3];
   
   principal ()
   {
-    arr[1] = 1;
+    escribe("1 dimension:");
+    arr[1] = 8;
     arr[2] = 2;
-    b = arr[1];
-    escribe(arr[1],arr[2]);
+    arr[3] = arr[1] + arr[2];
+    escribe("arr[3] =",arr[3]);
+
+    escribe("2 dimension:");
+    mat[0][0] = -10;
+    mat[1][1] = 1;
+    mat[2][2] = mat[0][0] + mat[1][1];
+    escribe("mat[2][2] =",mat[2][2]);
+
+    escribe("3 dimension:");
+    cubo[0][0][0] = -10;
+    cubo[1][1][1] = 1;
+    cubo[2][2][2] = cubo[0][0][0] + cubo[1][1][1];
+    escribe("cubo[2][2][2] =",cubo[2][2][2]);
+
+    escribe("sumando arr mat cubo index 1 :", arr[1] + mat[1][1] + cubo[1][1][1]);
   }

@@ -79,7 +79,7 @@ PRINT,8,_,_
 PRINT,\n,_,_
 END,_,_,_
 #DIRFUNC
-global,void,,-1,11
+global,void,,-1,-1,11
 #CONST
 10,200000
 12,200001

@@ -50,6 +50,12 @@ def idWithoutDim(var):
 def dimErr(var):
     raise Exception("{} is missing array dimensions".format(var))
 
+def dimMismatch(r,rdim,l,ldim):
+    raise Exception("Los operadores {} y {} no tienen las mismas dimensiones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
+
+def varNotArray(id):
+    raise Exception("Variable {} is not an array.".format(id))
+
 #Runtime Errors
 def notDefined(scope):
-    raise Exception("A variable wasn't initialized in {}.".format(scope))
+    raise Exception("RUNTIME ERROR: A variable wasn't initialized in {}.".format(scope))

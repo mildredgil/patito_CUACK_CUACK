@@ -35,15 +35,15 @@ class CurrentMemory():
             return self.memory[CONST].value(memory)
     
     def print(self, scope=None):
-        if scope:
-            print(scope, self.memory[scope].memory)
+        if scope != None: 
+            print(scope, self.memory[scope].memory,'\n')
         else:
             print("GLOBAL", self.memory[GLOBAL].memory)
 
             if self.memory[LOCAL]:
                 print("LOCAL", self.memory[LOCAL].memory)
 
-            print("CONST", self.memory[CONST].memory)
+            print("CONST", self.memory[CONST].memory, '\n')
         
 class Memory(): 
     def __init__(self,scope):
@@ -64,9 +64,19 @@ class Memory():
             value = str(val)
         else:
             value = val
-        
-        self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ] = value
- 
+
+        if MEM_INFO[memType][ISPOINTER] == POINTER:
+            try:
+                #check if something is in this same memory
+                v = self.value(memory)
+                #set value in new address
+                self.insert(v, value)
+            except:
+                #set the value, cause is the first time in this memory
+                self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ] = value
+        else:
+            self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ] = value
+
     def value(self, memory):
         memType = memory // 10000
         memPos = memory % 10000
@@ -75,7 +85,14 @@ class Memory():
             notDefined("function")
         
         value = self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ]
-        return value
+
+        if MEM_INFO[memType][ISPOINTER] == POINTER:
+            try:
+                return self.value(value)
+            except:
+                return value
+        else:
+            return value
 
     def print(self):
         print(self.memory)
@@ -129,12 +146,8 @@ class VirtualMachine():
                         else:
                             self.currentMem.insert(int(row['2']),row['1'])
                         
-        self.quad.print()
-        print("-------------")
-        self.dirFunc.print()
-        print("-------------")
-        print(self.currentMem.memory[GLOBAL].memory)
-        print(self.currentMem.memory[CONST].memory)
+        #print("global",self.currentMem.memory[GLOBAL].memory)
+        #print("const",self.currentMem.memory[CONST].memory)
         #print currentMem
         
     def execute(self):
@@ -170,7 +183,6 @@ class VirtualMachine():
             func(quadInstruction)
             quadInstruction = self.quad.get(self.currentCounter)
             #print("MEMORIA")
-            #self.currentMem.print()
             
 #   IO ACTIONS     ########################################################################
 
@@ -311,7 +323,7 @@ class VirtualMachine():
 
     def returnAction(self, quad):
         nameFunc = self.pilaFunc.pop()
-        mem = self.dirFunc.getAdressVar(nameFunc,"global")
+        mem = self.dirFunc.getAddressVar(nameFunc,"global")
 
         self.currentMem.insert(int(mem), self.currentMem.value(int(quad[3])))
         self.setCounter(self.currentCounter + 1)

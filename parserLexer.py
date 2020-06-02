@@ -120,7 +120,7 @@ class CalcParser(Parser):
 
     def __init__(self):
         self.dataTable = DirFunc()
-        self.constTable = VarTable(None)
+        self.constTable = VarTable()
         self.pilaOp = stack.Stack()
         self.pilaOper = stack.Stack()
         self.pilaType = stack.Stack()
@@ -128,7 +128,6 @@ class CalcParser(Parser):
         self.pilaDimGlob = stack.Stack()
         self.pilaJump = stack.Stack()
         self.pilaForOp = stack.Stack()
-        self.pilaForGo = stack.Stack()
         
         self.pilaCallId = stack.Stack()
         self.pilaparamCount = stack.Stack()
@@ -144,12 +143,12 @@ class CalcParser(Parser):
 
         self.currentId = None
         self.currentType = None
+        self.currentMem = None
         self.currentFunc = None
         self.currentDim = None
         self.globalFunc = None
 
         self.memScope = "GLOBAL"
-        self.currentMemory = -1
         self.memoryManager = MemoryManager()
 
         self.dim = 0
@@ -256,7 +255,6 @@ class CalcParser(Parser):
         self.currentType = 'void'
 
     # PARAMETROS
-    
     @_('"(" parametros2 ")"')
     def parametros(self, p):
         pass
@@ -269,6 +267,7 @@ class CalcParser(Parser):
     def param(self, p):
         self.currentId = p[-1]
         mem = self.memoryManager.get(MEM[self.memScope][p[-2].upper()],1)
+        self.currentMem = mem
         self.dataTable.getTable(self.currentFunc).insert(p[-1],p[-2],mem)
         self.dataTable.insertParam(self.currentFunc, p[-2][0])
         
@@ -281,7 +280,6 @@ class CalcParser(Parser):
         pass
 
     #BLOQUE
-
     @_('"{" bloque2 "}"')
     def bloque(self, p):
         pass
@@ -294,7 +292,7 @@ class CalcParser(Parser):
     def bloque2(self, p):
         pass
 
-    #estatuto
+    #ESTATUTO
     @_('asignacion',
         'escritura',
         'lee',
@@ -306,7 +304,7 @@ class CalcParser(Parser):
     def estatuto(self, p):
         pass
 
-    #assignacion
+    #ASIGNACION
     @_('identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ";"')
     def asignacion(self, p):
         pass
@@ -315,7 +313,10 @@ class CalcParser(Parser):
     @_('')
     def asignacion_insert_var(self, p):
         t = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
-        m = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
+        
+        #m = self.dataTable.getAddressVar(self.currentId,self.currentFunc)
+        m = self.currentMem
+        print("------------------------------MEMORIAS m =", m, "currnetMem", self.currentMem)
         pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDimGlob, self.currentId, t, m,self.pilaDimGlob.top())
         self.pilaOp.push("=")
         
@@ -324,8 +325,6 @@ class CalcParser(Parser):
     @_('')
     def asignacion_pop_all(self, p):
         while self.pilaOp.length() > 0:
-            self.pilaDimGlob.print()
-            self.pilaOper.print()
             if self.pilaOp.top() != "=":
                 normalQuad(
                     self.pilaOp,
@@ -365,7 +364,7 @@ class CalcParser(Parser):
     @_('')
     def lee_quad(self, p):
         if self.dataTable.existVar(self.currentId, self.currentFunc):
-            mem = self.dataTable.getAdressVar(self.currentId, self.currentFunc)
+            mem = self.dataTable.getAddressVar(self.currentId, self.currentFunc)
             self.quad.add("READ", None, None, mem)
 
     @_('"," lee2')
@@ -410,7 +409,7 @@ class CalcParser(Parser):
     @_('')
     def print_quad2(self, p):
         if self.constTable.existVar(p[-1]):
-            memo = self.constTable.getAdress(p[-1])
+            memo = self.constTable.getAddress(p[-1])
         else: 
             memo = self.memoryManager.get(MEM["CONST"]["STRING"],1)
             self.constTable.insert(p[-1],"string",memo)
@@ -502,7 +501,6 @@ class CalcParser(Parser):
     #embeded action
     @_('')
     def from_assign(self, p):
-        self.pilaOper.print()
         assignQuad(
                 self.pilaOp,
                 self.pilaOper, 
@@ -512,13 +510,12 @@ class CalcParser(Parser):
                 self.dataTable,
                 self.currentFunc,
                 self.quad)
-        self.pilaOper.print()
         
     #embeded action
     @_('')
     def from_gotF(self, p):
-        m = self.dataTable.getAdressVar(self.pilaForOp.top(),self.currentFunc)
-        d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.pilaForOp.top())
+        m = self.dataTable.getAddressVar(self.pilaForOp.top(),self.currentFunc)
+        d = self.dataTable.getTable(self.currentFunc).getCompleteDimentions(self.pilaForOp.top())
         self.pilaOper.push(self.pilaForOp.top())
         self.pilaOp.push('>=')
         self.pilaType.push('int')
@@ -559,7 +556,7 @@ class CalcParser(Parser):
     @_('')
     def from_suma(self, p):
         controlVar = self.pilaForOp.pop()
-        m = self.dataTable.getAdressVar(controlVar,self.currentFunc)
+        m = self.dataTable.getAddressVar(controlVar,self.currentFunc)
         
         #push controlVar for addition
         pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDimGlob, controlVar, 'int', m,[])
@@ -573,7 +570,7 @@ class CalcParser(Parser):
         #get +1, and push it
         memConst = 0
         if self.constTable.existVar(1):
-            memConst = self.constTable.getAdress(1)
+            memConst = self.constTable.getAddress(1)
         else:
             memConst = self.memoryManager.get(MEM['CONST']['INT'],1)
             self.constTable.insert(1,'int', memConst)
@@ -629,7 +626,7 @@ class CalcParser(Parser):
     def arraySetArray(self, p):
         if not self.dataTable.getTable(self.currentFunc).existVar(self.currentId):
             mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()])
-            print("mem es: {}".format(mem))
+            self.currentMem = mem
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
             self.dataTable.addNumLocals(self.currentFunc)
         
@@ -657,34 +654,34 @@ class CalcParser(Parser):
         
     # identificadores con dimension save001
     @_('ID dim_push identificadores2')
-    def identificadores(self, p):
+    def identificadores(self, p):   
         self.currentId = p.ID
         pastId = self.currentId
-        mem = self.dataTable.getAdressVar(self.currentId,self.currentFunc)
+        mem = self.dataTable.getAddressVar(self.currentId,self.currentFunc)
         type = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
-        dime = self.dataTable.getTable(self.currentFunc).getDimentions(p.ID)
-        d = self.dataTable.getTable(self.currentFunc).geCompletetDimentions(self.currentId)
+        d = self.dataTable.getTable(self.currentFunc).getCompleteDimentions(self.currentId)
         isArray = self.pilaIsArray.pop()
+
+        #dime = self.dataTable.getTable(self.currentFunc).getDimentions(p.ID)
         
         if not self.badAid.isdigit() and self.pilaOper.top() != '(' and not isArray :
-            if(dime==0):
-                memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"][type.upper()],1)
-                if test:
-                    self.quad.add(self.badAid,self.currentId,None,temp)
-                else:
-                    self.quad.add(self.badAid,mem,None,memTemp)
-
+            memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"][type.upper()],1)
+            if test:
+                self.quad.add(self.badAid,self.currentId,None,temp)
+            else:
+                self.quad.add(self.badAid,mem,None,memTemp)
+            '''
             else:
                 memTemp = self.memoryManager.get(MEM[self.memScope]["TEMP"][type.upper()],1)
                 self.memoryManager.setNext(MEM[self.memScope]["TEMP"][self.currentType.upper()],self.dataTable.getTable(self.currentFunc).getDimR(self.pilaOper.top()))
-            
+            '''
             temp = 't' + str(self.tempVar)
             
-
             self.badAid= '0'
             self.currentId= temp
             self.tempVar = self.tempVar + 1
             mem = memTemp
+            self.currentMem = mem
 
         if not isArray:
             pushOperandType(
@@ -696,8 +693,10 @@ class CalcParser(Parser):
                 self.dataTable.getTypeVar(pastId, self.currentFunc),
                 mem,
                 d)
+            self.currentMem = mem
         else:
             #falta
+            '''
             pushOperandType(
                 self.pilaOper, 
                 self.pilaType,
@@ -707,7 +706,14 @@ class CalcParser(Parser):
                 self.dataTable.getTypeVar(pastId, self.currentFunc),
                 mem,
                 [])
-
+            '''
+        print("PILASSSSSSSSSSSSSSSSSS 3")
+        print(pastId)
+        self.quad.print()
+        self.pilaMemoria.print()
+        self.pilaOper.print()
+        print("PILASSSSSSSSSSSSSSSSSS 3")
+        
     @_('"[" dim_cor_start exp "]" dim_cor_end dimGenQuad identificadores2')
     def identificadores2(self, p):
         pass
@@ -762,7 +768,7 @@ class CalcParser(Parser):
         limCte = self.dataTable.getTable(self.currentFunc).dimGetLim(var,dim)
 
         if self.constTable.existVar(limCte):
-            mem = self.constTable.getAdress(limCte)
+            mem = self.constTable.getAddress(limCte)
         else:
             mem = self.memoryManager.get(MEM['CONST']['INT'],1)
             self.constTable.insert(limCte,'int', mem)
@@ -774,9 +780,8 @@ class CalcParser(Parser):
 
         if self.dataTable.getTable(self.currentFunc).isNextDim(var, dim):
             miCte = self.dataTable.getTable(self.currentFunc).dimGetMi(var, dim)
-
             if self.constTable.existVar(miCte):
-                mi = self.constTable.getAdress(miCte)
+                mi = self.constTable.getAddress(miCte)
             else:
                 mi = self.memoryManager.get(MEM['CONST']['INT'],1)
                 self.constTable.insert(miCte,'int', mi)
@@ -811,11 +816,11 @@ class CalcParser(Parser):
     def identificadores2(self, p):
         if self.pilaIsArray.top():
             var = self.pilaDim.top()
-            addBaseCte = self.dataTable.getTable(self.currentFunc).getAdress(var)
+            addBaseCte = self.dataTable.getTable(self.currentFunc).getAddress(var)
             varType = self.dataTable.getTypeVar(var, self.currentFunc)
 
             if self.constTable.existVar(addBaseCte):
-                address = self.constTable.getAdress(addBaseCte)
+                address = self.constTable.getAddress(addBaseCte)
             else:
                 address = self.memoryManager.get(MEM['CONST']['INT'],1)
                 self.constTable.insert(addBaseCte,'int', address)
@@ -832,14 +837,17 @@ class CalcParser(Parser):
                 self.memScope,
                 self.quad
                 )
+
+            self.currentMem = self.pilaMemoria.top()
             
+            #Get error if variable is missing dimensions
             if self.dataTable.getTable(self.currentFunc).isNextDim(var, self.pilaDimCount.top()):
                 dimErr(var)
             
             #save13
             if not self.badAid.isdigit():
                 mem = self.memoryManager.get(MEM[self.memScope]['TEMP'][self.pilaType.top().upper()],1)
-                d = self.dataTable.getTable(currentFunc).geCompletetDimentions(var)
+                d = self.dataTable.getTable(currentFunc).getCompleteDimentions(var)
                 self.quad.add(
                             self.badAid,
                             self.pilaMemoria.top(),
@@ -848,11 +856,11 @@ class CalcParser(Parser):
                         )
                 self.badAid= '0'
                 self.currentId= 't' + str(self.tempVar)
+                self.currentMem = mem
                 self.tempVar = self.tempVar + 1
                 self.pilaMemoria.pop()
                 self.pilaMemoria.push(mem)
                 self.pilaDimGlob.push(d)
-
         
         self.pilaDim.pop()
         self.pilaDimCount.pop()
@@ -1100,7 +1108,7 @@ class CalcParser(Parser):
     def opmat(self, p):
         if p.opmat2:
             if(self.dataTable.getTable(self.currentFunc).getDimentions(self.currentId) == 0):
-                raise Exception("Variable {} is not an array.".format(self.currentId))
+                varNotArray(self.currentId)
             else:
                 mem = self.memoryManager.get(MEM[self.memScope]["TEMP"][self.pilaType.top().upper()],1)
                 self.memoryManager.setNext(MEM[self.memScope]["TEMP"][self.currentType.upper()],self.dataTable.getTable(self.currentFunc).getDimR(self.pilaOper.top()))
@@ -1112,6 +1120,7 @@ class CalcParser(Parser):
                         )
                 self.badAid= '0'
                 self.currentId= 't' + str(self.tempVar)
+                self.currentMem = mem
                 self.pilaMemoria.pop()
                 self.pilaMemoria.push(mem)
                 self.tempVar = self.tempVar + 1
@@ -1175,7 +1184,7 @@ class CalcParser(Parser):
         self.quad.add("GOSUB", p.ID, None, None)
         funcType = self.dataTable.getType(self.pilaCallId.top())
         if funcType != 'void':
-            m = self.dataTable.getAdressVar(p.ID, "global")
+            m = self.dataTable.getAddressVar(p.ID, "global")
             #dosent need dimention change nvm it did idiot
             self.pilaDimGlob.push([])
             callAssignQuad(p.ID, funcType, self.tempVar, self.pilaType, self.pilaOper, self.pilaMemoria, m, self.memoryManager, self.memScope, self.quad)
@@ -1192,6 +1201,7 @@ class CalcParser(Parser):
                         )
                 self.badAid= '0'
                 self.currentId= 't' + str(self.tempVar)
+                self.currentMem = mem
                 self.pilaMemoria.pop()
                 self.pilaMemoria.push(mem)
                 self.tempVar = self.tempVar + 1
@@ -1252,7 +1262,7 @@ class CalcParser(Parser):
         memConst = None
         
         if self.constTable.existVar(cte):
-            memConst = self.constTable.getAdress(cte)
+            memConst = self.constTable.getAddress(cte)
         else:
             memConst = self.memoryManager.get(MEM['CONST']['INT'],1)
             self.constTable.insert(cte,'int', memConst)
@@ -1274,35 +1284,29 @@ class CalcParser(Parser):
             
         pushOperandType(self.pilaOper,self.pilaType,self.pilaMemoria,self.pilaDimGlob,pastId,"int",memConst,[])
         self.currentId = pastId
+        self.currentMem = memConst
         self.currentType = "int"
         
     @_('CHARACTER')
     def varcte(self, p):
-        pastId = p[0]
-        mem = None
+        cte = p[0]
+        memConst = None
         
-        if self.constTable.existVar(p[0]):
-            mem = self.constTable.getAdress(p[0])
+        if self.constTable.existVar(cte):
+            memConst = self.constTable.getAddress(cte)
         else:
-            mem = self.memoryManager.get(MEM['CONST']['CHAR'],1)
-            self.constTable.insert(p[0],'char', mem)
+            memConst = self.memoryManager.get(MEM['CONST']['CHAR'],1)
+            self.constTable.insert(cte,'char', memConst)
 
         self.isConst = True
         if not self.badAid.isdigit():
-            cantAssign(self.badAid, "'" + pastId + "'")
+            cantAssign(self.badAid, "'" + cte + "'")
             
-        pushOperandType(
-            self.pilaOper,
-            self.pilaType,
-            self.pilaMemoria,
-            self.pilaDimGlob,
-            pastId,
-            "char",
-            mem,
-            []
-        )
-        self.currentId = pastId
+        pushOperandType(self.pilaOper,self.pilaType,self.pilaMemoria,self.pilaDimGlob,cte,"char",memConst,[])
+        
+        self.currentId = cte
         self.currentType = "char"
+        self.currentMem = memConst
         
     @_('FLOATNUMBER')
     def varcte(self, p):
@@ -1313,7 +1317,7 @@ class CalcParser(Parser):
         memConst = None
 
         if self.constTable.existVar(cte):
-            memConst = self.constTable.getAdress(cte)
+            memConst = self.constTable.getAddress(cte)
         else:
             memConst = self.memoryManager.get(MEM['CONST']['FLOAT'],1)
             self.constTable.insert(cte,'float', memConst)
@@ -1336,6 +1340,7 @@ class CalcParser(Parser):
         pushOperandType(self.pilaOper,self.pilaType,self.pilaMemoria,self.pilaDimGlob,pastId,"float",memConst,[])
         self.currentId = pastId
         self.currentType = "float"
+        self.currentMem = memConst
         
     @_('llamada')
     def varcte(self, p):
@@ -1354,4 +1359,3 @@ class CalcParser(Parser):
         print("quadruple:")
         self.quad.print()
         print(self.constTable.table)
-

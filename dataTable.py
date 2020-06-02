@@ -2,11 +2,8 @@ import json
 from err import *
 
 class VarTable():
-    def __init__(self, table=None):
-        if table is None:
-            self.table = {}
-        else:
-            self.table = table
+    def __init__(self):
+        self.table = {}
 
     def exist(self, a, b):
         return b in a
@@ -14,14 +11,11 @@ class VarTable():
     def existVar(self, var):
         return var in self.table
 
-    def typeMatch(self, var, value):
-        return type(value).__name__ == var['type']
-    
     def insert(self, varName, varType, address=None):
         if(self.exist(self.table, varName)):
             multipleDeclaration(varName)
         else:
-            self.table[varName] = {'type': varType, 'address': address, 'dim': [], 'value': None}
+            self.table[varName] = {'type': varType, 'address': address, 'dim': []}
         
     def dimStoreDimR(self, varName, dimR):
         self.table[varName]["dimR"]=dimR
@@ -59,7 +53,7 @@ class VarTable():
         return len(self.table[varName]["dim"])
 
 
-    def geCompletetDimentions(self, varName):
+    def getCompleteDimentions(self, varName):
         x = []
         for d in self.table[varName]["dim"]:
             x.append(d["lim"])
@@ -81,24 +75,9 @@ class VarTable():
         else:
             notExist(varName)
 
-    def getAdress(self, varName):
+    def getAddress(self, varName):
         if(self.exist(self.table, varName)):
             return self.table[varName]['address']
-        else:
-            notExist(varName)
-
-    def look(self, varName):
-        if(self.exist(self.table, varName)):
-            return self.table[varName]['value']
-        else:
-            notExist(varName)
-
-    def update(self, varName, value):
-        if(self.exist(self.table, varName)):
-            if(self.typeMatch(self.table[varName], value)):
-                self.table[varName]['value'] = value
-            else:
-                missMatchType(self.table[varName]['type'], varName)
         else:
             notExist(varName)
 
@@ -155,15 +134,6 @@ class DirFunc():
         else:
             notExist(funcName)
     
-    def getValueVar(self, varName, funcName):
-        try:
-            return self.table.getTable(funcName).look(varName)
-        except:
-            try: 
-                return self.table.getTable("global").look(varName)
-            except:
-                notExist(funcName)
-
     def getTypeVar(self, varName, funcName):
         try:
             return self.getTable(funcName).getType(varName)
@@ -173,12 +143,12 @@ class DirFunc():
             except:
                 notExist(varName)
 
-    def getAdressVar(self, varName, funcName):
+    def getAddressVar(self, varName, funcName):
         try:
-            return self.getTable(funcName).getAdress(varName)
+            return self.getTable(funcName).getAddress(varName)
         except:
             try: 
-                return self.getTable("global").getAdress(varName)
+                return self.getTable("global").getAddress(varName)
             except:
                 notExist(varName)
 

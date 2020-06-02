@@ -27,7 +27,7 @@ def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, curren
     newVar = "t" + str(temp)
 
     if ldim != rdim:
-        raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
+        dimMismatch(r, rdim, l, ldim)
 
     mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()],1)
 
@@ -114,18 +114,6 @@ def fillGotoQuad(quad, jumpSt):
     index = jumpSt.pop()
     quad.update(index, jumpSt.pop())
 
-
-def gotoQuadFor(quad, jumpSt):
-    #add goto
-    indexGOTO = quad.getCount()
-    quad.add("GOTO", None, None, None)
-    #update gotoF
-    index = jumpSt.pop()
-    quad.update(index, quad.getCount())
-
-    #push goto index
-    jumpSt.push(indexGOTO)
-
 def printQuad(toPrint, quad):
     quad.add('PRINT',toPrint,None,None)
 
@@ -182,7 +170,11 @@ def expQuads(stopOp, pilaOp, pilaOper,  pilaType, pilaMemoria, pilaDim, quad,  t
         tempVar = tempVar + 1
     pilaOp.pop()
 
+# DIMENTIONAL VARIABLES QUADS ######################################################################################
+
+
 def verQuad(operSt, typeSt, memSt, lim, quad):
+    """Creates VER quad for arrays and matrixes"""
     tp = typeSt.top()
     
     if tp != "int":
@@ -195,7 +187,7 @@ def verQuad(operSt, typeSt, memSt, lim, quad):
         quad.add("VER",operV,lim,None)
     else:
         quad.add("VER",m,lim,None)
-
+    
 def miDimQuad(mi, temp, operSt, typeSt, memSt, dimSt, mem, scope, quad):
     oper = operSt.pop()
     t = typeSt.pop()
@@ -243,6 +235,7 @@ def miAddQuad(operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
     dimSt.push([])
 
 def dimAddressQuad(address, varType, operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
+    """add Quad for TEMP POINTER address"""
     l = operSt.pop()
     ml = memSt.pop()
     t = typeSt.pop()
