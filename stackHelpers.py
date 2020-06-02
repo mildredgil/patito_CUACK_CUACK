@@ -162,7 +162,7 @@ def returnQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad):
         quad.add("RETURN", None, None, memSt.pop())
 
 #??????????
-#used in param_call
+#used only in param_call
 def paramQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad, paramCounter):
     params = dataTable.getParams(func)
     operType = typeSt.pop()
@@ -175,16 +175,23 @@ def paramQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad, paramCounter)
     operSt.pop()
     quad.add("PARAM", memSt.pop(), None, "p" + str(paramCounter))
 
+#Inserts the era call into the quad
+#used only in era_call
 def eraQuad(dataTable, func, quad):
     if dataTable.existFunc(func):
         quad.add("ERA", func, None, None)
     else:
         notExist(func)
 
+#Veryfies param length
+#used only in llamada
 def validParamLen(paramCounter, funcParamLen, func):
     if paramCounter != funcParamLen:
         paramCountDif(func, funcParamLen)
 
+
+#Asigns the return value of a function
+#used only in llamada
 def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, address, memoryManager, memScope, quad):
     newVar = "t" + str(temp)
     mem = memoryManager.get(MEM[memScope]['TEMP'][funcType.upper()],1)
@@ -198,12 +205,17 @@ def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, address, mem
     
     memSt.push(mem)
 
+#???
+#used in Identificadores and llamada
 def expQuads(stopOp, pilaOp, pilaOper,  pilaType, pilaMemoria, pilaDim, quad,  tempVar, dataTable, currentFunc, memoryManager, memScope):
     while pilaOp.top() != stopOp:
         normalQuad(pilaOp, pilaOper,  pilaType, pilaMemoria, pilaDim, quad,  tempVar, dataTable, currentFunc, memoryManager, memScope)
         tempVar = tempVar + 1
     pilaOp.pop()
 
+
+#Inserts the VER isntruccion on the quads
+#used only in identificadores2 for arrays
 def verQuad(operSt, typeSt, memSt, lim, quad):
     tp = typeSt.top()
     
@@ -218,7 +230,10 @@ def verQuad(operSt, typeSt, memSt, lim, quad):
     else:
         quad.add("VER",m,lim,None)
 
+#?????????? Helps allign dimentions by doing the mutiplication
+#used only in identificadores2 for arrays
 def miDimQuad(mi, temp, operSt, typeSt, memSt, dimSt, mem, scope, quad):
+    """ test"""
     oper = operSt.pop()
     t = typeSt.pop()
     memO = memSt.pop()
@@ -237,6 +252,8 @@ def miDimQuad(mi, temp, operSt, typeSt, memSt, dimSt, mem, scope, quad):
     #this might be wrong
     dimSt.push([])
 
+#??? Helps calculate the MI of a array
+#used only in identificadores2
 def miAddQuad(operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
     typeSt.pop()
     typeSt.pop()
@@ -264,6 +281,8 @@ def miAddQuad(operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
     memSt.push(tempMem)
     dimSt.push([])
 
+#????? somehting about arrays
+#used only in identificadores2
 def dimAddressQuad(address, varType, operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
     l = operSt.pop()
     ml = memSt.pop()
