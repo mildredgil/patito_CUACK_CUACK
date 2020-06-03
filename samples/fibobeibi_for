@@ -5,7 +5,7 @@ programa patito;
   {
     c=0;
     d=1;
-    desde b = 0 hasta a hacer {
+    desde b = 0 hasta a - 1 hacer {
         escribe(c);
         c=c+d;
         d=c-d;

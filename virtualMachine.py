@@ -17,23 +17,47 @@ class CurrentMemory():
 
     def setLocal(self, local):
         self.memory[LOCAL] = local
-        
-    def insert(self, memory, val):
+    
+    def insertPointer(self, memory, val):
+        if memory < MEM_LOCAL:
+            self.memory[GLOBAL].insertP(memory, val)
+        elif memory < MEM_CONST:
+            self.memory[LOCAL].insertP(memory, val)
+            
+    def insertNormal(self, memory, val):
         if memory < MEM_LOCAL:
             self.memory[GLOBAL].insert(memory, val)
         elif memory < MEM_CONST:
             self.memory[LOCAL].insert(memory, val)
         else:
             self.memory[CONST].insert(memory, val)
-        
+
+    def insert(self, memory, val):
+        if memory[0] == "*":
+            self.insertPointer(int(memory[1:]), val)
+        else:
+            self.insertNormal(int(memory), val)
+    
     def value(self, memory):
+        if memory[0] == "*":
+            return self.valuePointer(int(memory[1:]))
+        else:
+            return self.valueNormal(int(memory))
+
+    def valueNormal(self, memory):
         if memory < MEM_LOCAL:
             return self.memory[GLOBAL].value(memory)
         elif memory < MEM_CONST:
             return self.memory[LOCAL].value(memory)
         else:
             return self.memory[CONST].value(memory)
-    
+
+    def valuePointer(self, memory):
+        if memory < MEM_LOCAL:
+            return self.memory[GLOBAL].valueP(memory)
+        elif memory < MEM_CONST:
+            return self.memory[LOCAL].valueP(memory)
+
     def print(self, scope=None):
         if scope != None: 
             print(scope, self.memory[scope].memory,'\n')
@@ -65,19 +89,37 @@ class Memory():
         else:
             value = val
 
-        if MEM_INFO[memType][ISPOINTER] == POINTER:
-            try:
-                #check if something is in this same memory
-                v = self.value(memory)
-                #set value in new address
-                self.insert(v, value)
-            except:
-                #set the value, cause is the first time in this memory
-                self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ] = value
+        self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ] = value
+
+    def insertP(self, memory, val):
+        memType = memory // 10000
+        memPos = memory % 10000
+
+        if MEM_INFO[memType][TYPE] == INT:
+            value = int(val)
+        elif MEM_INFO[memType][TYPE] == FLOAT:
+            value = float(val)
+        elif MEM_INFO[memType][TYPE] == CHAR:
+            value = str(val)
+        elif MEM_INFO[memType][TYPE] == STRING:
+            value = str(val)
         else:
-            self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ] = value
+            value = val
+
+        self.insert(self.value(memory), value)
 
     def value(self, memory):
+        memory = int(memory)
+        memType = memory // 10000
+        memPos = memory % 10000
+        
+        if not memPos in self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ]:
+            notDefined("function")
+        
+        return self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ]
+
+    def valueP(self, memory):
+        memory = int(memory)
         memType = memory // 10000
         memPos = memory % 10000
         
@@ -85,14 +127,8 @@ class Memory():
             notDefined("function")
         
         value = self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ]
-
-        if MEM_INFO[memType][ISPOINTER] == POINTER:
-            try:
-                return self.value(value)
-            except:
-                return value
-        else:
-            return value
+        return self.value(value)
+            
 
     def print(self):
         print(self.memory)
@@ -142,13 +178,12 @@ class VirtualMachine():
                             self.dirFunc.insert(row['1'],row['2'],None,row['3'],row['4'],row['6'])
                     else:
                         if int(row['2']) < CONST_CHAR:
-                            self.currentMem.insert(int(row['2']),D(row['1']))
+                            self.currentMem.insert(row['2'],D(row['1']))
                         else:
-                            self.currentMem.insert(int(row['2']),row['1'])
-                        
-        #print("global",self.currentMem.memory[GLOBAL].memory)
-        #print("const",self.currentMem.memory[CONST].memory)
-        #print currentMem
+                            self.currentMem.insert(row['2'],row['1'])
+        
+        self.currentMem.print()
+        self.dirFunc.print()
         
     def execute(self):
         quadInstruction = self.quad.get(self.currentCounter)
@@ -179,11 +214,13 @@ class VirtualMachine():
                 "VER":      self.verAction
             }
 
+            #print("#", self.currentCounter, "   ", quadInstruction)
+            #self.currentMem.print()
             func = switch.get(quadInstruction[0], "END")
             func(quadInstruction)
-            quadInstruction = self.quad.get(self.currentCounter)
+            quadInstruction = self.quad.get(int(self.currentCounter))
             #print("MEMORIA")
-            
+        
 #   IO ACTIONS     ########################################################################
 
     def printAction(self, quad):
@@ -192,69 +229,69 @@ class VirtualMachine():
         elif quad[1] == ' ':
             print(' ', end="")
         else:
-            print(self.currentMem.value(int(quad[1])), end ="")
+            print(self.currentMem.value(quad[1]), end ="")
         self.setCounter(self.currentCounter + 1)
 
     def readAction(self, quad):
         valor = input("")
-        self.currentMem.insert(int(quad[3]), valor)
+        self.currentMem.insert(quad[3], valor)
         self.setCounter(self.currentCounter + 1)
 
 #   EXPRESION ACTIONS     ########################################################################
                 
     def addAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) + self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) + self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
 
     def susbtractAction(self, quad):
         if quad[2]:
-            self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) - self.currentMem.value(int(quad[2])))
+            self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) - self.currentMem.value(quad[2]))
         else:
-            self.currentMem.insert(int(quad[3]),  -1 * self.currentMem.value( int( quad[1])) )
+            self.currentMem.insert(quad[3],  -1 * self.currentMem.value( quad[1]) )
         self.setCounter(self.currentCounter + 1)
 
     def timesAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) * self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) * self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
 
     def divideAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) / self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) / self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
 
     def asignAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]))
         self.setCounter(self.currentCounter + 1)
 
     def equalAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) == self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) == self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
 
     def lteAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) <= self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) <= self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
     
     def gteAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) >= self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) >= self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
 
     def diffAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) != self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) != self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
 
     def ltAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) < self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) < self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
     
     def gtAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) > self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) > self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
 
     def andAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) and self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) and self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
 
     def orAction(self, quad):
-        self.currentMem.insert(int(quad[3]), self.currentMem.value(int(quad[1])) or self.currentMem.value(int(quad[2])))
+        self.currentMem.insert(quad[3], self.currentMem.value(quad[1]) or self.currentMem.value(quad[2]))
         self.setCounter(self.currentCounter + 1)
 
 #   JUMP ACTIONS     ########################################################################
@@ -264,7 +301,7 @@ class VirtualMachine():
 
     def gotoFAction(self, quad):
         #evaluate value
-        if self.currentMem.value(int(quad[1])) == "True":
+        if self.currentMem.value(quad[1]) == "True":
             self.setCounter(self.currentCounter + 1)
         else:
             self.setCounter(int(quad[3]))
@@ -296,13 +333,13 @@ class VirtualMachine():
 
         for varType in params:
             if varType == "i":
-                local.insert(intCount, self.currentMem.value(int(aux.pop())))
+                local.insert(intCount, self.currentMem.value(aux.pop()))
                 intCount += 1
             elif varType == "f":
-                local.insert(flCount, self.currentMem.value(int(aux.pop())))
+                local.insert(flCount, self.currentMem.value(aux.pop()))
                 flCount += 1
             elif varType == "c":
-                local.insert(chCount, self.currentMem.value(int(aux.pop())))
+                local.insert(chCount, self.currentMem.value(aux.pop()))
                 chCount += 1
         
         #set local memory to current Memory
@@ -325,13 +362,13 @@ class VirtualMachine():
         nameFunc = self.pilaFunc.pop()
         mem = self.dirFunc.getAddressVar(nameFunc,"global")
 
-        self.currentMem.insert(int(mem), self.currentMem.value(int(quad[3])))
+        self.currentMem.insert(mem, self.currentMem.value(quad[3]))
         self.setCounter(self.currentCounter + 1)
     
 # DIMENSIONED VARIABLES ######################################################################
 
     def verAction(self, quad):
-        if not self.currentMem.value(int(quad[1])) < self.currentMem.value(int(quad[2])):
+        if not self.currentMem.value(quad[1]) < self.currentMem.value(quad[2]):
             outOfRange()
         
         self.setCounter(self.currentCounter + 1)

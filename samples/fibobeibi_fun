@@ -1,18 +1,19 @@
 programa patito;
 
   funcion nada fiboCiclo(ent a, ent b, ent c) {
-    escribe("ciclo a:",a);
-    escribe("ciclo b:",b);
-    escribe("ciclo c:",c);
+    #escribe("ciclo a:",a);
+    #escribe("ciclo b:",b);
+    #escribe("ciclo c:",c);
     si(c>3) {
       fiboCiclo(b, a+b,c-1);
     }
   }
   
   funcion nada fibo(ent a) {
-    escribe("fibo a:",a);
+    #escribe("fibo a:",a);
     fiboCiclo(0,1,a);
   }
+  
   principal ()
   {
     fibo(5);

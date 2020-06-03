@@ -1,5 +1,5 @@
 programa patito;
-var ent v, arr[10], mat[4][4], cubo[3][3][3];
+var ent v, arr[10], mat[4][4], cubo[3][4][5];
   
   principal ()
   {

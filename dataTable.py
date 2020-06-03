@@ -31,8 +31,8 @@ class VarTable():
 
     def dimStoreMi(self, varName, dim, r):
         if dim < len(self.table[varName]["dim"]):
-            mi = r/(self.table[varName]["dim"][dim - 1]['lim'] + 1)
-            self.table[varName]["dim"][dim - 1]['mi'] = mi
+            mi = r/(self.table[varName]["dim"][dim ]['lim'] + 1)
+            self.table[varName]["dim"][dim ]['mi'] = mi
             return mi
         else:
             outOfRange()

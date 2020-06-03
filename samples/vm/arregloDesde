@@ -1,0 +1,12 @@
+programa patito;
+var ent a, b, arr[6];
+  
+principal () {
+    desde a = 0 hasta 5 hacer {
+        arr[a] = a;
+    }
+    
+    desde a = 0 hasta 5 hacer {
+        escribe("[",a,"]",arr[a]);
+    }
+}

@@ -1,0 +1,15 @@
+programa cuakDimensionado;
+var ent i, j, arr[5];
+
+principal () {
+    i = 0;
+    mientras (i < 5) haz {
+        j = 0;
+        mientras( j < 3) haz {
+            arr[i] = j;
+            j = j + 1;
+            escribe(arr[i]);
+        }
+        i = i + 1;
+    }
+}

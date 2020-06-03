@@ -1,0 +1,26 @@
+programa patito;
+var ent a, b, arr[3][3];
+  
+principal () {
+    escribe("estatuto desdeHasta");
+    desde a = 0 hasta 2 hacer {
+        desde b = 0 hasta 2 hacer {
+            arr[a][b] = (a +1) * 7;
+            escribe("[",a,"][ ",b," ] ", (a +1) * 7 ," = ",arr[a][b]);
+            #escribe(arr[a][b]);
+        }
+    }
+    
+    escribe("imprimiendo datos:");
+    desde a = 0 hasta 2 hacer {
+        desde b = 0 hasta 2 hacer {
+            escribe("[",a,"][ ",b," ] ",arr[a][b]);
+            #escribe(arr[a][b]);
+        }
+    }
+}
+
+  #add error:
+  # escribe(arr); -> No dimensions found
+  # arr[b] -> b is not of type ENT
+  # arr[1][1][1] -> Number of dimensions miss match

@@ -1,0 +1,31 @@
+programa patito;
+var ent a, b, arr[5][5];
+  
+principal () {
+    escribe("estatuto mientrasHaz");
+    a = 4;
+    b = 4;
+    mientras (a >= 0)  haz {
+        mientras (b >= 0) haz {
+            escribe("a y b: ",a, " ", b);
+            arr[a][b] = 1;
+            b = b - 1;
+        }
+        a = a - 1;
+    }
+
+    a = 4;
+    b = 4;
+    mientras (a >= 0)  haz {
+        mientras (b >= 0) haz {
+            escribe(arr[a][b]);
+            b = b - 1;
+        }
+        a = a - 1;
+    }
+}
+
+  #add error:
+  # escribe(arr); -> No dimensions found
+  # arr[b] -> b is not of type ENT
+  # arr[1][1][1] -> Number of dimensions miss match    

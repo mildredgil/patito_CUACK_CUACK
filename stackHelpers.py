@@ -292,5 +292,5 @@ def dimAddressQuad(address, varType, operSt, typeSt, memSt, dimSt, temp, mem, sc
 
     operSt.push("(" + newVar + ")")
     typeSt.push(varType)
-    memSt.push(tempMem)
+    memSt.push("*" + str(tempMem))
     dimSt.push([])

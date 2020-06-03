@@ -1,8 +1,10 @@
 programa patito;
-  var ent arr[10], i;
+  var ent arr[10], i, k;
 
-  principal ()
-  {
+  principal () {
+    lee(k);
+    # que encuentre k
+
     arr[0]=0;
     arr[1]=1;
     arr[2]=2;

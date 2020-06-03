@@ -655,6 +655,7 @@ class CalcParser(Parser):
 
         self.dataTable.getTable(self.currentFunc).dimStoreLim(self.currentId, 1, lim)
         self.dimR = (lim + 1 ) * self.dimR
+        print("     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!dimR ", self.dimR)
         self.dataTable.getTable(self.currentFunc).dimStoreDimR(self.currentId,self.dimR)
 
 
@@ -727,12 +728,12 @@ class CalcParser(Parser):
                 mem,
                 [])
             '''
-        print("PILASSSSSSSSSSSSSSSSSS 3")
-        print(pastId)
+        #print("PILASSSSSSSSSSSSSSSSSS 3")
+        #print(pastId)
         self.quad.print()
         self.pilaMemoria.print()
         self.pilaOper.print()
-        print("PILASSSSSSSSSSSSSSSSSS 3")
+        #print("PILASSSSSSSSSSSSSSSSSS 3")
         
 
     #CODE: ID2
@@ -760,7 +761,6 @@ class CalcParser(Parser):
         if not self.pilaIsArray.top():
             self.pilaIsArray.pop()
             self.pilaIsArray.push(True)
-
         dimCount = self.pilaDimCount.top()
         self.pilaDimCount.push(dimCount + 1)
         self.pilaOp.push(p[-1])
@@ -792,7 +792,7 @@ class CalcParser(Parser):
         var = self.pilaDim.top()
         dim = self.pilaDimCount.top()
         limCte = self.dataTable.getTable(self.currentFunc).dimGetLim(var,dim)
-
+        
         if self.constTable.existVar(limCte):
             mem = self.constTable.getAddress(limCte)
         else:
