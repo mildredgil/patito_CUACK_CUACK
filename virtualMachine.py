@@ -140,41 +140,41 @@ class Memory():
     def print(self):
         print(self.memory)
 
-    class MemoryStruct():
-        @classmethod
-        def constStruct(self):
-            const_struct = [
-                [
-                    [{},{},{},{}],      #CONST_NO_TEMP_NO_POINTER
-                ],
-            ]
-            return const_struct
+class MemoryStruct():
+    @classmethod
+    def constStruct(self):
+        const_struct = [
+            [
+                [{},{},{},{}],      #CONST_NO_TEMP_NO_POINTER
+            ],
+        ]
+        return const_struct
 
-        @classmethod
-        def localStruct(self):
-            local_struct = [
-                [
-                    [{},{},{}]          #LOCAL_NO_TEMP_NO_POINTER
-                ],
-                [
-                    [{},{},{},{}],      #LOCAL_TEMP_NO_POINTER
-                    [{},{},{}]          #LOCAL_TEMP_POINTER
-                ],
-            ]
-            return local_struct
+    @classmethod
+    def localStruct(self):
+        local_struct = [
+            [
+                [{},{},{}]          #LOCAL_NO_TEMP_NO_POINTER
+            ],
+            [
+                [{},{},{},{}],      #LOCAL_TEMP_NO_POINTER
+                [{},{},{}]          #LOCAL_TEMP_POINTER
+            ],
+        ]
+        return local_struct
 
-        @classmethod
-        def globalStruct(self):
-            global_struct = [
-                [
-                    [{},{},{}]          #GLOBAL_NO_TEMP_NO_POINTER
-                ],
-                [
-                    [{},{},{},{}],      #GLOBAL_TEMP_NO_POINTER
-                    [{},{},{}]          #GLOBAL_TEMP_POINTER
-                ],
-            ]
-            return global_struct
+    @classmethod
+    def globalStruct(self):
+        global_struct = [
+            [
+                [{},{},{}]          #GLOBAL_NO_TEMP_NO_POINTER
+            ],
+            [
+                [{},{},{},{}],      #GLOBAL_TEMP_NO_POINTER
+                [{},{},{}]          #GLOBAL_TEMP_POINTER
+            ],
+        ]
+        return global_struct
         
 class VirtualMachine():
     def __init__(self, filename):
