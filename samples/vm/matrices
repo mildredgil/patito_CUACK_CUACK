@@ -25,8 +25,8 @@ principal () {
     escribe(arr[2][1]);
     escribe(arr[2][2]);
 
-    c = arr?;
-    escribe(c);
+    a = arr?;
+    escribe(a);
 
     # desde a = 0 hasta 2 hacer {
     #     desde b = 0 hasta 5 hacer {

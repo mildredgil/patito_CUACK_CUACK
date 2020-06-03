@@ -248,6 +248,8 @@ class VirtualMachine():
                 "|":        self.orAction,
                 "&":        self.andAction,
                 "?":        self.determinantAction,
+                "!":        self.transposeAction,
+                "?":        self.determinantAction,
                 "PRINT":    self.printAction,
                 "READ":     self.readAction,
                 "GOTO":     self.gotoAction,
@@ -421,13 +423,13 @@ class VirtualMachine():
     def verAction(self, quad):
         if not self.currentMem.value(quad[1]) < self.currentMem.value(quad[2]):
             outOfRange()
-        
+        self.setCounter(self.currentCounter + 1)
+    
+    def dimAction(self, quad):
+        self.dimList.append(quad[1])
         self.setCounter(self.currentCounter + 1)
 
     def determinantAction(self, quad):
-        print(quad)
-        print(self.dimList)
-        self.currentMem.print()
         startAddress = int(quad[1])
         mat = []
         
@@ -437,18 +439,36 @@ class VirtualMachine():
             size = int(dim) * size
             dimension.append(int(dim))
 
-        print(dimension)
-
         for el in range(startAddress, size + 2):
             mat.append( self.currentMem.value( str(el) ) )
         
         deter = np.linalg.det( np.reshape(mat, tuple(dimension)) )
 
         self.currentMem.insert(quad[3], deter)
-        
-        self.currentMem.print()
         self.setCounter(self.currentCounter + 1)
+        self.dimList = []
 
-    def dimAction(self, quad):
-        self.dimList.append(quad[1])
+    def transposeAction(self, quad):
+        startAddress = int(quad[1])
+        mat = []
+        
+        size = 1
+        dimension = []
+        for dim in self.dimList:
+            size = int(dim) * size
+            dimension.append(int(dim))
+
+        for el in range(startAddress, size + 2):
+            mat.append( self.currentMem.value( str(el) ) )
+        
+        mat = np.transpose( np.reshape(mat, tuple(dimension)) )
+        mat = np.reshape(mat, size)
+        
+        print(mat)
+
+        newStartAddress = int(quad[3])
+        for el in range(newStartAddress, size + 2):
+            mat.append( self.currentMem.value( str(el) ) )
+
         self.setCounter(self.currentCounter + 1)
+        self.dimList = []
