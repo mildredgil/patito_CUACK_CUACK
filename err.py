@@ -1,4 +1,5 @@
 #Semantic Errors
+#All of these functions raise difrent kind of errors
 def notExist(a):
     raise Exception("{} does not exist. Declare it before use it.".format(a))
 
@@ -20,7 +21,7 @@ def paramMissMatch(func, paramType):
                 'f': 'float',
                 'c': 'char',
                 'b': 'bool'
-             }
+            }
     raise Exception("Function {} expecting param of type: {}".format(func, switcher.get(paramType,"Invalid type")))
 
 def cantAssign(op1, op2):

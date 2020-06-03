@@ -107,6 +107,15 @@ class DirFunc():
 
             self.table[funcName] = {'type': funcType, 'table': VarTable(), 'params': params, 'startCounter': startCounter, 'numLocals': numLocals}
 
+    def getCompleteDimentions(self, funcName, varName):
+        try:
+            return self.getTable(funcName).getCompleteDimentions(varName)
+        except:
+            try: 
+                return self.getTable("global").getCompleteDimentions(varName)
+            except:
+                notExist(varName)
+
     def insertParam(self, funcName, param):
         self.table[funcName]['params'] += param
 

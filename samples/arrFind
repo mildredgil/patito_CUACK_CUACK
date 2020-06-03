@@ -11,6 +11,7 @@ programa patito;
     arr[3]=3;
     arr[4]=4;
     arr[5]=5;
+    
     desde i = 0 hasta 6 hacer {
       escribe("estamos en", i, "y vemos", arr[i]);
       si (arr[i] == 0) {

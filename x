@@ -1,9 +1,15 @@
 programa patito;
-var ent arr[10], b;
+var ent a;
   
+funcion ent x(ent b) 
+  {
+    a = 4;
+    regresa(a);
+  }
+
   principal ()
   {
-    arr[2] = arr[1]+arr[1];
-    b = arr[1];
-    escribe("aver",arr[1]);
+    a=3;
+    x(a);
+    escribe(a);
   }

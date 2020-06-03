@@ -9,6 +9,7 @@ def main(filename,argv):
     verbose = False
     justCompile = False
     
+    #first we try to get the difrent aguments from the inline call
     try:
         opts, args = getopt.getopt(argv,"i:vch",["ifile=","verbose","compile","help"])
     except getopt.GetoptError:
@@ -34,10 +35,10 @@ if __name__ == '__main__':
     
     lexer = CalcLexer()
     parser = CalcParser()
-    
     f=open(filename, "r")
     data = f.read()
-    
+
+    # We show difrent information based on difrent needs
     if verbose:
         lexer.printTokens(data)
 

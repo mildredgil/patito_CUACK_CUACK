@@ -1,12 +1,12 @@
 programa patito;
-var ent a, b, arr[3][3];
+var ent a, b, arr[3][3], arr2[5][4];
   
 principal () {
     escribe("estatuto desdeHasta");
     desde a = 0 hasta 2 hacer {
         desde b = 0 hasta 2 hacer {
-            arr[a][b] = (a +1) * 7;
-            escribe("[",a,"][ ",b," ] ", (a +1) * 7 ," = ",arr[a][b]);
+            arr[a][b] = a + b;
+            escribe("[",a,"][ ",b," ] ", a + b ," = ",arr[a][b]);
             #escribe(arr[a][b]);
         }
     }
@@ -18,6 +18,9 @@ principal () {
             #escribe(arr[a][b]);
         }
     }
+
+    a = arr?;
+    escribe("determinante de a: ",a);
 }
 
   #add error:

@@ -4,15 +4,17 @@ from memoryConstants import *
 
 test= False
 
-#Function that pushes information to difrent stacks
+
 def pushOperandType(operSt, typeSt, memSt, dimSt, oper, type, mem,d):
+    """Function that pushes information to difrent stacks"""
     operSt.push(oper)
     typeSt.push(type)
     memSt.push(mem)
     dimSt.push(d)
     
-#Function that pases info from stacks to quads "normal stands for normal mathematical operation into a temporal value"
-def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, currentFunc, memoryManager, memScope):
+
+def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, currentFunc, memoryManager, memScope, constTable):
+    """Function that pases info from stacks to quads "normal stands for normal mathematical operation into a temporal value"""
     op = opSt.pop()
     r = operSt.pop()
     l = operSt.pop()
@@ -30,8 +32,14 @@ def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, curren
 
     if ldim != rdim:
         dimMismatch(r, rdim, l, ldim)
+    
+    dimR=1
 
-    mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()],1)
+    if ldim!=[]:
+        dimR = dataTable.getTable(currentFunc).getDimR(r)
+        dimQuad(r, rdim, memScope, constTable, memoryManager, quad)
+
+    mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()],dimR)
 
     if test:
         quad.add(op, l, r, mem)
@@ -43,9 +51,12 @@ def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, curren
     memSt.push(mem)
     dimSt.push(ldim)
 
-#Function that pases info from stacks to quads
-#This function does it specificaly to assign "="
-def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad):
+
+def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad, memoryManager, memScope, constTable):
+    """
+        Function that pases info from stacks to quads
+        This function does it specificaly to assign "="
+    """
     op = opSt.pop()
     r = operSt.pop()
     l = operSt.pop()
@@ -60,19 +71,24 @@ def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad)
 
             
     if ldim != rdim:
-        raise Exception("Los operadores {} y {} no tienen las mismas dimenciones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
+        raise Exception("Los operadores {} y {} no tienen las mismas dimensiones {} tiene: {} y {} tiene: {}".format(r,l,r,rdim,l,ldim))
 
     _ = TypeMatching.sem(0,rType , op, lType)
     
+    if ldim!=[]:
+        dimQuad(r, ldim, memScope, constTable, memoryManager, quad)
+        
     if test:
         quad.add(op, r, None, l)
     else:
         quad.add(op, rm, None, lm)
 
 
-#Function that pases info from stacks to quads
-#This function was never used
 def singeOpQuad(opSt, operSt, memSt, quad, temp):
+    """
+        Function that pases info from stacks to quads
+        This function was never used
+    """
     op = opSt.pop()
     r = operSt.pop()
     rm = memSt.pop()
@@ -80,9 +96,11 @@ def singeOpQuad(opSt, operSt, memSt, quad, temp):
     quad.add(op, rm, None, temp)
 
 
-#Function that pases info from stacks to quads
-#This insertes the gotof (goto on false) quad used in loops 
 def gotoFQuad(operSt, typeSt, jumpSt, memSt, dimSt, quad):
+    """
+        Function that pases info from stacks to quads
+        This insertes the gotof (goto on false) quad used in loops
+    """
     boolType = typeSt.pop()
 
 
@@ -100,14 +118,19 @@ def gotoFQuad(operSt, typeSt, jumpSt, memSt, dimSt, quad):
         quad.add("GOTOF", m, None, None)
     
 
-#This fills the gotof quads
+
 def fillGotoFQuad(quad, jumpSt):
+    """This fills the gotof quads"""
     index = jumpSt.pop()
     quad.update(index, quad.getCount())
 
-#This inserts the GOTO quad 
-#used in while, for and while
+
+
 def gotoQuad(quad, jumpSt):
+    """
+        This inserts the GOTO quad 
+        used in while, for and while HEY
+    """
     #add goto
     indexGOTO = quad.getCount()
     quad.add("GOTO", None, None, None)
@@ -118,24 +141,28 @@ def gotoQuad(quad, jumpSt):
     #push goto index
     jumpSt.push(indexGOTO)
 
-#This inserts the GOTO quad 
-#used in the start of the stack
 def gotoSimpleQuad(quad, jumpSt):
+    """
+        This inserts the GOTO quad 
+        used in the start of the stack
+    """
     jumpSt.push(quad.getCount())
     quad.add("GOTO", None, None, None)
 
 
-#Fills goto quad
 def fillGotoQuad(quad, jumpSt):
+    """Fills goto quad"""
     index = jumpSt.pop()
     quad.update(index, jumpSt.pop())
 
-#Basic printing quad used in all prints
+
 def printQuad(toPrint, quad):
+    """Basic printing quad used in all prints"""
     quad.add('PRINT',toPrint,None,None)
 
-#Inserts the return into quad used only on the return function
+
 def returnQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad):
+    """Inserts the return into quad used only on the return function"""
     operType = typeSt.pop()
     funcType = dataTable.getType(func)
     dimSt.pop()
@@ -147,9 +174,11 @@ def returnQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad):
     if not test:
         quad.add("RETURN", None, None, memSt.pop())
 
-#??????????
-#used only in param_call
 def paramQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad, paramCounter):
+    """ Call function Quad.
+        Add a PARAM Quad with the parameter
+    """
+
     params = dataTable.getParams(func)
     operType = typeSt.pop()
     dimSt.pop()
@@ -161,24 +190,33 @@ def paramQuad(typeSt, operSt, memSt, dimSt, dataTable, func, quad, paramCounter)
     operSt.pop()
     quad.add("PARAM", memSt.pop(), None, "p" + str(paramCounter))
 
-#Inserts the era call into the quad
-#used only in era_call
+
 def eraQuad(dataTable, func, quad):
+    """
+        Inserts the era call into the quad
+        used only in era_call
+    """
     if dataTable.existFunc(func):
         quad.add("ERA", func, None, None)
     else:
         notExist(func)
 
-#Veryfies param length
-#used only in llamada
+
 def validParamLen(paramCounter, funcParamLen, func):
+    """
+        Veryfies param length
+        used only in llamada
+    """
     if paramCounter != funcParamLen:
         paramCountDif(func, funcParamLen)
 
 
-#Asigns the return value of a function
-#used only in llamada
+
 def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, address, memoryManager, memScope, quad):
+    """
+        Asigns the return value of a function
+        used only in llamada
+    """
     newVar = "t" + str(temp)
     mem = memoryManager.get(MEM[memScope]['TEMP'][funcType.upper()],1)
     
@@ -191,21 +229,25 @@ def callAssignQuad(funcName, funcType, temp, typeSt, operSt, memSt, address, mem
     
     memSt.push(mem)
 
-def expQuads(stopOp, pilaOp, pilaOper,  pilaType, pilaMemoria, pilaDim, quad,  tempVar, dataTable, currentFunc, memoryManager, memScope):
-    """ Help EXP Quads. \n
-        Creates normalQuads until stop operator is at top."""
+def expQuads(stopOp, pilaOp, pilaOper,  pilaType, pilaMemoria, pilaDim, quad,  tempVar, dataTable, currentFunc, memoryManager, memScope, constTable):
+    """ 
+        Help EXP Quads. 
+        Creates normalQuads until stop operator is at top.
+    """
 
     while pilaOp.top() != stopOp:
-        normalQuad(pilaOp, pilaOper,  pilaType, pilaMemoria, pilaDim, quad,  tempVar, dataTable, currentFunc, memoryManager, memScope)
+        normalQuad(pilaOp, pilaOper,  pilaType, pilaMemoria, pilaDim, quad,  tempVar, dataTable, currentFunc, memoryManager, memScope, constTable)
         tempVar = tempVar + 1
     pilaOp.pop()
 
 # DIMENSIONED VARIABLES QUADS ######################################################################################
 
 def verQuad(operSt, typeSt, memSt, lim, quad):
-    """ Add special Quad for dimentioned Variables. \n
+    """ 
+        Add special Quad for dimentioned Variables. \n
         Adds VER quad. Only need to test if index is smaller
-        than max Limit."""
+        than max Limit.
+    """
 
     tp = typeSt.top()
     
@@ -221,9 +263,11 @@ def verQuad(operSt, typeSt, memSt, lim, quad):
         quad.add("VER",m,lim,None)
 
 def miDimQuad(mi, temp, operSt, typeSt, memSt, dimSt, mem, scope, quad):
-    """ Add special Quad for dimentioned Variables. \n
+    """ 
+        Add special Quad for dimentioned Variables. \n
         Add special Times Quad for carrying R size for
-        dimensional variables"""
+        dimensional variables
+    """
 
     oper = operSt.pop()
     t = typeSt.pop()
@@ -274,9 +318,11 @@ def miAddQuad(operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
     dimSt.push([])
 
 def dimAddressQuad(address, varType, operSt, typeSt, memSt, dimSt, temp, mem, scope, quad):
-    """ Add special Quad for dimentioned Variables.
+    """ 
+        Add special Quad for dimentioned Variables.
         Add Quad for TEMP POINTER address. This Quad assign 
-        and address to the dimensioned variable index."""
+        and address to the dimensioned variable index.
+    """
 
     l = operSt.pop()
     ml = memSt.pop()
@@ -294,3 +340,20 @@ def dimAddressQuad(address, varType, operSt, typeSt, memSt, dimSt, temp, mem, sc
     typeSt.push(varType)
     memSt.push("*" + str(tempMem))
     dimSt.push([])
+
+
+def dimQuad(id, dim, scope, constTable, memoryManager, quad):
+    """
+        Adds the special DIM quad that goes before adding or resting matrixes
+    """
+    dimensions = dim
+    
+    for i, dim in enumerate(dimensions):
+        if constTable.existVar(dim):
+                memR = constTable.getAddress(dim)
+        else:
+            memR = memoryManager.get(MEM['CONST']['INT'],1)
+            constTable.insert(dim,'int', memR)
+        
+        quad.add("DIM",dim,None,"d" + str(i))
+    

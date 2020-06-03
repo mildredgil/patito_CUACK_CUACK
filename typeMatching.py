@@ -122,7 +122,10 @@ class TypeMatching():
 
         
     @classmethod
-    def sem(self, line, right, op, left=None):
+    def sem(self, line, left, op, right=None):
+        """
+            Here do we decide if the matches are correctly or not.
+        """
         if left is None:
             try:
                 return self.typeMatchingTable[right][op]

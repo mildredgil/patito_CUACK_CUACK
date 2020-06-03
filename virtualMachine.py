@@ -1,4 +1,5 @@
 import csv
+import numpy as np
 from quad import Quad
 from dataTable import DirFunc, VarTable
 from decimal import Decimal as D
@@ -189,6 +190,7 @@ class VirtualMachine():
         self.pilaMem = stack.Stack()
         self.currentMem = CurrentMemory()
         self.pilaCounters = stack.Stack()
+        self.dimList = []
         
         #run methods
         self.readFile()
@@ -245,6 +247,7 @@ class VirtualMachine():
                 "!=":       self.diffAction,
                 "|":        self.orAction,
                 "&":        self.andAction,
+                "?":        self.determinantAction,
                 "PRINT":    self.printAction,
                 "READ":     self.readAction,
                 "GOTO":     self.gotoAction,
@@ -254,14 +257,15 @@ class VirtualMachine():
                 "GOSUB":    self.gosubAction,
                 "ENDPROC":  self.endPAction,
                 "RETURN":   self.returnAction,
-                "VER":      self.verAction
+                "VER":      self.verAction,
+                "DIM":      self.dimAction
             }
 
             #print("#", self.currentCounter, "   ", quadInstruction)
             func = switch.get(quadInstruction[0], "END")
             func(quadInstruction)
             quadInstruction = self.quad.get(int(self.currentCounter))
-        
+        self.currentMem.print()
 #   IO ACTIONS     ########################################################################
 
     def printAction(self, quad):
@@ -418,4 +422,33 @@ class VirtualMachine():
         if not self.currentMem.value(quad[1]) < self.currentMem.value(quad[2]):
             outOfRange()
         
+        self.setCounter(self.currentCounter + 1)
+
+    def determinantAction(self, quad):
+        print(quad)
+        print(self.dimList)
+        self.currentMem.print()
+        startAddress = int(quad[1])
+        mat = []
+        
+        size = 1
+        dimension = []
+        for dim in self.dimList:
+            size = int(dim) * size
+            dimension.append(int(dim))
+
+        print(dimension)
+
+        for el in range(startAddress, size + 2):
+            mat.append( self.currentMem.value( str(el) ) )
+        
+        deter = np.linalg.det( np.reshape(mat, tuple(dimension)) )
+
+        self.currentMem.insert(quad[3], deter)
+        
+        self.currentMem.print()
+        self.setCounter(self.currentCounter + 1)
+
+    def dimAction(self, quad):
+        self.dimList.append(quad[1])
         self.setCounter(self.currentCounter + 1)

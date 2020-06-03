@@ -1,4 +1,3 @@
-
 class Writer():
     @classmethod
     def prepareOBJ(self, filename, parser):
