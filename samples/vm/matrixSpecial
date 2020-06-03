@@ -1,11 +1,11 @@
 programa patito;
-var ent a, b, arr[3][3], arr2[5][4];
+var ent a, b, arr[3][3], d;
   
 principal () {
     escribe("estatuto desdeHasta");
     desde a = 0 hasta 2 hacer {
         desde b = 0 hasta 2 hacer {
-            arr[a][b] = a + b;
+            arr[a][b] = (a + 1) * b;
             escribe("[",a,"][ ",b," ] ", a + b ," = ",arr[a][b]);
             #escribe(arr[a][b]);
         }
@@ -21,6 +21,15 @@ principal () {
 
     a = arr?;
     escribe("determinante de a: ",a);
+
+    arr = arr!;
+
+    desde a = 0 hasta 2 hacer {
+        desde b = 0 hasta 2 hacer {
+            escribe("[",a,"][ ",b," ] ",arr[a][b]);
+            #escribe(arr[a][b]);
+        }
+    }
 }
 
   #add error:

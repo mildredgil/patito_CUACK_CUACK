@@ -264,6 +264,7 @@ class VirtualMachine():
             }
 
             #print("#", self.currentCounter, "   ", quadInstruction)
+            #self.currentMem.print()
             func = switch.get(quadInstruction[0], "END")
             func(quadInstruction)
             quadInstruction = self.quad.get(int(self.currentCounter))
@@ -461,14 +462,18 @@ class VirtualMachine():
         for el in range(startAddress, size + 2):
             mat.append( self.currentMem.value( str(el) ) )
         
+        print("transpose",np.reshape(mat, tuple(dimension)))
         mat = np.transpose( np.reshape(mat, tuple(dimension)) )
+        print("transpose",mat)
         mat = np.reshape(mat, size)
-        
-        print(mat)
 
+        self.currentMem.print()
         newStartAddress = int(quad[3])
-        for el in range(newStartAddress, size + 2):
-            mat.append( self.currentMem.value( str(el) ) )
 
+        for index, pos in enumerate(mat):
+            print(newStartAddress + index, mat[index], pos)
+            self.currentMem.insert( str(newStartAddress + index), str(pos) )
+
+        self.currentMem.print()
         self.setCounter(self.currentCounter + 1)
         self.dimList = []

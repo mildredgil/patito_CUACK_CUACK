@@ -341,7 +341,6 @@ def dimAddressQuad(address, varType, operSt, typeSt, memSt, dimSt, temp, mem, sc
     memSt.push("*" + str(tempMem))
     dimSt.push([])
 
-
 def dimQuad(id, dim, scope, constTable, memoryManager, quad):
     """
         Adds the special DIM quad that goes before adding or resting matrixes

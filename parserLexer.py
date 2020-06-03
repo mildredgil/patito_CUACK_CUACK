@@ -670,8 +670,9 @@ class CalcParser(Parser):
         lim = p[-2]
 
         self.dataTable.getTable(self.currentFunc).dimStoreLim(self.currentId, 1, lim)
-        self.dimR = (lim + 1 ) * self.dimR
-        self.dataTable.getTable(self.currentFunc).dimStoreDimR(self.currentId,self.dimR)
+        self.dimR = ( lim ) * self.dimR
+        print("DIMR",self.dimR)
+        #self.dataTable.getTable(self.currentFunc).dimStoreDimR(self.currentId,self.dimR)
 
 
     @_('empty')
@@ -682,6 +683,7 @@ class CalcParser(Parser):
                 self.dimR = self.dataTable.getTable(self.currentFunc).dimStoreMi(self.currentId, i, self.dimR)
             
             self.memoryManager.setNext(MEM[self.memScope][self.currentType.upper()],size)
+            self.dataTable.getTable(self.currentFunc).dimStoreDimR(self.currentId,size)
         else:
             mem = self.memoryManager.get(MEM[self.memScope][self.currentType.upper()],1)
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
@@ -746,9 +748,9 @@ class CalcParser(Parser):
             '''
         #print("PILASSSSSSSSSSSSSSSSSS 3")
         #print(pastId)
-        self.quad.print()
-        self.pilaMemoria.print()
-        self.pilaOper.print()
+        #self.quad.print()
+        #self.pilaMemoria.print()
+        #self.pilaOper.print()
         #print("PILASSSSSSSSSSSSSSSSSS 3")
         
 
@@ -830,7 +832,7 @@ class CalcParser(Parser):
                 self.constTable.insert(miCte,'int', mi)
                 
             miDimQuad(
-                mi - 1,
+                mi,
                 self.tempVar,
                 self.pilaOper,
                 self.pilaType, 
@@ -1163,6 +1165,7 @@ class CalcParser(Parser):
                 varNotArray(self.currentId)
             else:
                 dimR = self.dataTable.getTable(self.currentFunc).getDimR(self.pilaOper.top())
+                print("dimr",dimR, self.pilaOper.top())
                 mem = self.memoryManager.get(MEM[self.memScope]["TEMP"][self.pilaType.top().upper()],dimR)
                 dimQuad(
                         self.currentId, 
