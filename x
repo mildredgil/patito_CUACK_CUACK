@@ -1,5 +1,5 @@
 programa patito;
-var ent arr[10], b;
+var ent arr[10][2], b;
   
   principal ()
   {

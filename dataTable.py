@@ -1,6 +1,9 @@
 import json
 from err import *
 
+#This class represents a datatable of a function it includes methods to create new variables,to get their value, address, type. 
+#This class also include a print method to print all of its content as if it was a json. 
+#This function is used by the parser to create new tables for all of the functions on the program.
 class VarTable():
     def __init__(self):
         self.table = {}
@@ -88,6 +91,9 @@ class VarTable():
         print("printing varTable from %s:" % name)
         print(json.dumps(self.table, indent=2))
 
+#This class represents the directory of functions, this contains all of the datatables of the functions and algo the global datatable. 
+#It has methods to create and get the different datatables also to get each of the different elements on the different datatables. 
+#This is used only once on the parser to keep track of all the datatables.
 class DirFunc():
     def __init__(self):
         self.table = {}
