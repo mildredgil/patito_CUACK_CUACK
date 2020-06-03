@@ -20,6 +20,7 @@ class TypeMatching():
             },
             '=': {
                 'int': 'int',
+                'float':'int'
             },
             '<': {
                 'int': 'bool',
@@ -67,7 +68,6 @@ class TypeMatching():
                 'float': 'float'
             },
             '=': {
-                'int': 'float',
                 'float': 'float'
             },
             '<': {

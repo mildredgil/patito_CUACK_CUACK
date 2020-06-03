@@ -1,9 +1,8 @@
 programa patito;
-var ent arr[10][2], b;
+var ent a;
+   deci b;
   
   principal ()
   {
-    arr[2] = arr[1]+arr[1];
-    b = arr[1];
-    escribe("aver",arr[1]);
+    a=b;
   }

@@ -1,24 +1,24 @@
 programa patito;
-  var ent arr[10], i,j,temp, min;
+  var ent arr[10], i,j,x,temp, min;
 
   principal ()
   {
-    arr[0]=15;
-    arr[1]=20;
+    arr[0]=7;
+    arr[1]=4;
     arr[2]=5;
     arr[3]=3;
     arr[4]=1;
-    arr[5]=17;
-    desde i = 0 hasta 4 hacer {
+    arr[5]=6;
+    desde i = 0 hasta 5 hacer {
       min = i;
       desde j = i + 1 hasta 5 hacer {
         si (arr[j] < arr[min]) {
           min = j;
         }
+      }
       temp=arr[i];
       arr[i]=arr[min];
       arr[min]=temp;
-      }
     }
       desde i = 0 hasta 5 hacer { 
         escribe("En ",i," hay:",arr[i]);
