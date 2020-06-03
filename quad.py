@@ -1,5 +1,6 @@
 #Clas
 class Quad():
+    """ Class Incharge of creating, updating and getting quads"""
     def __init__(self):
         self.list = []
         self.count = 0
