@@ -1,0 +1,15 @@
+programa patito;
+var ent a,b;
+    
+principal () {
+    a = 5;
+    b = 3;
+    mientras(a >= 0) haz {
+        mientras(b >= 0) haz {
+            escribe("b: ",b);
+            b = b - 1;  
+        }
+        escribe("a. ",a);
+        a = a - 1;   
+    }
+}

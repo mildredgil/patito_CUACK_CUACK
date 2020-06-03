@@ -1,0 +1,14 @@
+1,2,3,4,5,6
+#QUAD
+GOTO,_,_,1
+=,200000,_,0
+PRINT,200000,_,_
+PRINT,\n,_,_
+PRINT,230000,_,_
+PRINT,\n,_,_
+END,_,_,_
+#DIRFUNC
+global,void,,-1,-1,1
+#CONST
+1,200000
+Hola mundo!,230000

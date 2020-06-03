@@ -2,20 +2,21 @@ programa patito;
   var ent arr[10], i, k;
 
   principal () {
+    escribe("ingresa un valor entre 0 y 5:");
     lee(k);
     # que encuentre k
 
-    arr[0]=0;
-    arr[1]=1;
-    arr[2]=2;
-    arr[3]=3;
-    arr[4]=4;
-    arr[5]=5;
+    arr[0]=3;
+    arr[1]=2;
+    arr[2]=4;
+    arr[3]=5;
+    arr[4]=0;
+    arr[5]=1;
     
-    desde i = 0 hasta 6 hacer {
-      escribe("estamos en", i, "y vemos", arr[i]);
-      si (arr[i] == 0) {
-        escribe(i);
+    desde i = 0 hasta 5 hacer {
+      #escribe("estamos en", i, "y vemos", arr[i]);
+      si (arr[i] == k) {
+        escribe(k, " se ecuentra en la posicion: ", i);
       }
     } 
   }

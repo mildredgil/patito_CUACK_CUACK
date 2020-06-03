@@ -9,7 +9,11 @@ from vmMemory import *
 from err import *
 
 class CurrentMemory():
+    """ Class in charge of the current Memory.
+        Get and insert memory"""
+
     def __init__(self):
+        """ Initialize with Global and Constant Memory. Local is null"""
         self.memory =  [
             Memory(GLOBAL),
             None,
@@ -74,6 +78,8 @@ class CurrentMemory():
             print("CONST", self.memory[CONST].memory, '\n')
         
 class Memory(): 
+    """ Memory Class. It Manages a singular memory, depends on the scope"""
+
     def __init__(self,scope):
         if scope == GLOBAL:
             self.memory =  MemoryStruct.globalStruct()
@@ -84,9 +90,9 @@ class Memory():
         self.scope = scope
         
     def insert(self, memory, val):
-        memType = memory // 10000
-        memPos = memory % 10000
-
+        memType = int(memory // 10000)
+        memPos = int(memory % 10000)
+        
         if MEM_INFO[memType][TYPE] == INT:
             value = int(val)
         elif MEM_INFO[memType][TYPE] == FLOAT:
@@ -101,6 +107,7 @@ class Memory():
         self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ] = value
 
     def insertP(self, memory, val):
+        """ Special insert for Pointer values redirected"""
         memType = memory // 10000
         memPos = memory % 10000
 
@@ -127,6 +134,7 @@ class Memory():
         return self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ]
 
     def valueP(self, memory):
+        """ Special get value for Pointer values redirected"""
         memory = int(memory)
         memType = memory // 10000
         memPos = memory % 10000
@@ -142,6 +150,7 @@ class Memory():
         print(self.memory)
 
 class MemoryStruct():
+    """ Structs of the 3 types of Memory: Global, Local, Constant"""
     @classmethod
     def constStruct(self):
         const_struct = [
@@ -178,6 +187,7 @@ class MemoryStruct():
         return global_struct
         
 class VirtualMachine():
+    """ Class in charge of reading the obj file, and executing the code"""
     def __init__(self, filename):
         #define variables
         self.filename = filename
@@ -200,6 +210,7 @@ class VirtualMachine():
         self.currentCounter = i
 
     def readFile(self):
+        """ Read the obj file. Its content is divided by quad, dirfunct, and const"""
         with open(self.filename, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             readingContext = 0
@@ -227,10 +238,8 @@ class VirtualMachine():
                         else:
                             self.currentMem.insert(row['2'],row['1'])
         
-        self.currentMem.print()
-        self.dirFunc.print()
-
     def execute(self):
+        """ Execute the quads and execute based on the switcher"""
         quadInstruction = self.quad.get(self.currentCounter)
         while quadInstruction[0] != "END":
             switch = {
@@ -249,7 +258,11 @@ class VirtualMachine():
                 "&":        self.andAction,
                 "?":        self.determinantAction,
                 "!":        self.transposeAction,
-                "?":        self.determinantAction,
+                "$":        self.inverseAction,
+                "_=":       self.assignArrayAction,
+                "_+":       self.addArrayAction,
+                "_-":       self.substractArrayAction,
+                "_*":       self.timesArrayAction,
                 "PRINT":    self.printAction,
                 "READ":     self.readAction,
                 "GOTO":     self.gotoAction,
@@ -263,12 +276,10 @@ class VirtualMachine():
                 "DIM":      self.dimAction
             }
 
-            #print("#", self.currentCounter, "   ", quadInstruction)
-            #self.currentMem.print()
             func = switch.get(quadInstruction[0], "END")
             func(quadInstruction)
             quadInstruction = self.quad.get(int(self.currentCounter))
-        self.currentMem.print()
+
 #   IO ACTIONS     ########################################################################
 
     def printAction(self, quad):
@@ -459,21 +470,117 @@ class VirtualMachine():
             size = int(dim) * size
             dimension.append(int(dim))
 
-        for el in range(startAddress, size + 2):
+        for el in range(startAddress, startAddress + size):
             mat.append( self.currentMem.value( str(el) ) )
         
-        print("transpose",np.reshape(mat, tuple(dimension)))
-        mat = np.transpose( np.reshape(mat, tuple(dimension)) )
-        print("transpose",mat)
+        trans = np.transpose( np.reshape(mat, tuple(dimension) ) )
+        
+        mat = trans
         mat = np.reshape(mat, size)
 
-        self.currentMem.print()
         newStartAddress = int(quad[3])
 
         for index, pos in enumerate(mat):
-            print(newStartAddress + index, mat[index], pos)
             self.currentMem.insert( str(newStartAddress + index), str(pos) )
 
-        self.currentMem.print()
         self.setCounter(self.currentCounter + 1)
         self.dimList = []
+
+    def addArrayAction(self, quad):
+        left, size = self.arrayConstruct(int(quad[1]))
+        right, _ = self.arrayConstruct(int(quad[2]))
+        mat = left + right
+        
+        newStartAddress = int(quad[3])
+        
+        mat = np.reshape(mat, size)
+        self.arrayDeconstruct(newStartAddress, mat)
+        
+        self.setCounter(self.currentCounter + 1)
+        self.dimList = []
+
+    def inverseAction(self, quad):
+        startAddress = int(quad[1])
+        mat = []
+        
+        size = 1
+        dimension = []
+        for dim in self.dimList:
+            size = int(dim) * size
+            dimension.append(int(dim))
+
+        for el in range(startAddress, startAddress + size):
+            mat.append( self.currentMem.value( str(el) ) )
+        
+        trans = np.linalg.inv( np.reshape(mat, tuple(dimension) ) )
+        
+        mat = trans
+        mat = np.reshape(mat, size)
+
+        newStartAddress = int(quad[3])
+
+        for index, pos in enumerate(mat):
+            self.currentMem.insert( str(newStartAddress + index), str(pos) )
+
+        self.setCounter(self.currentCounter + 1)
+        self.dimList = []
+
+    def substractArrayAction(self, quad):
+        left, size = self.arrayConstruct(int(quad[1]))
+        right, _ = self.arrayConstruct(int(quad[2]))
+        mat = left - right
+        
+        newStartAddress = int(quad[3])
+        
+        mat = np.reshape(mat, size)
+        self.arrayDeconstruct(newStartAddress, mat)
+        
+        self.setCounter(self.currentCounter + 1)
+        self.dimList = []
+
+    def timesArrayAction(self, quad):
+        left, size = self.arrayConstruct(int(quad[1]))
+        right, _ = self.arrayConstruct(int(quad[2]))
+        mat = left * right
+        
+        newStartAddress = int(quad[3])
+        
+        mat = np.reshape(mat, size)
+        self.arrayDeconstruct(newStartAddress, mat)
+        
+        self.setCounter(self.currentCounter + 1)
+        self.dimList = []
+
+    def assignArrayAction(self, quad):
+        left, size = self.arrayConstruct(int(quad[1]))
+        
+        mat = left
+    
+        newStartAddress = int(quad[3])
+        
+        mat = np.reshape(mat, size)
+        self.arrayDeconstruct(newStartAddress, mat)
+        
+        self.setCounter(self.currentCounter + 1)
+        self.dimList = []
+
+    def arrayConstruct(self, startAddress):
+        """ Function that construct a numpy dimensional variable."""
+        mat = []
+        
+        size = 1
+        dimension = []
+        for dim in self.dimList:
+            size = int(dim) * size
+            dimension.append(int(dim))
+
+        for el in range(startAddress, startAddress + size):
+            mat.append( self.currentMem.value( str(el) ) )
+        
+        return np.reshape(mat, tuple(dimension)), size
+
+    def arrayDeconstruct(self, startAddress, mat):
+        """ Function that converts a numpy dimensionated variable into the memory."""
+        for index, pos in enumerate(mat):
+            self.currentMem.insert( str(startAddress + index), str(pos) )
+

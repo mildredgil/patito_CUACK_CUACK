@@ -5,7 +5,6 @@ ISPOINTER = 2
 TYPE = 3
 
 #TO ACCESS memory structs
-#scope
 GLOBAL = 0
 LOCAL = 1
 CONST = 2

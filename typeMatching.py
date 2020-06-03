@@ -1,4 +1,6 @@
 class TypeMatching():
+    """Type Matching is incharge of the assignation of types"""
+
     # left op right
     typeMatchingTable = {
         'int': {
@@ -117,7 +119,7 @@ class TypeMatching():
         }
     }
 
-    def error(self, line, right, op, left=''):
+    def error(self, line, left, op, right=''):
         raise Exception('Line {}: Cant assign {} {} {}'.format(line, right, op, left))
 
         
@@ -126,13 +128,14 @@ class TypeMatching():
         """
             Here do we decide if the matches are correctly or not.
         """
-        if left is None:
+        
+        if right is None:
             try:
-                return self.typeMatchingTable[right][op]
+                return self.typeMatchingTable[left][op]
             except:
-                self.error(self, line, right, op, '')
+                self.error(self, line, left, op, '')
         else:
             try:
-                return self.typeMatchingTable[right][op][left]
+                return self.typeMatchingTable[left][op][right]
             except:
-                self.error(self, line, right, op, left)
+                self.error(self, line, left, op, right)

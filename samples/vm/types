@@ -1,0 +1,15 @@
+programa patito;
+var ent arr[11][8], a;
+  deci arrd[4][2], b;
+  letra q;
+
+  principal ()
+  {
+    b = 2;
+    a = 1;
+    b = 1 + 2 * a + (-b);
+    a = 2;
+    arrd[0][0] = a;
+    arr[0][0] = a;
+    arrd[1][1] = (arrd!)?;
+  }

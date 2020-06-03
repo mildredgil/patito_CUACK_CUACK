@@ -41,10 +41,17 @@ def normalQuad(opSt, operSt, typeSt, memSt, dimSt, quad, temp, dataTable, curren
 
     mem = memoryManager.get(MEM[memScope]['TEMP'][newType.upper()],dimR)
 
-    if test:
-        quad.add(op, l, r, mem)
+    if ldim!=[]:
+        if test:
+            quad.add("_" + op, l, r, mem)
+        else:
+            quad.add("_" + op, lm, rm, mem)
     else:
-        quad.add(op, lm, rm, mem)
+        if test:
+            quad.add(op, l, r, mem)
+        else:
+            quad.add(op, lm, rm, mem)
+
     
     operSt.push(newVar)
     typeSt.push(newType)
@@ -78,10 +85,16 @@ def assignQuad(opSt, operSt, typeSt, memSt, dimSt, dataTable, currentFunc, quad,
     if ldim!=[]:
         dimQuad(r, ldim, memScope, constTable, memoryManager, quad)
         
-    if test:
-        quad.add(op, r, None, l)
+        if test:
+            quad.add("_" + op, r, None, l)
+        else:
+            quad.add("_" + op, rm, None, lm)
+
     else:
-        quad.add(op, rm, None, lm)
+        if test:
+            quad.add(op, r, None, l)
+        else:
+            quad.add(op, rm, None, lm)
 
 
 def singeOpQuad(opSt, operSt, memSt, quad, temp):

@@ -1,4 +1,5 @@
 class Writer():
+    """ Class dedicated to write the quadruples in a _obj file"""
     @classmethod
     def prepareOBJ(self, filename, parser):
         if not parser.quad:

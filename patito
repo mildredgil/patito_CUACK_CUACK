@@ -1,0 +1,8 @@
+programa patito;
+var ent a;
+
+principal() {
+    a = 1;
+    escribe(1);
+    escribe("Hola mundo!");
+}

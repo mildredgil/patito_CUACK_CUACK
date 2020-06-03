@@ -1,38 +1,59 @@
 programa patito;
-var ent a, b, arr[3][3], d;
+var ent a, b, arr[3][3], d, arr2[3][3];
+    deci arr3[2][2];
   
 principal () {
     escribe("estatuto desdeHasta");
     desde a = 0 hasta 2 hacer {
         desde b = 0 hasta 2 hacer {
-            arr[a][b] = (a + 1) * b;
-            escribe("[",a,"][ ",b," ] ", a + b ," = ",arr[a][b]);
+            arr[a][b] = (a + 1) * (b + 2);
+            escribe("[",a,"][ ",b," ] ", (a + 1) * (b + 2) ," = ",arr[a][b]);
             #escribe(arr[a][b]);
         }
     }
     
     escribe("imprimiendo datos:");
     desde a = 0 hasta 2 hacer {
-        desde b = 0 hasta 2 hacer {
-            escribe("[",a,"][ ",b," ] ",arr[a][b]);
-            #escribe(arr[a][b]);
-        }
+        escribe(arr[a][0], " ", arr[a][1]," ", arr[a][2]);
+    }
+
+    arr = arr + arr;
+    escribe("se SUMO!!!");
+    desde a = 0 hasta 2 hacer {
+        escribe(arr[a][0], " ", arr[a][1]," ", arr[a][2]);
     }
 
     a = arr?;
     escribe("determinante de a: ",a);
 
     arr = arr!;
-
+    escribe("se TRANSPUESTA!!!");
     desde a = 0 hasta 2 hacer {
-        desde b = 0 hasta 2 hacer {
-            escribe("[",a,"][ ",b," ] ",arr[a][b]);
-            #escribe(arr[a][b]);
-        }
+        escribe(arr[a][0], " ", arr[a][1]," ", arr[a][2]);
+    }
+
+    arr2 = arr - arr;
+    escribe("se RESTO en arr2!!!");
+    desde a = 0 hasta 2 hacer {
+        escribe(arr2[a][0], " ", arr2[a][1]," ", arr2[a][2]);
+    }
+
+    arr2 = arr * arr;
+    escribe("se multiplico en arr2!!!");
+    desde a = 0 hasta 2 hacer {
+        escribe(arr2[a][0], " ", arr2[a][1]," ", arr2[a][2]);
+    }
+
+    
+    arr3[0][0] = 2.0;
+    arr3[0][1] = 12.0;
+    arr3[1][0] = 3;
+    arr3[1][1] = -2.0;
+
+    arr3 = arr3$;
+
+    escribe("se inversa  en arr3!!!");
+    desde a = 0 hasta 1 hacer {
+        escribe(arr3[a][0], " ", arr3[a][1]);
     }
 }
-
-  #add error:
-  # escribe(arr); -> No dimensions found
-  # arr[b] -> b is not of type ENT
-  # arr[1][1][1] -> Number of dimensions miss match

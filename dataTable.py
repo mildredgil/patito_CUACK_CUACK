@@ -6,12 +6,14 @@ from err import *
 #This function is used by the parser to create new tables for all of the functions on the program.
 class VarTable():
     def __init__(self):
+        """check is variable existe"""
         self.table = {}
 
     def exist(self, a, b):
         return b in a
 
     def existVar(self, var):
+        """inserts if var does not exist"""
         return var in self.table
 
     def insert(self, varName, varType, address=None):
@@ -34,10 +36,8 @@ class VarTable():
 
     def dimStoreMi(self, varName, dim, r):
         if dim < len(self.table[varName]["dim"]):
-            print("r",r)
             mi = r/(self.table[varName]["dim"][dim ]['lim'])
             self.table[varName]["dim"][dim ]['mi'] = mi
-            print("mi",mi)
             return mi
         else:
             outOfRange()
@@ -56,7 +56,6 @@ class VarTable():
     
     def getDimentions(self, varName):
         return len(self.table[varName]["dim"])
-
 
     def getCompleteDimentions(self, varName):
         x = []
@@ -157,6 +156,15 @@ class DirFunc():
         except:
             try: 
                 return self.getTable("global").getType(varName)
+            except:
+                notExist(varName)
+
+    def varHasDim(self, funcName, varName):
+        try:
+            self.getTable(funcName).hasDim(varName)
+        except:
+            try: 
+                self.getTable("global").hasDim(varName)
             except:
                 notExist(varName)
 

@@ -139,6 +139,7 @@ class CalcParser(Parser):
         self.pilaDimGlob = stack.Stack()
         self.pilaJump = stack.Stack()
         self.pilaForOp = stack.Stack()
+        self.pilaWhileOp = stack.Stack()
         
         self.pilaCallId = stack.Stack()
         self.pilaparamCount = stack.Stack()
@@ -235,10 +236,9 @@ class CalcParser(Parser):
     def ids2(self, p):
         pass
 
-    # FUNCION
-    #Detects the function at the end inserts the final quad of the funcitons
     @_('FUNCTION funcion2 ID save_id parametros funcion2 bloque')
     def funcion(self, p):
+        """Detects the function at the end inserts the final quad of the funcitons"""
         self.quad.add("ENDPROC", None, None, None)
         self.dataTable.deleteTable(self.currentFunc)
         self.memoryManager.resetTemp()
@@ -251,9 +251,12 @@ class CalcParser(Parser):
     def funcion2(self, p):
         pass
         
-    #embedded action sav6
+    #
     @_('')
     def save_id(self, p):
+        """
+            Creates the functions datatable
+        """
         mem = None
         if self.currentType != "void":
             mem = self.memoryManager.get(MEM["GLOBAL"][self.currentType.upper()],1)
@@ -270,9 +273,10 @@ class CalcParser(Parser):
     def funcion2(self, p):
         self.currentType = 'void'
 
-    # PARAMETROS
+
     @_('"(" parametros2 ")"')
     def parametros(self, p):
+        """Reads parameters"""
         pass
         
     @_('tipo ID param parametros3')
@@ -298,6 +302,7 @@ class CalcParser(Parser):
     #BLOQUE
     @_('"{" bloque2 "}"')
     def bloque(self, p):
+        """Reads a code block"""
         pass
 
     @_('estatuto bloque2')
@@ -308,7 +313,7 @@ class CalcParser(Parser):
     def bloque2(self, p):
         pass
 
-    #ESTATUTO save1
+    #ESTATUTO
     @_('asignacion',
         'escritura',
         'lee',
@@ -318,28 +323,27 @@ class CalcParser(Parser):
         'regresa',
         'llamada ";"')
     def estatuto(self, p):
+        """"Detects the difrent options in a block"""
         pass
 
     #ASIGNACION
     @_('identificadores asignacion_insert_var ASSIGN exp asignacion_pop_all ";"')
     def asignacion(self, p):
+        """ Detects asignation """
         pass
 
-    #embedded action save01
+
     @_('')
     def asignacion_insert_var(self, p):
         t = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
-        
-        #m = self.dataTable.getAddressVar(self.currentId,self.currentFunc)
         m = self.currentMem
-        print("------------------------------MEMORIAS m =", m, "currnetMem", self.currentMem)
         pushOperandType(self.pilaOper, self.pilaType, self.pilaMemoria, self.pilaDimGlob, self.currentId, t, m,self.pilaDimGlob.top())
         self.pilaOp.push("=")
         
-    #embedded action
-    #save1
+
     @_('')
     def asignacion_pop_all(self, p):
+        """"Makes sure every operation is done before continiuing"""
         while self.pilaOp.length() > 0:
             if self.pilaOp.top() != "=":
                 normalQuad(
@@ -376,6 +380,7 @@ class CalcParser(Parser):
     #lee
     @_('READ "(" lee2 ")" ";"')
     def lee(self, p):
+        """Detects the reading condition"""
         pass
 
     @_('identificadores lee_quad lee3')
@@ -399,6 +404,7 @@ class CalcParser(Parser):
     #escritura
     @_('PRINT "(" escritura2 ")" ";"')
     def escritura(self, p):
+        """Detects de print condition"""
         printQuad('\\n', self.quad)
 
     @_('exp print_quad1 escritura3')
@@ -447,14 +453,16 @@ class CalcParser(Parser):
     #regresa
     @_('RETURN "(" exp ")" ";"')
     def regresa(self, p):
+        """Detects the return condition"""
         returnQuad(self.pilaType, self.pilaOper, self.pilaMemoria , self.pilaDimGlob , self.dataTable, self.currentFunc, self.quad)
 
     #estatuto de decision
     @_('IF "(" expOR ")" if_gotF bloque estDesicion2 if_fill_gotF')
     def estDesicion(self, p):
+        """Detects de if condition"""
         pass
     
-    #embeded action
+    
     @_('')
     def if_gotF(self, p):
         gotoFQuad(
@@ -466,16 +474,17 @@ class CalcParser(Parser):
             self.quad
         )
 
-    #embeded action
+
     @_('')
     def if_fill_gotF(self, p):
         fillGotoFQuad(self.quad, self.pilaJump)
         
     @_('ELSE if_goto bloque')
     def estDesicion2(self, p):
+        """Detects de else if condition"""
         pass
     
-    #embeded action
+    
     @_('')
     def if_goto(self, p):
         gotoQuad(
@@ -491,14 +500,15 @@ class CalcParser(Parser):
 
     @_('while_push_pila_jumps WHILE "(" expOR ")" if_gotF DO bloque while_goto')
     def estRepCond(self, p):
+        """Detects the while condition"""
         pass
 
-    #embedded action
+
     @_('')
     def while_push_pila_jumps(self, p):
         self.pilaJump.push(self.quad.getCount())
 
-    #embeded action
+
     @_('')
     def while_goto(self, p):
         gotoQuad(
@@ -514,15 +524,16 @@ class CalcParser(Parser):
 
     @_(' FROM identificadores ASSIGN from_create exp from_assign TO exp from_gotF DO2 bloque from_suma from_goto')
     def estRepNoCond(self, p):
+        """"Detects de from condition"""
         pass
     
-    #embeded action save9
+    
     @_('')
     def from_create(self, p):
         self.pilaForOp.push(self.currentId)
         self.pilaOp.push('=')
         
-    #embeded action
+        
     @_('')
     def from_assign(self, p):
         assignQuad(
@@ -539,11 +550,10 @@ class CalcParser(Parser):
                 self.constTable
                 )
         
-    #embeded action
+        
     @_('')
     def from_gotF(self, p):
         m = self.dataTable.getAddressVar(self.pilaForOp.top(),self.currentFunc)
-        #CODIGOROJO
         d = self.dataTable.getCompleteDimentions(self.currentFunc, self.pilaForOp.top())
         self.pilaOper.push(self.pilaForOp.top())
         self.pilaOp.push('>=')
@@ -656,7 +666,7 @@ class CalcParser(Parser):
         self.dim = 0
         self.dimR = 1
 
-    # embedded action save22
+
     @_('')
     def arraySetArray(self, p):
         if not self.dataTable.getTable(self.currentFunc).existVar(self.currentId):
@@ -671,9 +681,6 @@ class CalcParser(Parser):
 
         self.dataTable.getTable(self.currentFunc).dimStoreLim(self.currentId, 1, lim)
         self.dimR = ( lim ) * self.dimR
-        print("DIMR",self.dimR)
-        #self.dataTable.getTable(self.currentFunc).dimStoreDimR(self.currentId,self.dimR)
-
 
     @_('empty')
     def identificadoresDec2(self, p):
@@ -689,15 +696,15 @@ class CalcParser(Parser):
             self.dataTable.getTable(self.currentFunc).insert(self.currentId,self.currentType, mem)
             self.dataTable.addNumLocals(self.currentFunc)
         
-    #CODE ID1
+        
     # identificadores con dimension
     @_('ID dim_push identificadores2')
     def identificadores(self, p):   
+        """"Detects identificadores and arrays"""
         self.currentId = p.ID
         pastId = self.currentId
         mem = self.dataTable.getAddressVar(self.currentId,self.currentFunc)
         type = self.dataTable.getTypeVar(self.currentId, self.currentFunc)
-        #CODIGOROJO
         d = self.dataTable.getCompleteDimentions(self.currentFunc,self.currentId)
         isArray = self.pilaIsArray.pop()
 
@@ -754,14 +761,13 @@ class CalcParser(Parser):
         #print("PILASSSSSSSSSSSSSSSSSS 3")
         
 
-    #CODE: ID2
+
     #This part of identifiers checks for dimentions and stores them
     @_('"[" dim_cor_start exp "]" dim_cor_end dimGenQuad identificadores2')
     def identificadores2(self, p):
         pass
 
     #add dim to stack and dim Count
-    #used on ID1
     @_('')
     def dim_push(self, p):
         self.pilaDim.push(p[-1])
@@ -769,12 +775,12 @@ class CalcParser(Parser):
         self.pilaIsArray.push(False)
 
     #update dim 
-    #used on ID2
     @_('')
     def dim_cor_start(self, p):
         #verify id has dim
         var = self.pilaDim.top()
-        self.dataTable.getTable(self.currentFunc).hasDim(var)
+        self.dataTable.varHasDim(self.currentFunc, var)
+        #self.dataTable.getTable(self.currentFunc).hasDim(var)
         
         if not self.pilaIsArray.top():
             self.pilaIsArray.pop()
@@ -784,7 +790,6 @@ class CalcParser(Parser):
         self.pilaOp.push(p[-1])
 
     #resolve exp 
-    #used on ID2
     @_('')
     def dim_cor_end(self, p):
         expQuads(
@@ -805,7 +810,6 @@ class CalcParser(Parser):
         self.tempVar = self.tempVar + 1
     
     #create verify quad, and add mi quad 
-    #used on ID2
     @_('')
     def dimGenQuad(self, p):
         var = self.pilaDim.top()
@@ -889,10 +893,9 @@ class CalcParser(Parser):
             if self.dataTable.getTable(self.currentFunc).isNextDim(var, self.pilaDimCount.top()):
                 dimErr(var)
             
-            #save13
+            
             if not self.badAid.isdigit():
                 mem = self.memoryManager.get(MEM[self.memScope]['TEMP'][self.pilaType.top().upper()],1)
-                #CODIGOROJO
                 d = self.dataTable.getCompleteDimentions(self.currentFunc, var)
                 self.quad.add(
                             self.badAid,
@@ -911,6 +914,7 @@ class CalcParser(Parser):
         self.pilaDim.pop()
         self.pilaDimCount.pop()
 
+    # All of these are simple detections for all the type for variables you where declaring/using
     # TIPO
     @_('INT')
     def tipo(self, p):
@@ -930,6 +934,7 @@ class CalcParser(Parser):
     # OR
     @_('expAND expOR2')
     def expOR(self, p):
+        """detects or and and"""
         pass
 
     @_('OR push_or expOR push_or2')
@@ -1002,6 +1007,7 @@ class CalcParser(Parser):
 
     @_('exp expresion2 quad_expresion')
     def expresion(self, p):
+        """Basic detection of expresions"""
         pass
 
     @_('')
@@ -1030,6 +1036,7 @@ class CalcParser(Parser):
         'EGT push_bool_op exp',
         'NE push_bool_op exp')
     def expresion2(self, p):
+        """Detection for all the comparisons"""
         pass
 
     @_('')
@@ -1042,6 +1049,7 @@ class CalcParser(Parser):
 
     @_('termino exp2')
     def exp(self, p):
+        """Defines how we handle expresions"""
         if self.pilaOper.length()>1 and self.pilaOp.top() == "+" or self.pilaOp.top() == "-" or self.pilaOp.top() == "/" or self.pilaOp.top() == "*" :
             normalQuad(
                 self.pilaOp,
@@ -1157,15 +1165,15 @@ class CalcParser(Parser):
         return p[0]
         pass
         
-    #OPMAT save00
+    #OPMAT
     @_('factor opmat2')
     def opmat(self, p):
+        """Deects if any matrix operations"""
         if p.opmat2:
-            if(self.dataTable.getTable(self.currentFunc).getDimentions(self.currentId) == 0):
+            if(self.pilaDimGlob.top() == []):
                 varNotArray(self.currentId)
             else:
                 dimR = self.dataTable.getTable(self.currentFunc).getDimR(self.pilaOper.top())
-                print("dimr",dimR, self.pilaOper.top())
                 mem = self.memoryManager.get(MEM[self.memScope]["TEMP"][self.pilaType.top().upper()],dimR)
                 dimQuad(
                         self.currentId, 
@@ -1249,6 +1257,7 @@ class CalcParser(Parser):
     # LLAMADA save14
     @_('ID era_call "(" call_par_start llamada2 ")" exp_par_end')
     def llamada(self, p):
+        """Detects the callinf of a function"""
         param = self.pilaparamCount.pop()
         validParamLen(param - 1, len(self.dataTable.getParams(self.pilaCallId.top())), self.pilaCallId.top())
         self.quad.add("GOSUB", p.ID, None, None)
@@ -1277,7 +1286,7 @@ class CalcParser(Parser):
                 self.tempVar = self.tempVar + 1
         self.pilaCallId.pop()
             
-    #embedded action
+            
     @_('')
     def era_call(self, p):
         self.pilaCallId.push(p[-1])
@@ -1302,7 +1311,7 @@ class CalcParser(Parser):
     def llamada2(self, p):
         pass
 
-    #embedded action
+
     @_('')
     def param_call(self, p):
         param = self.pilaparamCount.pop()
@@ -1317,12 +1326,13 @@ class CalcParser(Parser):
     def llamada3(self, p):
         pass
 
+    #all of these detec the individual constant or variables on the code
     # VARCTE
     @_('identificadores')
     def varcte(self, p):
         pass
 
-#save4
+
     @_('INTNUMBER')
     def varcte(self, p):
         self.isConst = True
