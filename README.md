@@ -1,4 +1,4 @@
-# PATITO CUAK CUAK
+# :duck: PATITO CUAK CUAK 
 
 Basic spanish programming language.
 
