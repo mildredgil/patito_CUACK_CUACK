@@ -17,6 +17,9 @@ class CurrentMemory():
 
     def setLocal(self, local):
         self.memory[LOCAL] = local
+
+    def getLocal(self):
+        return self.memory[LOCAL]
     
     def insertPointer(self, memory, val):
         if memory < MEM_LOCAL:
@@ -71,7 +74,12 @@ class CurrentMemory():
         
 class Memory(): 
     def __init__(self,scope):
-        self.memory =  memory_struct[scope]
+        if scope == GLOBAL:
+            self.memory =  MemoryStruct.globalStruct()
+        elif scope == LOCAL:
+            self.memory =  MemoryStruct.localStruct()
+        elif scope == CONST:
+            self.memory =  MemoryStruct.constStruct()
         self.scope = scope
         
     def insert(self, memory, val):
@@ -115,7 +123,6 @@ class Memory():
         
         if not memPos in self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ]:
             notDefined("function")
-        
         return self.memory[ MEM_INFO[memType][ISTEMP] ][ MEM_INFO[memType][ISPOINTER] ][ MEM_INFO[memType][TYPE] ][ memPos ]
 
     def valueP(self, memory):
@@ -132,6 +139,42 @@ class Memory():
 
     def print(self):
         print(self.memory)
+
+    class MemoryStruct():
+        @classmethod
+        def constStruct(self):
+            const_struct = [
+                [
+                    [{},{},{},{}],      #CONST_NO_TEMP_NO_POINTER
+                ],
+            ]
+            return const_struct
+
+        @classmethod
+        def localStruct(self):
+            local_struct = [
+                [
+                    [{},{},{}]          #LOCAL_NO_TEMP_NO_POINTER
+                ],
+                [
+                    [{},{},{},{}],      #LOCAL_TEMP_NO_POINTER
+                    [{},{},{}]          #LOCAL_TEMP_POINTER
+                ],
+            ]
+            return local_struct
+
+        @classmethod
+        def globalStruct(self):
+            global_struct = [
+                [
+                    [{},{},{}]          #GLOBAL_NO_TEMP_NO_POINTER
+                ],
+                [
+                    [{},{},{},{}],      #GLOBAL_TEMP_NO_POINTER
+                    [{},{},{}]          #GLOBAL_TEMP_POINTER
+                ],
+            ]
+            return global_struct
         
 class VirtualMachine():
     def __init__(self, filename):
@@ -184,7 +227,7 @@ class VirtualMachine():
         
         self.currentMem.print()
         self.dirFunc.print()
-        
+
     def execute(self):
         quadInstruction = self.quad.get(self.currentCounter)
         while quadInstruction[0] != "END":
@@ -215,11 +258,9 @@ class VirtualMachine():
             }
 
             #print("#", self.currentCounter, "   ", quadInstruction)
-            #self.currentMem.print()
             func = switch.get(quadInstruction[0], "END")
             func(quadInstruction)
             quadInstruction = self.quad.get(int(self.currentCounter))
-            #print("MEMORIA")
         
 #   IO ACTIONS     ########################################################################
 
@@ -342,6 +383,9 @@ class VirtualMachine():
                 local.insert(chCount, self.currentMem.value(aux.pop()))
                 chCount += 1
         
+        #push current Local Memory to stack
+        self.pilaMem.push( self.currentMem.getLocal() )
+        
         #set local memory to current Memory
         self.currentMem.setLocal(local)
         
@@ -357,6 +401,9 @@ class VirtualMachine():
         
     def endPAction(self, quad):
         self.setCounter(self.pilaCounters.pop() + 1)
+        
+        #pop local and set to current Memmory
+        self.currentMem.setLocal(self.pilaMem.pop( ) )
 
     def returnAction(self, quad):
         nameFunc = self.pilaFunc.pop()

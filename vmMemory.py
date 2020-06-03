@@ -5,21 +5,22 @@ ISPOINTER = 2
 TYPE = 3
 
 #TO ACCESS memory structs
+#scope
 GLOBAL = 0
 LOCAL = 1
 CONST = 2
-
-INT = 0
-FLOAT = 1
-CHAR = 2
-BOOL = 3
-STRING = 3
 
 NO_TEMP = 0
 TEMP = 1
 
 NO_POINTER = 0
 POINTER = 1
+
+INT = 0
+FLOAT = 1
+CHAR = 2
+BOOL = 3
+STRING = 3
 
 MEM_INFO = [  
     [GLOBAL, NO_TEMP, NO_POINTER, INT],
@@ -48,34 +49,39 @@ MEM_INFO = [
     [CONST,  NO_TEMP, NO_POINTER,  STRING]
 ]
 
-global_struct = [
-    [
-        [{},{},{}]          #GLOBAL_NO_TEMP_NO_POINTER
-    ],
-    [
-        [{},{},{},{}],      #GLOBAL_TEMP_NO_POINTER
-        [{},{},{}]          #GLOBAL_TEMP_POINTER
-    ],
-]
+class MemoryStruct():
+    @classmethod
+    def constStruct(self):
+        const_struct = [
+            [
+                [{},{},{},{}],      #CONST_NO_TEMP_NO_POINTER
+            ],
+        ]
+        return const_struct
 
-local_struct = [
-    [
-        [{},{},{}]          #LOCAL_NO_TEMP_NO_POINTER
-    ],
-    [
-        [{},{},{},{}],      #LOCAL_TEMP_NO_POINTER
-        [{},{},{}]          #LOCAL_TEMP_POINTER
-    ],
-]
+    @classmethod
+    def localStruct(self):
+        local_struct = [
+            [
+                [{},{},{}]          #LOCAL_NO_TEMP_NO_POINTER
+            ],
+            [
+                [{},{},{},{}],      #LOCAL_TEMP_NO_POINTER
+                [{},{},{}]          #LOCAL_TEMP_POINTER
+            ],
+        ]
+        return local_struct
 
-const_struct = [
-    [
-        [{},{},{},{}],      #CONST_NO_TEMP_NO_POINTER
-    ],
-]
-
-memory_struct = [
-    global_struct,
-    local_struct,
-    const_struct
-]
+    @classmethod
+    def globalStruct(self):
+        global_struct = [
+            [
+                [{},{},{}]          #GLOBAL_NO_TEMP_NO_POINTER
+            ],
+            [
+                [{},{},{},{}],      #GLOBAL_TEMP_NO_POINTER
+                [{},{},{}]          #GLOBAL_TEMP_POINTER
+            ],
+        ]
+        return global_struct
+    
