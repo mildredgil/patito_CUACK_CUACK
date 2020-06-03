@@ -155,6 +155,21 @@ desde a=0 hasta 5 hacer {
 At the end of the code block the initialized variable is increased by one, checks if the initialized variable is equal to the integer number and if so repeats loop. 
 NOTE: on both these loops there is an initial check before the code is run if the condition is true the loop does not run.
 
+### Arrays
+
+The language can arrays of any dimension. Arrays are declared using brackets like so.
+
+var ent array[9][9][9]
+
+Arrays have their own operations. As long as they have the same dimensions you can do the sum of arrays, subtract arrays and multiply arrays.
+
+```
+var ent array1[5], array2[5], arrayc[5]
+principal() {
+	arrayc= array + array[5
+}
+```
+
 
 ----
 TODO: 
