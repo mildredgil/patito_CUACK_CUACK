@@ -170,7 +170,3 @@ principal() {
 }
 ```
 
-
-----
-TODO: 
-    Multiplicacione de matrices: ultima dimension = primera dimension
